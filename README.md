@@ -1,3 +1,6 @@
-# scattered-thoughts
+# My Blog: Scattered Thoughts
 
-Try migrating from fastpages blog
+_powered by [Quarto](https://quarto.org)_
+
+
+A simple blog where I can post some jupyter ntoebooks about stuff and things :)

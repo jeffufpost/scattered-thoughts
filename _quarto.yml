@@ -2,14 +2,18 @@ project:
   type: website
   output-dir: docs
 website:
-  title: "scattered-thoughts"
+  title: "Scattered Thoughts"
   navbar:
     right:
       - about.qmd
-      - icon: github
-        href: https://github.com/jeffufpost
-      - icon: twitter
-        href: https://twitter.com
+      - text: "{{< fa brands linkedin-in >}}"
+        href: https://www.linkedin.com/in/jeffrey-post-6591ab42
+      - text: "{{< fa brands github >}}"
+        href: https:/github.com/jeffufpost
+      - text: "{{< fa brands gitlab >}}"
+        href: https://renkulab.io/gitlab/jeffrey.post
+      - text: "{{< fa envelope >}}"
+        href: mailto:contact@jeffreypost.dev
 format:
   html:
     theme: sandstone

@@ -2,6 +2,20 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2020-04-02-control-measures.html",
+      "/posts/2020-04-12-on-testing.html",
+      "/posts/2020-03-12-COVID-19-Tracker.html",
+      "/posts/2020-04-15-web-scraping.html",
+      "/posts/2020-06-02-real-world.html",
+      "/posts/2021_05_05_stochastic_HIV_model.html",
+      "/posts/2020-04-01-diagnosing-R0-and-peak-infectious.html",
+      "/posts/2020-03-15-compartmentalization.html",
+      "/posts/2020-03-31-stochastic_model.html",
+      "/posts/2020-04-02-convolution.html",
+      "/posts/2020-01-07-test.html",
+      "/posts/2021-05-07-stochastic_HIV_model.html",
+      "/posts/2020-03-18-deterministic-numerical-solutions.html",
+      "/posts/2020-03-25-proba-distrib.html",
       "/posts/post-with-code/index.html",
       "/posts/welcome/index.html"
     ]
