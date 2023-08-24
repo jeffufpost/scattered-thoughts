@@ -7,8 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jeffrey Post">
+<meta name="dcterms.date" content="2020-05-05">
+<meta name="description" content="Building a new stochastic SEIR model to deal with probability distributions">
 
-<title>Scattered Thoughts - “HIV modeling”</title>
+<title>Scattered Thoughts - HIV modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -169,8 +171,22 @@ ga('send', {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">“HIV modeling”</h1>
-                      </div>
+      <h1 class="title">HIV modeling</h1>
+                  <div>
+        <div class="description">
+          Building a new stochastic SEIR model to deal with probability distributions
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">probability distributions</div>
+                <div class="quarto-category">modeling</div>
+                <div class="quarto-category">SEIR</div>
+                <div class="quarto-category">epidemiology</div>
+                <div class="quarto-category">stochastic</div>
+                <div class="quarto-category">HIV</div>
+                <div class="quarto-category">AIDS</div>
+              </div>
+                  </div>
   </div>
     
   
@@ -183,6 +199,12 @@ ga('send', {
             </div>
     </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">2020-05-05</p>
+      </div>
+    </div>
     
       
     </div>
@@ -212,17 +234,7 @@ ga('send', {
 
 
 <p><a href="https://colab.research.google.com/github/jeffufpost/scattered-thoughts/blob/master/_notebooks/2021_05_05_stochastic_HIV_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
-<blockquote class="blockquote">
-<p>“Building a new stochastic SEIR model to deal with probability distributions”</p>
-</blockquote>
-<ul>
-<li>toc: true</li>
-<li>badges: true</li>
-<li>comments: true</li>
-<li>categories: [probability distributions, modeling, SEIR, epidemiology, stochastic, HIV, AIDS]</li>
-<li>image: images/HIV_stochastic.png</li>
-</ul>
-<p><img src="https://github.com/jeffufpost/scattered-thoughts/blob/master/_notebooks/my_icons/HIV_stochastic.png?raw=1" class="img-fluid"></p>
+<p><img src="../my_icons/HIV_stochastic.png" class="img-fluid"></p>
 <section id="building-a-stochastic-model" class="level2">
 <h2 class="anchored" data-anchor-id="building-a-stochastic-model">Building a stochastic model</h2>
 <p>This model is going to focus on individual level disease dynamics to model the disease propagation.</p>
@@ -557,9 +569,6 @@ if (outputEl) {{
 
 
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
