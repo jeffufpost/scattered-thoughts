@@ -4,13 +4,13 @@ description: "A link to my COVID-19 map tracker"
 toc: true
 comments: false
 categories: [COVID-19, ]
-image: images/sars-cov2-world-tracker.png
+image: sars-cov2-world-tracker.png
 title: COVID-19 Map
 layout: post
 ---
 
-![]({{site.baseurl}}/images/sars-cov2-world-tracker.png "World map preview")
-![]({{site.baseurl}}/images/sars-cov2-french-tracker.png "French map preview")
+![]({{site.baseurl}}/sars-cov2-world-tracker.png "World map preview")
+![]({{site.baseurl}}/sars-cov2-french-tracker.png "French map preview")
 
 ## Link to tracker
 
