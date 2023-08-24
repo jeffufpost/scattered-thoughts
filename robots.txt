@@ -1,1 +1,1 @@
-Sitemap: https://jeffreypost.dev/scattered-thoughts/sitemap.xml
+Sitemap: /scattered-thoughts/sitemap.xml
