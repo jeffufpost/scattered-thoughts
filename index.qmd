@@ -1,5 +1,5 @@
 ---
-title: "scattered-thoughts"
+title: "Scattered Thoughts"
 listing:
   contents: posts
   sort: "date desc"

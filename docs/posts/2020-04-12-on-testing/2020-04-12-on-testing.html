@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Jeffrey Post">
 
 <title>Scattered Thoughts - “Testing - what to be aware of”</title>
 <style>
@@ -120,7 +121,7 @@ ga('send', {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -175,6 +176,12 @@ ga('send', {
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Jeffrey Post </p>
+            </div>
+    </div>
       
     
       
@@ -184,7 +191,33 @@ ga('send', {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation-for-write-up" id="toc-motivation-for-write-up" class="nav-link active" data-scroll-target="#motivation-for-write-up">Motivation for write-up</a></li>
+  <li><a href="#specificity-sensitivity-false-positives-false-negatives" id="toc-specificity-sensitivity-false-positives-false-negatives" class="nav-link" data-scroll-target="#specificity-sensitivity-false-positives-false-negatives">Specificity, Sensitivity, False positives, False negatives?</a>
+  <ul>
+  <li><a href="#specificity" id="toc-specificity" class="nav-link" data-scroll-target="#specificity">Specificity</a></li>
+  <li><a href="#sensitivity" id="toc-sensitivity" class="nav-link" data-scroll-target="#sensitivity">Sensitivity</a></li>
+  <li><a href="#prevalence" id="toc-prevalence" class="nav-link" data-scroll-target="#prevalence">Prevalence</a></li>
+  </ul></li>
+  <li><a href="#story-time---part-1" id="toc-story-time---part-1" class="nav-link" data-scroll-target="#story-time---part-1">Story time - Part 1</a></li>
+  <li><a href="#calculating-probabilites-given-test-results" id="toc-calculating-probabilites-given-test-results" class="nav-link" data-scroll-target="#calculating-probabilites-given-test-results">Calculating probabilites given test results</a>
+  <ul>
+  <li><a href="#conditional-probabilities" id="toc-conditional-probabilities" class="nav-link" data-scroll-target="#conditional-probabilities">Conditional probabilities</a></li>
+  <li><a href="#ppositive-test" id="toc-ppositive-test" class="nav-link" data-scroll-target="#ppositive-test"><span class="math inline">\(P(Positive\ test)\)</span></a></li>
+  <li><a href="#sensitivity-and-specificity-revisited" id="toc-sensitivity-and-specificity-revisited" class="nav-link" data-scroll-target="#sensitivity-and-specificity-revisited">Sensitivity and Specificity revisited</a></li>
+  <li><a href="#re-writing-the-posterior-probability" id="toc-re-writing-the-posterior-probability" class="nav-link" data-scroll-target="#re-writing-the-posterior-probability">Re-writing the posterior probability</a></li>
+  <li><a href="#the-role-of-prevalence-in-these-calculations" id="toc-the-role-of-prevalence-in-these-calculations" class="nav-link" data-scroll-target="#the-role-of-prevalence-in-these-calculations">The role of prevalence in these calculations</a></li>
+  </ul></li>
+  <li><a href="#serology-testing-simulation" id="toc-serology-testing-simulation" class="nav-link" data-scroll-target="#serology-testing-simulation">Serology testing simulation</a></li>
+  <li><a href="#story-time---part-2" id="toc-story-time---part-2" class="nav-link" data-scroll-target="#story-time---part-2">Story time - Part 2</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 

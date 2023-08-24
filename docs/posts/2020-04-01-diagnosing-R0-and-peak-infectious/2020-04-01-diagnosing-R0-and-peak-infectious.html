@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Jeffrey Post">
 
 <title>Scattered Thoughts - “Epidemic modeling - Part 5”</title>
 <style>
@@ -120,7 +121,7 @@ ga('send', {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -175,6 +176,12 @@ ga('send', {
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Jeffrey Post </p>
+            </div>
+    </div>
       
     
       
@@ -184,7 +191,27 @@ ga('send', {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation-for-write-up" id="toc-motivation-for-write-up" class="nav-link active" data-scroll-target="#motivation-for-write-up">Motivation for write-up</a></li>
+  <li><a href="#peak-of-infectious-individuals" id="toc-peak-of-infectious-individuals" class="nav-link" data-scroll-target="#peak-of-infectious-individuals">Peak of infectious individuals</a>
+  <ul>
+  <li><a href="#convolution-and-daily-numbers" id="toc-convolution-and-daily-numbers" class="nav-link" data-scroll-target="#convolution-and-daily-numbers">Convolution and daily numbers</a></li>
+  <li><a href="#when-does-the-peak-occur" id="toc-when-does-the-peak-occur" class="nav-link" data-scroll-target="#when-does-the-peak-occur">When does the peak occur?</a></li>
+  </ul></li>
+  <li><a href="#i_pd-and-r_pd-for-t_infectious-sim-explambda-vs.-t_infectious-sim-weibulllambda-kgamma" id="toc-i_pd-and-r_pd-for-t_infectious-sim-explambda-vs.-t_infectious-sim-weibulllambda-kgamma" class="nav-link" data-scroll-target="#i_pd-and-r_pd-for-t_infectious-sim-explambda-vs.-t_infectious-sim-weibulllambda-kgamma"><span class="math inline">\(I_{pd}\)</span> and <span class="math inline">\(R_{pd}\)</span> for <span class="math inline">\(T_{Infectious} \sim Exp(\lambda)\)</span> vs.&nbsp;<span class="math inline">\(T_{Infectious} \sim Weibull(\lambda, k,\gamma)\)</span></a>
+  <ul>
+  <li><a href="#t_infectious-sim-exp28.85-vs.-t_infectious-sim-weibull2.3-20.11-2" id="toc-t_infectious-sim-exp28.85-vs.-t_infectious-sim-weibull2.3-20.11-2" class="nav-link" data-scroll-target="#t_infectious-sim-exp28.85-vs.-t_infectious-sim-weibull2.3-20.11-2"><span class="math inline">\(T_{Infectious} \sim Exp(28.85)\)</span> vs.&nbsp;<span class="math inline">\(T_{Infectious} \sim Weibull(2.3, 20.11, 2)\)</span></a></li>
+  <li><a href="#impact-on-i_pd-r_pd" id="toc-impact-on-i_pd-r_pd" class="nav-link" data-scroll-target="#impact-on-i_pd-r_pd">Impact on <span class="math inline">\(I_{pd}\)</span> <span class="math inline">\(R_{pd}\)</span>:</a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis:</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 

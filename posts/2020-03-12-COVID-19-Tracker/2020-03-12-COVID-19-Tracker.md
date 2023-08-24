@@ -1,19 +1,18 @@
 ---
 keywords: COVID-19, tracker
 description: "A link to my COVID-19 map tracker"
-toc: true
-comments: false
 categories:
  - COVID-19
  - Dashboards
  - Plotly
 image: sars-cov2-world-tracker.png
-title: COVID-19 Map
+title: COVID-19 Tracker Map
 layout: post
+date: "2020-03-12"
 ---
 
-![]({{site.baseurl}}/sars-cov2-world-tracker.png "World map preview")
-![]({{site.baseurl}}/sars-cov2-french-tracker.png "French map preview")
+![](sars-cov2-world-tracker.png "World map preview")
+![](sars-cov2-french-tracker.png "French map preview")
 
 ## Link to tracker
 

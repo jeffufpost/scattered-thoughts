@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Jeffrey Post">
 
 <title>Scattered Thoughts - “Epidemic modeling - Part 4”</title>
 <style>
@@ -120,7 +121,7 @@ ga('send', {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -175,6 +176,12 @@ ga('send', {
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Jeffrey Post </p>
+            </div>
+    </div>
       
     
       
@@ -184,7 +191,40 @@ ga('send', {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation-for-write-up" id="toc-motivation-for-write-up" class="nav-link active" data-scroll-target="#motivation-for-write-up">Motivation for write-up</a></li>
+  <li><a href="#building-a-stochastic-model" id="toc-building-a-stochastic-model" class="nav-link" data-scroll-target="#building-a-stochastic-model">Building a stochastic model</a>
+  <ul>
+  <li><a href="#creating-the-initial-population-dataframe" id="toc-creating-the-initial-population-dataframe" class="nav-link" data-scroll-target="#creating-the-initial-population-dataframe">Creating the initial population dataframe</a></li>
+  <li><a href="#building-the-model" id="toc-building-the-model" class="nav-link" data-scroll-target="#building-the-model">Building the model</a>
+  <ul>
+  <li><a href="#sanity-check" id="toc-sanity-check" class="nav-link" data-scroll-target="#sanity-check">Sanity check</a>
+  <ul class="collapse">
+  <li><a href="#e-i" id="toc-e-i" class="nav-link" data-scroll-target="#e-i">E → I</a></li>
+  <li><a href="#i-r" id="toc-i-r" class="nav-link" data-scroll-target="#i-r">I → R</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#comparing-deterministic-with-stochastic-seir-models" id="toc-comparing-deterministic-with-stochastic-seir-models" class="nav-link" data-scroll-target="#comparing-deterministic-with-stochastic-seir-models">Comparing deterministic with stochastic SEIR models</a></li>
+  <li><a href="#sigma-exponential-or-gamma-distribution" id="toc-sigma-exponential-or-gamma-distribution" class="nav-link" data-scroll-target="#sigma-exponential-or-gamma-distribution"><span class="math inline">\(\sigma\)</span>: exponential or gamma distribution</a></li>
+  <li><a href="#gamma-exponential-gamma-or-weibull-distribution" id="toc-gamma-exponential-gamma-or-weibull-distribution" class="nav-link" data-scroll-target="#gamma-exponential-gamma-or-weibull-distribution"><span class="math inline">\(\gamma\)</span>: exponential, gamma, or Weibull distribution</a>
+  <ul>
+  <li><a href="#exponential-vs.-gamma" id="toc-exponential-vs.-gamma" class="nav-link" data-scroll-target="#exponential-vs.-gamma">Exponential vs.&nbsp;Gamma</a></li>
+  <li><a href="#gamma-vs.-weibull" id="toc-gamma-vs.-weibull" class="nav-link" data-scroll-target="#gamma-vs.-weibull">Gamma vs.&nbsp;Weibull</a></li>
+  </ul></li>
+  <li><a href="#impact-of-distribution-of-t_infectious-on-infectious-peak" id="toc-impact-of-distribution-of-t_infectious-on-infectious-peak" class="nav-link" data-scroll-target="#impact-of-distribution-of-t_infectious-on-infectious-peak">Impact of distribution of <span class="math inline">\(T_{Infectious}\)</span> on Infectious Peak</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a>
+  <ul>
+  <li><a href="#r_0" id="toc-r_0" class="nav-link" data-scroll-target="#r_0"><span class="math inline">\(R_0\)</span></a></li>
+  <li><a href="#further-questions" id="toc-further-questions" class="nav-link" data-scroll-target="#further-questions">Further questions</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
