@@ -7,8 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jeffrey Post">
+<meta name="dcterms.date" content="2020-03-25">
+<meta name="description" content="Examining the major flaw of the deterministic SEIR model">
 
-<title>Scattered Thoughts - “Epidemic modeling - Part 3”</title>
+<title>Scattered Thoughts - Epidemic modeling - Part 3</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -169,8 +171,19 @@ ga('send', {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">“Epidemic modeling - Part 3”</h1>
-                      </div>
+      <h1 class="title">Epidemic modeling - Part 3</h1>
+                  <div>
+        <div class="description">
+          Examining the major flaw of the deterministic SEIR model
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">probability distributions</div>
+                <div class="quarto-category">modeling</div>
+                <div class="quarto-category">SEIR</div>
+                <div class="quarto-category">epidemiology</div>
+              </div>
+                  </div>
   </div>
     
   
@@ -183,6 +196,12 @@ ga('send', {
             </div>
     </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 25, 2020</p>
+      </div>
+    </div>
     
       
     </div>
@@ -224,16 +243,6 @@ ga('send', {
 
 
 
-<blockquote class="blockquote">
-<p>“Examining the major flaw of the deterministic SEIR model”</p>
-</blockquote>
-<ul>
-<li>toc: true</li>
-<li>badges: true</li>
-<li>comments: true</li>
-<li>categories: [probability distributions, modeling, SEIR, epidemiology]</li>
-<li>image: images/proba_distrib.png</li>
-</ul>
 <p><img src="https://github.com/jeffufpost/scattered-thoughts/blob/master/_notebooks/my_icons/proba_distrib.png?raw=1" class="img-fluid"></p>
 <section id="motivation-for-write-up" class="level2">
 <h2 class="anchored" data-anchor-id="motivation-for-write-up">Motivation for write-up</h2>
@@ -515,7 +524,7 @@ if (outputEl) {{
 <p>The range is [2,14] days and 95th percentile is 12.5 days, so we could translate this as follows: * 5th percentile = 2 days * 95th percentil = 12.5 days</p>
 <p><span class="math display">\[Mean = k~\theta\]</span> <span class="math display">\[\leftrightarrow k~\theta = 5.2\]</span> <span class="math display">\[\leftrightarrow k = \frac{5.2}{\theta}\]</span></p>
 <p>We find the following parameters result in a pretty close distribution: * <span class="math inline">\(loc = 1.8\)</span> * <span class="math inline">\(k = 0.9\)</span> * <span class="math inline">\(\theta = \frac{5.2-loc}{k} = 3.\dot{7}\)</span></p>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#hide</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> prettytable <span class="im">import</span> PrettyTable</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -717,7 +726,7 @@ if (outputEl) {{
 <p>The range is [8,37] days so we could translate this as follows: * 5th percentile = 8 days * 95th percentil = 37 days</p>
 <p>We find the following parameters result in a pretty close Gamma distribution: * <span class="math inline">\(loc = 3\)</span> * <span class="math inline">\(k = 4\)</span> * <span class="math inline">\(\theta = 4.25\)</span></p>
 <p>Similarly, we find the following parameters result in a pretty close Weibull distribution: * <span class="math inline">\(loc = 2\)</span> * <span class="math inline">\(k = 2.3\)</span> * <span class="math inline">\(\lambda = \frac{20-2}{(\ln 2)^{1/k}} = 21.11\)</span></p>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#hide</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> prettytable <span class="im">import</span> PrettyTable</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

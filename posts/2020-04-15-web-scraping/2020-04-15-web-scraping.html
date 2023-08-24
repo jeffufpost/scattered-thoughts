@@ -7,8 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jeffrey Post">
+<meta name="dcterms.date" content="2020-04-15">
+<meta name="description" content="A quick and very simple rundown on how to scrape hospitalization and testing data from the French open data site">
 
-<title>Scattered Thoughts - “Scraping COVID-19 data from data.gouv.fr”</title>
+<title>Scattered Thoughts - Scraping COVID-19 data from data.gouv.fr</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -167,8 +169,17 @@ ga('send', {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">“Scraping COVID-19 data from data.gouv.fr”</h1>
-                      </div>
+      <h1 class="title">Scraping COVID-19 data from data.gouv.fr</h1>
+                  <div>
+        <div class="description">
+          A quick and very simple rundown on how to scrape hospitalization and testing data from the French open data site
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">scraping</div>
+                <div class="quarto-category">COVID-19</div>
+              </div>
+                  </div>
   </div>
     
   
@@ -181,6 +192,12 @@ ga('send', {
             </div>
     </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 15, 2020</p>
+      </div>
+    </div>
     
       
     </div>
@@ -221,17 +238,7 @@ ga('send', {
 
 
 
-<blockquote class="blockquote">
-<p>“A quick and very simple rundown on how to scrape hospitalization and testing data from the French open data site”</p>
-</blockquote>
-<ul>
-<li>toc: true</li>
-<li>badges: true</li>
-<li>comments: true</li>
-<li>categories: [scraping, COVID-19]</li>
-<li>image: images/scraping.png</li>
-</ul>
-<p><img src="my_icons/scraping.png" class="img-fluid"></p>
+<p><img src="../my_icons/scraping.png" class="img-fluid"></p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>As the summary explains, this blog post will very quickly explain how to automatically download French government data on hospitalization and testing pertaining to COVID⁻19.</p>
@@ -252,7 +259,7 @@ ga('send', {
 </section>
 <section id="code" class="level2">
 <h2 class="anchored" data-anchor-id="code">Code</h2>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_show</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Import libraries used below</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
@@ -268,29 +275,29 @@ ga('send', {
 <section id="getting-the-main-page" class="level3">
 <h3 class="anchored" data-anchor-id="getting-the-main-page">Getting the main page</h3>
 <p>Let’s first have a look ath the main landing page that I provided above.</p>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Store URL for each page</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>url_cases <span class="op">=</span> <span class="st">'https://www.data.gouv.fr/fr/datasets/donnees-hospitalieres-relatives-a-lepidemie-de-covid-19/'</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>url_tests <span class="op">=</span> <span class="st">'https://www.data.gouv.fr/fr/datasets/donnees-relatives-aux-tests-de-depistage-de-covid-19-realises-en-laboratoire-de-ville/'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get response for each URL</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>response_cases <span class="op">=</span> requests.get(url_cases)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>response_tests <span class="op">=</span> requests.get(url_tests)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The response here should be 200 (see life of codes <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success">here</a>).</p>
-<div class="cell" data-outputid="61789a5f-77a4-47d4-8db0-1622b4df017b" data-execution_count="0">
+<div class="cell" data-outputid="61789a5f-77a4-47d4-8db0-1622b4df017b">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response_cases, response_tests)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;Response [200]&gt; &lt;Response [200]&gt;</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the actual content of the page returned with BeautifulSoup</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>soupcases <span class="op">=</span> BeautifulSoup(response_cases.text, <span class="st">"html.parser"</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>souptests <span class="op">=</span> BeautifulSoup(response_tests.text, <span class="st">"html.parser"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="dfa8acd0-51fc-47a3-80f1-0480537ec73a" data-execution_count="0">
+<div class="cell" data-outputid="dfa8acd0-51fc-47a3-80f1-0480537ec73a">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's look at the links in the main page (for testing data - if you want cases, replace souptests with soupcases below)</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(souptests.find_all(<span class="st">'a'</span>, class_<span class="op">=</span><span class="st">"btn btn-sm btn-primary"</span>))):</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(souptests.find_all(<span class="st">'a'</span>, class_<span class="op">=</span><span class="st">"btn btn-sm btn-primary"</span>)[i].get(<span class="st">'href'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -309,7 +316,7 @@ https://www.data.gouv.fr/fr/datasets/r/59e82d52-e07a-4ae8-9a49-2d1fd2d2ec21</cod
 </div>
 </div>
 <p>We see that the petrtinent file in each cases (testing or hospitalization data) are the first links in their page. So we save only this one as donw below:</p>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If we want to save that first URL we can do as follows</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>casescsvurl <span class="op">=</span> soupcases.find_all(<span class="st">'a'</span>, class_<span class="op">=</span><span class="st">"btn btn-sm btn-primary"</span>)[<span class="dv">1</span>].get(<span class="st">'href'</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>testscsvurl <span class="op">=</span> souptests.find_all(<span class="st">'a'</span>, class_<span class="op">=</span><span class="st">"btn btn-sm btn-primary"</span>)[<span class="dv">1</span>].get(<span class="st">'href'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -318,7 +325,7 @@ https://www.data.gouv.fr/fr/datasets/r/59e82d52-e07a-4ae8-9a49-2d1fd2d2ec21</cod
 <section id="getting-the-csv-data" class="level3">
 <h3 class="anchored" data-anchor-id="getting-the-csv-data">Getting the CSV data</h3>
 <p>We now have the URL for the CSV files we want so we’ll do similar steps as above to download these files.</p>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Similaraly as above, requests.get the CSV URL:</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>rectests <span class="op">=</span> requests.get(testscsvurl)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>reccases <span class="op">=</span> requests.get(casescsvurl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -331,20 +338,20 @@ https://www.data.gouv.fr/fr/datasets/r/59e82d52-e07a-4ae8-9a49-2d1fd2d2ec21</cod
 <p>It depends on your purpose I guess: * First write the data to a CSV file which you then read * Directly read the data</p>
 <section id="by-first-writing-the-csv-file-to-drive" class="level3">
 <h3 class="anchored" data-anchor-id="by-first-writing-the-csv-file-to-drive">By first writing the CSV file to drive</h3>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This will write the data into cases.csv file</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Of course you need to replace the actual path to the folder you want in the code below:</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(os.path.join(<span class="st">"/path/to/folder"</span>, <span class="st">"cases.csv"</span>), <span class="st">'wb'</span>) <span class="im">as</span> f:</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    f.write(reccases.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same thing for testing data</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This will write the data into tests.csv file</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Of course you need to replace the actual path to the folder you want in the code below:</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(os.path.join(<span class="st">"/path/to/folder"</span>, <span class="st">"tests.csv"</span>), <span class="st">'wb'</span>) <span class="im">as</span> f:</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    f.write(rectests.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># You can then read that csv file to use in your data analysis:</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>tests <span class="op">=</span> pd.read_csv(<span class="st">'tests.csv'</span>, sep<span class="op">=</span><span class="st">';'</span>, dtype<span class="op">=</span>{<span class="st">'dep'</span>: <span class="bu">str</span>, <span class="st">'jour'</span>: <span class="bu">str</span>, <span class="st">'clage_covid'</span>: <span class="bu">str</span>, <span class="st">'nb_test'</span>: <span class="bu">int</span>, <span class="st">'nb_pos'</span>: <span class="bu">int</span>, <span class="st">'nb_test_h'</span>: <span class="bu">int</span>, <span class="st">'nb_pos_h'</span>: <span class="bu">int</span>, <span class="st">'nb_test_f'</span>: <span class="bu">int</span>, <span class="st">'nb_pos_f'</span>: <span class="bu">int</span>}, parse_dates <span class="op">=</span> [<span class="st">'jour'</span>])</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>cases <span class="op">=</span> pd.read_csv(<span class="st">'cases.csv'</span>, sep<span class="op">=</span><span class="st">';'</span>, dtype<span class="op">=</span>{<span class="st">'dep'</span>: <span class="bu">str</span>, <span class="st">'jour'</span>: <span class="bu">str</span>, <span class="st">'hosp'</span>: <span class="bu">int</span>, <span class="st">'rea'</span>: <span class="bu">int</span>, <span class="st">'rad'</span>: <span class="bu">int</span>, <span class="st">'dc'</span>: <span class="bu">int</span>}, parse_dates <span class="op">=</span> [<span class="st">'jour'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -353,7 +360,7 @@ https://www.data.gouv.fr/fr/datasets/r/59e82d52-e07a-4ae8-9a49-2d1fd2d2ec21</cod
 </section>
 <section id="directly-reading-the-data-bypassing-the-writing-csv-file-step" class="level3">
 <h3 class="anchored" data-anchor-id="directly-reading-the-data-bypassing-the-writing-csv-file-step">Directly reading the data (bypassing the writing CSV file step)</h3>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cases <span class="op">=</span> pd.read_csv(io.StringIO(requests.get(casescsvurl).content.decode(<span class="st">'utf-8'</span>)), sep<span class="op">=</span><span class="st">';'</span>, dtype<span class="op">=</span>{<span class="st">'dep'</span>: <span class="bu">str</span>, <span class="st">'jour'</span>: <span class="bu">str</span>, <span class="st">'hosp'</span>: <span class="bu">int</span>, <span class="st">'rea'</span>: <span class="bu">int</span>, <span class="st">'rad'</span>: <span class="bu">int</span>, <span class="st">'dc'</span>: <span class="bu">int</span>}, parse_dates <span class="op">=</span> [<span class="st">'jour'</span>])</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>tests <span class="op">=</span> pd.read_csv(io.StringIO(requests.get(testscsvurl).content.decode(<span class="st">'utf-8'</span>)), sep<span class="op">=</span><span class="st">';'</span>, dtype<span class="op">=</span>{<span class="st">'dep'</span>: <span class="bu">str</span>, <span class="st">'jour'</span>: <span class="bu">str</span>, <span class="st">'hosp'</span>: <span class="bu">int</span>, <span class="st">'rea'</span>: <span class="bu">int</span>, <span class="st">'rad'</span>: <span class="bu">int</span>, <span class="st">'dc'</span>: <span class="bu">int</span>}, parse_dates <span class="op">=</span> [<span class="st">'jour'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -365,11 +372,11 @@ https://www.data.gouv.fr/fr/datasets/r/59e82d52-e07a-4ae8-9a49-2d1fd2d2ec21</cod
 <h3 class="anchored" data-anchor-id="parsingconverting-uri-into-readable-format">Parsing/Converting URI into readable format</h3>
 <p>It sometimes happends that links are provided in URI (URL symbols encoded into % symbols…)</p>
 <p>You generally need to convert those back to correct URLs, example below:</p>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example URI</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>testurl <span class="op">=</span> <span class="st">'https%3A</span><span class="sc">%2F%2F</span><span class="st">static.data.gouv.fr</span><span class="sc">%2F</span><span class="st">resources</span><span class="sc">%2F</span><span class="st">donnees-hospitalieres-relatives-a-lepidemie-de-covid-19</span><span class="sc">%2F</span><span class="st">20200505-190040</span><span class="sc">%2F</span><span class="st">donnees-hospitalieres-covid19-2020-05-05-19h00.csv'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="19216be8-e40b-4123-9a42-19172e0973ea" data-execution_count="0">
+<div class="cell" data-outputid="19216be8-e40b-4123-9a42-19172e0973ea">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert with following line:</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>urllib.parse.unquote(testurl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="33">
@@ -381,22 +388,22 @@ https://www.data.gouv.fr/fr/datasets/r/59e82d52-e07a-4ae8-9a49-2d1fd2d2ec21</cod
 <h3 class="anchored" data-anchor-id="a-quick-look-at-french-testing-data-from-scratch">A quick look at French testing data from scratch</h3>
 <p>Let’s quickly see how, from scratch, we can use code above to scrape testing data and plot it quickly.</p>
 <p>Note the data only includes city testing centers and does not include hospital testing.</p>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use main page URL</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>url_tests <span class="op">=</span> <span class="st">'https://www.data.gouv.fr/fr/datasets/donnees-relatives-aux-tests-de-depistage-de-covid-19-realises-en-laboratoire-de-ville/'</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>response_tests <span class="op">=</span> requests.get(url_tests)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find correct CSV file URL</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>souptests <span class="op">=</span> BeautifulSoup(response_tests.text, <span class="st">"html.parser"</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>testscsvurl <span class="op">=</span> souptests.find_all(<span class="st">'a'</span>, class_<span class="op">=</span><span class="st">"btn btn-sm btn-primary"</span>)[<span class="dv">1</span>].get(<span class="st">'href'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="0">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read CSV file into tests variable</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>rectests <span class="op">=</span> requests.get(testscsvurl)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>tests <span class="op">=</span> pd.read_csv(io.StringIO(requests.get(testscsvurl).content.decode(<span class="st">'utf-8'</span>)), sep<span class="op">=</span><span class="st">';'</span>, dtype<span class="op">=</span>{<span class="st">'dep'</span>: <span class="bu">str</span>, <span class="st">'jour'</span>: <span class="bu">str</span>, <span class="st">'hosp'</span>: <span class="bu">int</span>, <span class="st">'rea'</span>: <span class="bu">int</span>, <span class="st">'rad'</span>: <span class="bu">int</span>, <span class="st">'dc'</span>: <span class="bu">int</span>}, parse_dates <span class="op">=</span> [<span class="st">'jour'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="004a48ab-d82d-4a45-d08d-c7c6235cdd82" data-execution_count="0">
+<div class="cell" data-outputid="004a48ab-d82d-4a45-d08d-c7c6235cdd82">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#hide</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install plotly<span class="op">==</span><span class="fl">4.6.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -412,7 +419,7 @@ Installing collected packages: plotly
 Successfully installed plotly-4.6.0</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="b7423333-901f-4dd1-85f4-ad88636eda21" data-execution_count="0">
+<div class="cell" data-outputid="b7423333-901f-4dd1-85f4-ad88636eda21">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>

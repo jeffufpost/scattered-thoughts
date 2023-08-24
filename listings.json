@@ -3,20 +3,14 @@
     "listing": "/index.html",
     "items": [
       "/posts/2021-05-07-stochastic_HIV_model/2021-05-07-stochastic_HIV_model.html",
-      "/posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html",
       "/posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html",
       "/posts/2021_05_05_stochastic_HIV_model/2021_05_05_stochastic_HIV_model.html",
       "/posts/2020-04-02-convolution/2020-04-02-convolution.html",
-      "/posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html",
-      "/posts/2020-04-15-web-scraping/2020-04-15-web-scraping.html",
-      "/posts/2020-04-12-on-testing/2020-04-12-on-testing.html",
-      "/posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html",
-      "/posts/2020-04-02-control-measures/2020-04-02-control-measures.html",
-      "/posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html",
-      "/posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html",
       "/posts/2020-06-02-real-world/2020-06-02-real-world.html",
-      "/posts/post-with-code/index.html",
-      "/posts/welcome/index.html"
+      "/posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html",
+      "/posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html",
+      "/posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html",
+      "/posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html"
     ]
   }
 ]

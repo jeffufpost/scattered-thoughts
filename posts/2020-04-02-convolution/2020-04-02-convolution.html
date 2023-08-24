@@ -7,8 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jeffrey Post">
+<meta name="dcterms.date" content="2020-04-02">
+<meta name="description" content="Convolution, deconvolution, and daily data">
 
-<title>Scattered Thoughts - “Epidemic modeling - Part 7”</title>
+<title>Scattered Thoughts - Epidemic modeling - Part 7</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -169,8 +171,20 @@ ga('send', {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">“Epidemic modeling - Part 7”</h1>
-                      </div>
+      <h1 class="title">Epidemic modeling - Part 7</h1>
+                  <div>
+        <div class="description">
+          Convolution, deconvolution, and daily data
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">modeling</div>
+                <div class="quarto-category">SEIR</div>
+                <div class="quarto-category">epidemiology</div>
+                <div class="quarto-category">stochastic</div>
+                <div class="quarto-category">COVID-19</div>
+              </div>
+                  </div>
   </div>
     
   
@@ -183,6 +197,12 @@ ga('send', {
             </div>
     </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">2020-04-02</p>
+      </div>
+    </div>
     
       
     </div>
@@ -234,17 +254,7 @@ ga('send', {
 
 
 <p><a href="https://colab.research.google.com/github/jeffufpost/scattered-thoughts/blob/master/_notebooks/2020-04-02-convolution.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
-<blockquote class="blockquote">
-<p>“Convolution, deconvolution, and daily data”</p>
-</blockquote>
-<ul>
-<li>toc: true</li>
-<li>badges: true</li>
-<li>comments: true</li>
-<li>categories: [modeling, SEIR, epidemiology, stochastic, COVID-19]</li>
-<li>image: images/kalman_filter.jpg</li>
-</ul>
-<p><img src="my_icons/kalman_filter.jpg" title="https://fr.mathworks.com/videos/understanding-kalman-filters-part-3-optimal-state-estimator--1490710645421.html" class="img-fluid"></p>
+<p><img src="../my_icons/kalman_filter.jpg" title="https://fr.mathworks.com/videos/understanding-kalman-filters-part-3-optimal-state-estimator--1490710645421.html" class="img-fluid"></p>
 <div class="cell" data-outputid="563f3343-0fad-4458-f487-eee3d488f648" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install plotly<span class="op">==</span><span class="fl">4.9.0</span></span>
