@@ -10,8 +10,8 @@ title: COVID-19 Map
 layout: post
 ---
 
-![]({{site.baseurl}}/sars-cov2-world-tracker.png "World map preview")
-![]({{site.baseurl}}/sars-cov2-french-tracker.png "French map preview")
+![](sars-cov2-world-tracker.png "World map preview")
+![](sars-cov2-french-tracker.png "French map preview")
 
 ## Link to tracker
 

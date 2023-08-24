@@ -3,6 +3,8 @@ project:
   output-dir: docs
 website:
   title: "Scattered Thoughts"
+  site-url: "https://jeffreypost.dev/scattered-thoughts"
+  google-analytics: UA-166290391-2
   navbar:
     right:
       - about.qmd
@@ -18,5 +20,3 @@ format:
   html:
     theme: sandstone
     css: styles.css
-site:
-  baseurl: /scattered-thoughts
