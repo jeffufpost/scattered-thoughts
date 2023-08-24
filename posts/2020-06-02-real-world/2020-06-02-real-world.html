@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Jeffrey Post">
 
 <title>Scattered Thoughts - “Epidemic modeling - Part 8”</title>
 <style>
@@ -120,7 +121,7 @@ ga('send', {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -175,6 +176,12 @@ ga('send', {
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Jeffrey Post </p>
+            </div>
+    </div>
       
     
       
@@ -184,7 +191,51 @@ ga('send', {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation-for-write-up" id="toc-motivation-for-write-up" class="nav-link active" data-scroll-target="#motivation-for-write-up">Motivation for write-up</a></li>
+  <li><a href="#data-available" id="toc-data-available" class="nav-link" data-scroll-target="#data-available">Data available</a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
+  <li><a href="#real-world-analysis" id="toc-real-world-analysis" class="nav-link" data-scroll-target="#real-world-analysis">Real-world analysis</a>
+  <ul>
+  <li><a href="#generic-analysis" id="toc-generic-analysis" class="nav-link" data-scroll-target="#generic-analysis">Generic analysis</a></li>
+  <li><a href="#austria" id="toc-austria" class="nav-link" data-scroll-target="#austria">Austria</a>
+  <ul>
+  <li><a href="#checking-h_i" id="toc-checking-h_i" class="nav-link" data-scroll-target="#checking-h_i">1. Checking <span class="math inline">\(h_I\)</span></a></li>
+  <li><a href="#estimating-e_pd-by-deconvolution-of-i_pd" id="toc-estimating-e_pd-by-deconvolution-of-i_pd" class="nav-link" data-scroll-target="#estimating-e_pd-by-deconvolution-of-i_pd">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></a></li>
+  <li><a href="#beta-and-r-from-e_pd-and-i" id="toc-beta-and-r-from-e_pd-and-i" class="nav-link" data-scroll-target="#beta-and-r-from-e_pd-and-i">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></a></li>
+  </ul></li>
+  <li><a href="#france" id="toc-france" class="nav-link" data-scroll-target="#france">France</a>
+  <ul>
+  <li><a href="#checking-h_i-1" id="toc-checking-h_i-1" class="nav-link" data-scroll-target="#checking-h_i-1">1. Checking <span class="math inline">\(h_I\)</span></a></li>
+  <li><a href="#estimating-e_pd-by-deconvolution-of-i_pd-1" id="toc-estimating-e_pd-by-deconvolution-of-i_pd-1" class="nav-link" data-scroll-target="#estimating-e_pd-by-deconvolution-of-i_pd-1">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></a></li>
+  <li><a href="#beta-and-r-from-e_pd-and-i-1" id="toc-beta-and-r-from-e_pd-and-i-1" class="nav-link" data-scroll-target="#beta-and-r-from-e_pd-and-i-1">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></a></li>
+  </ul></li>
+  <li><a href="#germany" id="toc-germany" class="nav-link" data-scroll-target="#germany">Germany</a>
+  <ul>
+  <li><a href="#checking-h_i-2" id="toc-checking-h_i-2" class="nav-link" data-scroll-target="#checking-h_i-2">1. Checking <span class="math inline">\(h_I\)</span></a></li>
+  <li><a href="#estimating-e_pd-by-deconvolution-of-i_pd-2" id="toc-estimating-e_pd-by-deconvolution-of-i_pd-2" class="nav-link" data-scroll-target="#estimating-e_pd-by-deconvolution-of-i_pd-2">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></a></li>
+  <li><a href="#beta-and-r-from-e_pd-and-i-2" id="toc-beta-and-r-from-e_pd-and-i-2" class="nav-link" data-scroll-target="#beta-and-r-from-e_pd-and-i-2">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></a></li>
+  </ul></li>
+  <li><a href="#switzerland" id="toc-switzerland" class="nav-link" data-scroll-target="#switzerland">Switzerland</a>
+  <ul>
+  <li><a href="#checking-h_i-3" id="toc-checking-h_i-3" class="nav-link" data-scroll-target="#checking-h_i-3">1. Checking <span class="math inline">\(h_I\)</span></a></li>
+  <li><a href="#estimating-e_pd-by-deconvolution-of-i_pd-3" id="toc-estimating-e_pd-by-deconvolution-of-i_pd-3" class="nav-link" data-scroll-target="#estimating-e_pd-by-deconvolution-of-i_pd-3">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></a></li>
+  <li><a href="#beta-and-r-from-e_pd-and-i-3" id="toc-beta-and-r-from-e_pd-and-i-3" class="nav-link" data-scroll-target="#beta-and-r-from-e_pd-and-i-3">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></a></li>
+  </ul></li>
+  <li><a href="#united-states" id="toc-united-states" class="nav-link" data-scroll-target="#united-states">United States</a>
+  <ul>
+  <li><a href="#checking-h_i-4" id="toc-checking-h_i-4" class="nav-link" data-scroll-target="#checking-h_i-4">1. Checking <span class="math inline">\(h_I\)</span></a></li>
+  <li><a href="#estimating-e_pd-by-deconvolution-of-i_pd-4" id="toc-estimating-e_pd-by-deconvolution-of-i_pd-4" class="nav-link" data-scroll-target="#estimating-e_pd-by-deconvolution-of-i_pd-4">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></a></li>
+  <li><a href="#beta-and-r-from-e_pd-and-i-4" id="toc-beta-and-r-from-e_pd-and-i-4" class="nav-link" data-scroll-target="#beta-and-r-from-e_pd-and-i-4">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 

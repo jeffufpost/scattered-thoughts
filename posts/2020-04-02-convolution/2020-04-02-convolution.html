@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Jeffrey Post">
 
 <title>Scattered Thoughts - “Epidemic modeling - Part 7”</title>
 <style>
@@ -120,7 +121,7 @@ ga('send', {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -175,6 +176,12 @@ ga('send', {
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Jeffrey Post </p>
+            </div>
+    </div>
       
     
       
@@ -184,7 +191,42 @@ ga('send', {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation-for-write-up" id="toc-motivation-for-write-up" class="nav-link active" data-scroll-target="#motivation-for-write-up">Motivation for write-up</a></li>
+  <li><a href="#available-data" id="toc-available-data" class="nav-link" data-scroll-target="#available-data">Available data</a></li>
+  <li><a href="#convolution" id="toc-convolution" class="nav-link" data-scroll-target="#convolution">Convolution</a>
+  <ul>
+  <li><a href="#convolution-to-get-i_pd" id="toc-convolution-to-get-i_pd" class="nav-link" data-scroll-target="#convolution-to-get-i_pd">Convolution to get <span class="math inline">\(I_{pd}\)</span></a></li>
+  <li><a href="#convolution-to-get-r_pd" id="toc-convolution-to-get-r_pd" class="nav-link" data-scroll-target="#convolution-to-get-r_pd">Convolution to get <span class="math inline">\(R_{pd}\)</span></a></li>
+  </ul></li>
+  <li><a href="#finding-h_lj-and-h_ij" id="toc-finding-h_lj-and-h_ij" class="nav-link" data-scroll-target="#finding-h_lj-and-h_ij">Finding <span class="math inline">\(h_L[j]\)</span> and <span class="math inline">\(h_I[j]\)</span></a></li>
+  <li><a href="#convolution-in-practice" id="toc-convolution-in-practice" class="nav-link" data-scroll-target="#convolution-in-practice">Convolution in practice</a>
+  <ul>
+  <li><a href="#comparing-i_pd-from-the-model-to-i_pd-obtained-by-convolving-r_pd" id="toc-comparing-i_pd-from-the-model-to-i_pd-obtained-by-convolving-r_pd" class="nav-link" data-scroll-target="#comparing-i_pd-from-the-model-to-i_pd-obtained-by-convolving-r_pd">Comparing <span class="math inline">\(I_{pd}\)</span> from the model to <span class="math inline">\(I_{pd}\)</span> obtained by convolving <span class="math inline">\(R_{pd}\)</span></a></li>
+  <li><a href="#comparing-r_pd-from-the-model-to-r_pd-obtained-by-convolving-i_pd" id="toc-comparing-r_pd-from-the-model-to-r_pd-obtained-by-convolving-i_pd" class="nav-link" data-scroll-target="#comparing-r_pd-from-the-model-to-r_pd-obtained-by-convolving-i_pd">Comparing <span class="math inline">\(R_{pd}\)</span> from the model to <span class="math inline">\(R_{pd}\)</span> obtained by convolving <span class="math inline">\(I_{pd}\)</span></a></li>
+  </ul></li>
+  <li><a href="#de-convolution" id="toc-de-convolution" class="nav-link" data-scroll-target="#de-convolution">De-convolution</a>
+  <ul>
+  <li><a href="#problems-with-de-convolution" id="toc-problems-with-de-convolution" class="nav-link" data-scroll-target="#problems-with-de-convolution">Problems with de-convolution</a></li>
+  <li><a href="#solutions-to-these-problems" id="toc-solutions-to-these-problems" class="nav-link" data-scroll-target="#solutions-to-these-problems">Solutions to these problems</a>
+  <ul>
+  <li><a href="#low-pass-filter" id="toc-low-pass-filter" class="nav-link" data-scroll-target="#low-pass-filter">Low-pass filter</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#deconvolution-in-practice" id="toc-deconvolution-in-practice" class="nav-link" data-scroll-target="#deconvolution-in-practice">Deconvolution in practice</a>
+  <ul>
+  <li><a href="#coding-the-iterative-deconvolution" id="toc-coding-the-iterative-deconvolution" class="nav-link" data-scroll-target="#coding-the-iterative-deconvolution">Coding the iterative deconvolution</a></li>
+  <li><a href="#comparing-e_pd-from-the-model-to-e_pd-obtained-by-de-convolving-i_pd" id="toc-comparing-e_pd-from-the-model-to-e_pd-obtained-by-de-convolving-i_pd" class="nav-link" data-scroll-target="#comparing-e_pd-from-the-model-to-e_pd-obtained-by-de-convolving-i_pd">Comparing <span class="math inline">\(E_{pd}\)</span> from the model to <span class="math inline">\(E_{pd}\)</span> obtained by de-convolving <span class="math inline">\(I_{pd}\)</span></a></li>
+  <li><a href="#comparing-i_pd-from-the-model-to-i_pd-obtained-by-de-convolving-r_pd" id="toc-comparing-i_pd-from-the-model-to-i_pd-obtained-by-de-convolving-r_pd" class="nav-link" data-scroll-target="#comparing-i_pd-from-the-model-to-i_pd-obtained-by-de-convolving-r_pd">Comparing <span class="math inline">\(I_{pd}\)</span> from the model to <span class="math inline">\(I_{pd}\)</span> obtained by de-convolving <span class="math inline">\(R_{pd}\)</span></a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 

@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Jeffrey Post">
 
 <title>Scattered Thoughts - “Scraping COVID-19 data from data.gouv.fr”</title>
 <style>
@@ -118,7 +119,7 @@ ga('send', {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -173,6 +174,12 @@ ga('send', {
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Jeffrey Post </p>
+            </div>
+    </div>
       
     
       
@@ -182,7 +189,32 @@ ga('send', {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data sources</a></li>
+  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a>
+  <ul>
+  <li><a href="#getting-the-main-page" id="toc-getting-the-main-page" class="nav-link" data-scroll-target="#getting-the-main-page">Getting the main page</a></li>
+  <li><a href="#getting-the-csv-data" id="toc-getting-the-csv-data" class="nav-link" data-scroll-target="#getting-the-csv-data">Getting the CSV data</a></li>
+  </ul></li>
+  <li><a href="#what-to-do-with-the-csv-data" id="toc-what-to-do-with-the-csv-data" class="nav-link" data-scroll-target="#what-to-do-with-the-csv-data">What to do with the CSV data</a>
+  <ul>
+  <li><a href="#by-first-writing-the-csv-file-to-drive" id="toc-by-first-writing-the-csv-file-to-drive" class="nav-link" data-scroll-target="#by-first-writing-the-csv-file-to-drive">By first writing the CSV file to drive</a></li>
+  <li><a href="#directly-reading-the-data-bypassing-the-writing-csv-file-step" id="toc-directly-reading-the-data-bypassing-the-writing-csv-file-step" class="nav-link" data-scroll-target="#directly-reading-the-data-bypassing-the-writing-csv-file-step">Directly reading the data (bypassing the writing CSV file step)</a></li>
+  </ul></li>
+  <li><a href="#other-stuff" id="toc-other-stuff" class="nav-link" data-scroll-target="#other-stuff">Other stuff</a>
+  <ul>
+  <li><a href="#parsingconverting-uri-into-readable-format" id="toc-parsingconverting-uri-into-readable-format" class="nav-link" data-scroll-target="#parsingconverting-uri-into-readable-format">Parsing/Converting URI into readable format</a></li>
+  <li><a href="#a-quick-look-at-french-testing-data-from-scratch" id="toc-a-quick-look-at-french-testing-data-from-scratch" class="nav-link" data-scroll-target="#a-quick-look-at-french-testing-data-from-scratch">A quick look at French testing data from scratch</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 

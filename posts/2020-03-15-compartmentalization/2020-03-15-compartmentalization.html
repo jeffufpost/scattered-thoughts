@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Jeffrey Post">
 
 <title>Scattered Thoughts - “Epidemic modeling - Part 1”</title>
 <style>
@@ -83,7 +84,7 @@ ga('send', {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -138,6 +139,12 @@ ga('send', {
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Jeffrey Post </p>
+            </div>
+    </div>
       
     
       
@@ -147,7 +154,47 @@ ga('send', {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation-for-write-up" id="toc-motivation-for-write-up" class="nav-link active" data-scroll-target="#motivation-for-write-up">Motivation for write-up</a></li>
+  <li><a href="#how-to-model-infectious-diseases-on-population-level" id="toc-how-to-model-infectious-diseases-on-population-level" class="nav-link" data-scroll-target="#how-to-model-infectious-diseases-on-population-level">How to model infectious diseases on population level ?</a>
+  <ul>
+  <li><a href="#compartments" id="toc-compartments" class="nav-link" data-scroll-target="#compartments">Compartments</a></li>
+  <li><a href="#dynamics" id="toc-dynamics" class="nav-link" data-scroll-target="#dynamics">Dynamics</a></li>
+  <li><a href="#two-simple-examples---the-sir-and-seir-models" id="toc-two-simple-examples---the-sir-and-seir-models" class="nav-link" data-scroll-target="#two-simple-examples---the-sir-and-seir-models">Two simple examples - the SIR and SEIR models</a></li>
+  <li><a href="#some-important-vocabulary" id="toc-some-important-vocabulary" class="nav-link" data-scroll-target="#some-important-vocabulary">Some important vocabulary</a></li>
+  </ul></li>
+  <li><a href="#a-closer-look-at-the-seir-model" id="toc-a-closer-look-at-the-seir-model" class="nav-link" data-scroll-target="#a-closer-look-at-the-seir-model">A closer look at the SEIR model</a>
+  <ul>
+  <li><a href="#individual-level-disease-dynamic" id="toc-individual-level-disease-dynamic" class="nav-link" data-scroll-target="#individual-level-disease-dynamic">Individual-level disease dynamic</a>
+  <ul>
+  <li><a href="#s-e" id="toc-s-e" class="nav-link" data-scroll-target="#s-e">S → E</a></li>
+  <li><a href="#e-i" id="toc-e-i" class="nav-link" data-scroll-target="#e-i">E → I</a></li>
+  <li><a href="#i-r" id="toc-i-r" class="nav-link" data-scroll-target="#i-r">I → R</a></li>
+  </ul></li>
+  <li><a href="#population-level-dynamics" id="toc-population-level-dynamics" class="nav-link" data-scroll-target="#population-level-dynamics">Population level dynamics</a>
+  <ul>
+  <li><a href="#s-e-1" id="toc-s-e-1" class="nav-link" data-scroll-target="#s-e-1">S → E</a></li>
+  <li><a href="#e-i-1" id="toc-e-i-1" class="nav-link" data-scroll-target="#e-i-1">E → I</a></li>
+  <li><a href="#i-r-1" id="toc-i-r-1" class="nav-link" data-scroll-target="#i-r-1">I → R</a></li>
+  <li><a href="#r-r" id="toc-r-r" class="nav-link" data-scroll-target="#r-r">R → R</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#effective-and-basic-reproduction-numbers-r-and-r_0-respectively" id="toc-effective-and-basic-reproduction-numbers-r-and-r_0-respectively" class="nav-link" data-scroll-target="#effective-and-basic-reproduction-numbers-r-and-r_0-respectively">Effective and Basic Reproduction Numbers: <span class="math inline">\(R\)</span> and <span class="math inline">\(R_0\)</span> respectively</a>
+  <ul>
+  <li><a href="#understanding-how-the-infection-spreads" id="toc-understanding-how-the-infection-spreads" class="nav-link" data-scroll-target="#understanding-how-the-infection-spreads">Understanding how the infection spreads</a></li>
+  <li><a href="#derivation-of-r-for-each-individual" id="toc-derivation-of-r-for-each-individual" class="nav-link" data-scroll-target="#derivation-of-r-for-each-individual">Derivation of <span class="math inline">\(R\)</span> for each individual</a></li>
+  <li><a href="#finding-r_0-of-each-individual-by-making-assumptions" id="toc-finding-r_0-of-each-individual-by-making-assumptions" class="nav-link" data-scroll-target="#finding-r_0-of-each-individual-by-making-assumptions">Finding <span class="math inline">\(R_0\)</span> of each individual by making assumptions</a></li>
+  <li><a href="#r_0-for-a-population" id="toc-r_0-for-a-population" class="nav-link" data-scroll-target="#r_0-for-a-population"><span class="math inline">\(R_0\)</span> for a population</a></li>
+  </ul></li>
+  <li><a href="#herd-immunity" id="toc-herd-immunity" class="nav-link" data-scroll-target="#herd-immunity">Herd Immunity</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
