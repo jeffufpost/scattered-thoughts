@@ -4,7 +4,7 @@ project:
 website:
   title: "Scattered Thoughts"
   site-url: "https://jeffreypost.dev/scattered-thoughts"
-  favicon: posts/favicon.ico
+  favicon: favicon.ico
   google-analytics: UA-166290391-2
   navbar:
     right:
