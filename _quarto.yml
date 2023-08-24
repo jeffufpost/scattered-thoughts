@@ -3,6 +3,7 @@ project:
   output-dir: docs
 website:
   title: "Scattered Thoughts"
+  baseurl: /scattered-thoughts
   navbar:
     right:
       - about.qmd

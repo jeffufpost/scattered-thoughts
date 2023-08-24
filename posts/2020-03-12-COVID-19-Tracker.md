@@ -3,7 +3,8 @@ keywords: COVID-19, tracker
 description: "A link to my COVID-19 map tracker"
 toc: true
 comments: false
-categories: [COVID-19, ]
+categories:
+ - COVID-19
 image: sars-cov2-world-tracker.png
 title: COVID-19 Map
 layout: post
