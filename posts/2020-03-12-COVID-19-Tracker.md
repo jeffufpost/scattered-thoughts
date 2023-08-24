@@ -5,13 +5,15 @@ toc: true
 comments: false
 categories:
  - COVID-19
+ - Dashboards
+ - Plotly
 image: sars-cov2-world-tracker.png
 title: COVID-19 Map
 layout: post
 ---
 
-![](sars-cov2-world-tracker.png "World map preview")
-![](sars-cov2-french-tracker.png "French map preview")
+![]({{site.baseurl}}/sars-cov2-world-tracker.png "World map preview")
+![]({{site.baseurl}}/sars-cov2-french-tracker.png "French map preview")
 
 ## Link to tracker
 
