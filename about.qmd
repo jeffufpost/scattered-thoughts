@@ -4,8 +4,8 @@ image: profile.jpg
 about:
   template: jolla
   links:
-    - text: "{{< fa brands linkedin-in >}}"
-      href: https://www.linkedin.com/in/jeffrey-post-6591ab42
+#    - text: "{{< fa brands linkedin-in >}}"
+#      href: https://www.linkedin.com/in/jeffrey-post-6591ab42
     - text: "{{< fa brands github >}}"
       href: https:/github.com/jeffufpost
     - text: "{{< fa brands gitlab >}}"
