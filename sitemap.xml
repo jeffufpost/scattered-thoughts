@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2021_05_05_stochastic_HIV_model/2021_05_05_stochastic_HIV_model.html</loc>
+    <lastmod>2025-03-16T20:44:43.967Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-06-02-real-world/2020-06-02-real-world.html</loc>
+    <lastmod>2025-03-16T20:44:22.837Z</lastmod>
+  </url>
+  <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-control-measures/2020-04-02-control-measures.html</loc>
     <lastmod>2025-03-16T19:43:32.457Z</lastmod>
   </url>
@@ -39,6 +47,10 @@
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-convolution/2020-04-02-convolution.html</loc>
     <lastmod>2025-03-16T20:24:28.689Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-15-web-scraping/2020-04-15-web-scraping.html</loc>
+    <lastmod>2025-03-16T20:44:54.202Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2021-05-07-stochastic_HIV_model/2021-05-07-stochastic_HIV_model.html</loc>
