@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-control-measures/2020-04-02-control-measures.html</loc>
+    <lastmod>2025-03-16T19:43:32.457Z</lastmod>
+  </url>
+  <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html</loc>
     <lastmod>2025-03-16T18:48:38.732Z</lastmod>
   </url>
@@ -30,6 +34,10 @@
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html</loc>
-    <lastmod>2025-03-15T12:54:55.229Z</lastmod>
+    <lastmod>2025-03-16T19:38:36.848Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-convolution/2020-04-02-convolution.html</loc>
+    <lastmod>2025-03-16T20:24:28.689Z</lastmod>
   </url>
 </urlset>

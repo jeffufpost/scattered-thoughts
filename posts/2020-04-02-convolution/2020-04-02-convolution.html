@@ -1,2 +1,1348 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"></html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jeffrey Post">
+<meta name="dcterms.date" content="2020-04-02">
+<meta name="description" content="Convolution, deconvolution, and daily data">
+
+<title>Epidemic modeling - Part 7 – Scattered Thoughts</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-df479d6c4d77d0e0dfbcb5361179d7fd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-166290391-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Scattered Thoughts</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https:/github.com/jeffufpost"> 
+<span class="menu-text"><i class="fa-brands fa-github" aria-label="github"></i></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://renkulab.io/gitlab/jeffrey.post"> 
+<span class="menu-text"><i class="fa-brands fa-gitlab" aria-label="gitlab"></i></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="mailto:contact@jeffreypost.dev"> 
+<span class="menu-text"><i class="fa-solid fa-envelope" aria-label="envelope"></i></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Epidemic modeling - Part 7</h1>
+                  <div>
+        <div class="description">
+          Convolution, deconvolution, and daily data
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">modeling</div>
+                <div class="quarto-category">SEIR</div>
+                <div class="quarto-category">epidemiology</div>
+                <div class="quarto-category">stochastic</div>
+                <div class="quarto-category">COVID-19</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Jeffrey Post </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 2, 2020</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation-for-write-up" id="toc-motivation-for-write-up" class="nav-link active" data-scroll-target="#motivation-for-write-up">Motivation for write-up</a></li>
+  <li><a href="#available-data" id="toc-available-data" class="nav-link" data-scroll-target="#available-data">Available data</a></li>
+  <li><a href="#convolution" id="toc-convolution" class="nav-link" data-scroll-target="#convolution">Convolution</a>
+  <ul>
+  <li><a href="#convolution-to-get-i_pd" id="toc-convolution-to-get-i_pd" class="nav-link" data-scroll-target="#convolution-to-get-i_pd">Convolution to get <span class="math inline">\(I_{pd}\)</span></a></li>
+  <li><a href="#convolution-to-get-r_pd" id="toc-convolution-to-get-r_pd" class="nav-link" data-scroll-target="#convolution-to-get-r_pd">Convolution to get <span class="math inline">\(R_{pd}\)</span></a></li>
+  </ul></li>
+  <li><a href="#finding-h_lj-and-h_ij" id="toc-finding-h_lj-and-h_ij" class="nav-link" data-scroll-target="#finding-h_lj-and-h_ij">Finding <span class="math inline">\(h_L[j]\)</span> and <span class="math inline">\(h_I[j]\)</span></a></li>
+  <li><a href="#convolution-in-practice" id="toc-convolution-in-practice" class="nav-link" data-scroll-target="#convolution-in-practice">Convolution in practice</a>
+  <ul>
+  <li><a href="#comparing-i_pd-from-the-model-to-i_pd-obtained-by-convolving-r_pd" id="toc-comparing-i_pd-from-the-model-to-i_pd-obtained-by-convolving-r_pd" class="nav-link" data-scroll-target="#comparing-i_pd-from-the-model-to-i_pd-obtained-by-convolving-r_pd">Comparing <span class="math inline">\(I_{pd}\)</span> from the model to <span class="math inline">\(I_{pd}\)</span> obtained by convolving <span class="math inline">\(R_{pd}\)</span></a></li>
+  <li><a href="#comparing-r_pd-from-the-model-to-r_pd-obtained-by-convolving-i_pd" id="toc-comparing-r_pd-from-the-model-to-r_pd-obtained-by-convolving-i_pd" class="nav-link" data-scroll-target="#comparing-r_pd-from-the-model-to-r_pd-obtained-by-convolving-i_pd">Comparing <span class="math inline">\(R_{pd}\)</span> from the model to <span class="math inline">\(R_{pd}\)</span> obtained by convolving <span class="math inline">\(I_{pd}\)</span></a></li>
+  </ul></li>
+  <li><a href="#de-convolution" id="toc-de-convolution" class="nav-link" data-scroll-target="#de-convolution">De-convolution</a>
+  <ul>
+  <li><a href="#problems-with-de-convolution" id="toc-problems-with-de-convolution" class="nav-link" data-scroll-target="#problems-with-de-convolution">Problems with de-convolution</a></li>
+  <li><a href="#solutions-to-these-problems" id="toc-solutions-to-these-problems" class="nav-link" data-scroll-target="#solutions-to-these-problems">Solutions to these problems</a>
+  <ul>
+  <li><a href="#low-pass-filter" id="toc-low-pass-filter" class="nav-link" data-scroll-target="#low-pass-filter">Low-pass filter</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#deconvolution-in-practice" id="toc-deconvolution-in-practice" class="nav-link" data-scroll-target="#deconvolution-in-practice">Deconvolution in practice</a>
+  <ul>
+  <li><a href="#coding-the-iterative-deconvolution" id="toc-coding-the-iterative-deconvolution" class="nav-link" data-scroll-target="#coding-the-iterative-deconvolution">Coding the iterative deconvolution</a></li>
+  <li><a href="#comparing-e_pd-from-the-model-to-e_pd-obtained-by-de-convolving-i_pd" id="toc-comparing-e_pd-from-the-model-to-e_pd-obtained-by-de-convolving-i_pd" class="nav-link" data-scroll-target="#comparing-e_pd-from-the-model-to-e_pd-obtained-by-de-convolving-i_pd">Comparing <span class="math inline">\(E_{pd}\)</span> from the model to <span class="math inline">\(E_{pd}\)</span> obtained by de-convolving <span class="math inline">\(I_{pd}\)</span></a></li>
+  <li><a href="#comparing-i_pd-from-the-model-to-i_pd-obtained-by-de-convolving-r_pd" id="toc-comparing-i_pd-from-the-model-to-i_pd-obtained-by-de-convolving-r_pd" class="nav-link" data-scroll-target="#comparing-i_pd-from-the-model-to-i_pd-obtained-by-de-convolving-r_pd">Comparing <span class="math inline">\(I_{pd}\)</span> from the model to <span class="math inline">\(I_{pd}\)</span> obtained by de-convolving <span class="math inline">\(R_{pd}\)</span></a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p><img src="../my_icons/kalman_filter.jpg" title="https://fr.mathworks.com/videos/understanding-kalman-filters-part-3-optimal-state-estimator--1490710645421.html" class="img-fluid"></p>
+<div id="cell-2" class="cell" data-outputid="563f3343-0fad-4458-f487-eee3d488f648" data-execution_count="32">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> expon</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> gamma</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> weibull_min</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpy.random <span class="im">import</span> default_rng</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> default_rng()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's build a numerical solution</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> seir_model(init, parms, days):</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    S_0, E_0, I_0, R_0 <span class="op">=</span> init</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    Epd, Ipd, Rpd <span class="op">=</span> [<span class="dv">0</span>], [<span class="dv">0</span>], [<span class="dv">0</span>]</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    S, E, I, R <span class="op">=</span> [S_0], [E_0], [I_0], [R_0]</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    dt<span class="op">=</span><span class="fl">0.1</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> np.linspace(<span class="dv">0</span>,days,<span class="bu">int</span>(days<span class="op">/</span>dt))</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    sigma, beta, gam <span class="op">=</span> parms</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> t[<span class="dv">1</span>:]:</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>        next_S <span class="op">=</span> S[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span> beta<span class="op">*</span>S[<span class="op">-</span><span class="dv">1</span>]<span class="op">*</span>I[<span class="op">-</span><span class="dv">1</span>]<span class="op">*</span>dt</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        Epd.append(beta<span class="op">*</span>S[<span class="op">-</span><span class="dv">1</span>]<span class="op">*</span>I[<span class="op">-</span><span class="dv">1</span>]<span class="op">*</span>dt)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        next_E <span class="op">=</span> E[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> (beta<span class="op">*</span>S[<span class="op">-</span><span class="dv">1</span>]<span class="op">*</span>I[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span> sigma<span class="op">*</span>E[<span class="op">-</span><span class="dv">1</span>])<span class="op">*</span>dt</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        Ipd.append(sigma<span class="op">*</span>E[<span class="op">-</span><span class="dv">1</span>]<span class="op">*</span>dt)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        next_I <span class="op">=</span> I[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> (sigma<span class="op">*</span>E[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span> gam<span class="op">*</span>I[<span class="op">-</span><span class="dv">1</span>])<span class="op">*</span>dt</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>        Rpd.append(gam<span class="op">*</span>I[<span class="op">-</span><span class="dv">1</span>]<span class="op">*</span>dt)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        next_R <span class="op">=</span> R[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> (gam<span class="op">*</span>I[<span class="op">-</span><span class="dv">1</span>])<span class="op">*</span>dt</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        S.append(next_S)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>        E.append(next_E)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>        I.append(next_I)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>        R.append(next_R)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.stack([S, E, I, R, Epd, Ipd, Rpd]).T</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-3" class="cell" data-execution_count="33">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Need this new function for model below:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_df(p,num_E, num_I, num_R):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  df <span class="op">=</span> pd.DataFrame(np.full((p,<span class="dv">1</span>), <span class="st">'S'</span>).T[<span class="dv">0</span>], columns<span class="op">=</span>[<span class="st">'State'</span>])</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">'Day'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  tochange<span class="op">=</span>df.loc[rng.choice(p, size<span class="op">=</span>num_E<span class="op">+</span>num_I<span class="op">+</span>num_R, replace<span class="op">=</span><span class="va">False</span>),<span class="st">'State'</span>].index</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  df.loc[tochange[<span class="dv">0</span>:num_E],<span class="st">'State'</span>] <span class="op">=</span> <span class="st">'E'</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  df.loc[tochange[num_E:num_I<span class="op">+</span>num_E],<span class="st">'State'</span>] <span class="op">=</span> <span class="st">'I'</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  df.loc[tochange[num_E<span class="op">+</span>num_I:num_E<span class="op">+</span>num_I<span class="op">+</span>num_R],<span class="st">'State'</span>] <span class="op">=</span> <span class="st">'R'</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-4" class="cell" data-execution_count="34">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> seir_model_stoch(beta, p, num_E, num_I, num_R, days):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize population dataframe with data given by user</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> make_df(p,num_E, num_I, num_R)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This variable is used to track daily value of beta if it varies over time</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    xxbeta<span class="op">=</span>np.array([],dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the arrays to return</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Below are numbers of S, E, I, R total</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    S<span class="op">=</span>np.array([],dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    E<span class="op">=</span>np.array([],dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    I<span class="op">=</span>np.array([],dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    R<span class="op">=</span>np.array([],dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Below are the daily additions in S, E, I, R</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    Spd<span class="op">=</span>np.array([],dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    Epd<span class="op">=</span>np.array([],dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    Ipd<span class="op">=</span>np.array([],dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    Rpd<span class="op">=</span>np.array([],dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    b<span class="op">=</span>beta</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Stochastic model so use random values to decide on progression</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    rand <span class="op">=</span> np.random.random(size<span class="op">=</span>(p,days))</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Depending if you want exponential or gamma distribution for T_Latent</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    EtoI <span class="op">=</span> gamma.rvs(<span class="fl">1.8</span>,loc<span class="op">=</span><span class="fl">0.9</span>,scale<span class="op">=</span>(<span class="fl">5.2</span><span class="op">-</span><span class="fl">1.8</span>)<span class="op">/</span><span class="fl">0.9</span>,size<span class="op">=</span>p)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Depending if you want exponential, gamma, or Weibull distribution for T_Infectious</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Uses distributions found on blog part 3</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    ItoR <span class="op">=</span> weibull_min.rvs(<span class="fl">2.3</span>, loc<span class="op">=</span><span class="dv">2</span>, scale<span class="op">=</span><span class="fl">20.11</span>, size<span class="op">=</span>p)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Iterate over every day the simulation is run</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,days<span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Record daily beta values</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>        xxbeta<span class="op">=</span>np.append(beta, b)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>        <span class="co"># First we get the index of the individuals that will change state today:</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Random number tells you which 'S' have been exposed on this day </span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>        StoE_index <span class="op">=</span> df.loc[(df.State <span class="op">==</span> <span class="st">'S'</span>) <span class="op">&amp;</span> (rand[:,j] <span class="op">&lt;</span> b[j]<span class="op">*</span><span class="bu">len</span>(np.where(df.State<span class="op">==</span><span class="st">'I'</span>)[<span class="dv">0</span>])<span class="op">/</span>p)].index</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># For each row, if a person has been a certain number of days in E, they will go to I</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>        <span class="co"># This follows EtoI variable which is either exponential or gamma distributed according to above</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>        EtoI_index <span class="op">=</span> df.loc[(df.State <span class="op">==</span> <span class="st">'E'</span>) <span class="op">&amp;</span> (j<span class="op">-</span>df.Day <span class="op">&gt;=</span> EtoI)].index</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Similaraly as above</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        <span class="co"># For each row, if a person has been a certain number of days in I, they will go to R</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>        <span class="co"># This follows EtoI variable which is either exponential or gamma distributed according to above</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>        ItoR_index <span class="op">=</span> df.loc[(df.State <span class="op">==</span> <span class="st">'I'</span>) <span class="op">&amp;</span> (j<span class="op">-</span>df.Day <span class="op">&gt;=</span> ItoR)].index</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use indexes collected above to populate per day values</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>        Epd <span class="op">=</span> np.append(Epd,<span class="bu">len</span>(StoE_index))</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>        Ipd <span class="op">=</span> np.append(Ipd,<span class="bu">len</span>(EtoI_index))</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>        Rpd <span class="op">=</span> np.append(Rpd,<span class="bu">len</span>(ItoR_index))</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Now we use the indexes collected above randomly to change the actual population dataframe to the new states</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>        df.loc[ItoR_index, <span class="st">'State'</span>] <span class="op">=</span> <span class="st">'R'</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>        df.loc[EtoI_index, <span class="st">'State'</span>] <span class="op">=</span> <span class="st">'I'</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>        df.loc[StoE_index, <span class="st">'State'</span>] <span class="op">=</span> <span class="st">'E'</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>        df.loc[ItoR_index, <span class="st">'Day'</span>] <span class="op">=</span> j</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>        df.loc[EtoI_index, <span class="st">'Day'</span>] <span class="op">=</span> j</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>        df.loc[StoE_index, <span class="st">'Day'</span>] <span class="op">=</span> j</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>        df.loc[ItoR_index, <span class="st">'DayR'</span>] <span class="op">=</span> j</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>        df.loc[EtoI_index, <span class="st">'DayI'</span>] <span class="op">=</span> j</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>        df.loc[StoE_index, <span class="st">'DayE'</span>] <span class="op">=</span> j</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Append the S, E, I, and R arrays</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>        S<span class="op">=</span>np.append(S,<span class="bu">len</span>(np.where(df.State<span class="op">==</span><span class="st">'S'</span>)[<span class="dv">0</span>]))</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>        E<span class="op">=</span>np.append(E,<span class="bu">len</span>(np.where(df.State<span class="op">==</span><span class="st">'E'</span>)[<span class="dv">0</span>]))</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>        I<span class="op">=</span>np.append(I,<span class="bu">len</span>(np.where(df.State<span class="op">==</span><span class="st">'I'</span>)[<span class="dv">0</span>]))</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>        R<span class="op">=</span>np.append(R,<span class="bu">len</span>(np.where(df.State<span class="op">==</span><span class="st">'R'</span>)[<span class="dv">0</span>]))</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Code below for control measures to reduce beta values</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="co">#        if ((I[-1] &gt; 1000) &amp; (Ipd[-1] &gt; 399)): </span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="co">#            b = beta2</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="co">#        elif ((I[-1] &gt; 1000) &amp; (Ipd[-1] &lt; 400)): </span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="co">#            b = beta3</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>    Epd[<span class="dv">0</span>]<span class="op">+=</span>num_E</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>    Ipd[<span class="dv">0</span>]<span class="op">+=</span>num_I</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>    Rpd[<span class="dv">0</span>]<span class="op">+=</span>num_R</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> S,E,I,R, Epd, Ipd, Rpd, xxbeta, df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="motivation-for-write-up" class="level2">
+<h2 class="anchored" data-anchor-id="motivation-for-write-up">Motivation for write-up</h2>
+<p>This is the 7th part of a multi-part series blog post on modeling in epidemiology.</p>
+<p>The goal of this 7th installment is to expand on the notions seen in part 5.</p>
+<p>Most notably, the idea is to expand on the notion of convolution and deconvolution and to see how it can be useful to describe an epidemic.</p>
+</section>
+<section id="available-data" class="level2">
+<h2 class="anchored" data-anchor-id="available-data">Available data</h2>
+<p>If you look at the the COVID-19 trackers around the web, or even <a href="https://sars-cov-2-world-tracker.herokuapp.com/">mine</a>, you can get a sense of what data is available for study.</p>
+<p>Generally speaking we have the following: * Total number of positive individuals * Daily number of newly diagnosed individuals * Daily number of recovered individuals * Daily number of deaths</p>
+<p>Research has also shown some vague numbers on both <span class="math inline">\(T_{Latent}\)</span> and <span class="math inline">\(T_{Infectious}\)</span>.</p>
+<p><strong>About the data:</strong></p>
+<ul>
+<li>We don’t have data for exposure - how can we get it using deconvolution ??</li>
+<li>The data for some regions can be very sparse</li>
+</ul>
+</section>
+<section id="convolution" class="level2">
+<h2 class="anchored" data-anchor-id="convolution">Convolution</h2>
+<section id="convolution-to-get-i_pd" class="level3">
+<h3 class="anchored" data-anchor-id="convolution-to-get-i_pd">Convolution to get <span class="math inline">\(I_{pd}\)</span></h3>
+<p>We have seen that daily new infectious individuals is given by:</p>
+<p><span class="math display">\[I_{pd}[j] = \sum_{n_L=0}^{M_L-1}h_L[n_L]~E_{pd}[j-n_L]= h_L[j]\circledast E_{pd}[j]\]</span></p>
+<p>Where <span class="math inline">\(h_L[j]\)</span> describes the distribution of <span class="math inline">\(T_{Latent}\)</span>.</p>
+</section>
+<section id="convolution-to-get-r_pd" class="level3">
+<h3 class="anchored" data-anchor-id="convolution-to-get-r_pd">Convolution to get <span class="math inline">\(R_{pd}\)</span></h3>
+<p>Similarly, we have seen that daily new recovered individuals (deaths + recoveries in fact) is given by:</p>
+<p><span class="math display">\[R_{pd}[j] = \sum_{n_I=0}^{M_I-1}h_I[n_I]~I_{pd}[j-n_I]= h_I[j]\circledast I_{pd}[j]\]</span></p>
+<p>Where <span class="math inline">\(h_I[j]\)</span> describes the distribution of <span class="math inline">\(T_{Infectious}\)</span>.</p>
+</section>
+</section>
+<section id="finding-h_lj-and-h_ij" class="level2">
+<h2 class="anchored" data-anchor-id="finding-h_lj-and-h_ij">Finding <span class="math inline">\(h_L[j]\)</span> and <span class="math inline">\(h_I[j]\)</span></h2>
+<ul>
+<li><span class="math inline">\(h_L[j]\)</span> is simply the probability of an individual having a latent period of j days</li>
+<li><span class="math inline">\(h_I[j]\)</span> is similarly the probability of an individual having an infectious period of j days</li>
+</ul>
+<div id="cell-14" class="cell" data-execution_count="35">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>days <span class="op">=</span> np.arange(<span class="dv">100</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cdf <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'T_Latent'</span>: gamma.cdf(days, <span class="fl">1.8</span>,loc<span class="op">=</span><span class="fl">0.9</span>,scale<span class="op">=</span>(<span class="fl">5.2</span><span class="op">-</span><span class="fl">1.8</span>)<span class="op">/</span><span class="fl">0.9</span>), </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'T_Infectious'</span>: weibull_min.cdf(days, <span class="fl">2.3</span>,loc<span class="op">=</span><span class="dv">2</span>,scale<span class="op">=</span><span class="fl">20.11</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>h_L <span class="op">=</span> cdf.diff().T_Latent</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>h_I <span class="op">=</span> cdf.diff().T_Infectious</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>h_L[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>h_I[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="convolution-in-practice" class="level2">
+<h2 class="anchored" data-anchor-id="convolution-in-practice">Convolution in practice</h2>
+<section id="comparing-i_pd-from-the-model-to-i_pd-obtained-by-convolving-r_pd" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-i_pd-from-the-model-to-i_pd-obtained-by-convolving-r_pd">Comparing <span class="math inline">\(I_{pd}\)</span> from the model to <span class="math inline">\(I_{pd}\)</span> obtained by convolving <span class="math inline">\(R_{pd}\)</span></h3>
+<p>First run the SEIR model to obtain the actual <span class="math inline">\(I_{pd}\)</span>:</p>
+<div id="cell-18" class="cell" data-execution_count="36">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define parameters for stochastic model</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>days <span class="op">=</span> <span class="dv">300</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="dv">10000</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>num_E <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>num_I <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>num_R <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>beta_stoch <span class="op">=</span> <span class="fl">0.5</span><span class="op">*</span>np.ones(days)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Run 2 stochastic simulations</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>results_stoch0 <span class="op">=</span> seir_model_stoch(beta_stoch, p, num_E, num_I, num_R, days)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now obtain <span class="math inline">\(h_L[j]\circledast E_{pd}[j]\)</span>:</p>
+<div id="cell-20" class="cell" data-execution_count="38">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Ipd<span class="op">=</span>signal.fftconvolve(h_L, results_stoch0[<span class="dv">4</span>], mode<span class="op">=</span><span class="st">'full'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-21" class="cell" data-outputid="4d3b9e7c-32a3-43a2-dca3-590e770d9fcc" data-execution_count="39">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Ipd_Actual'</span>, x<span class="op">=</span>np.arange(<span class="bu">len</span>(results_stoch0[<span class="dv">5</span>])), y<span class="op">=</span>results_stoch0[<span class="dv">5</span>]),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Ipd_convolved'</span>, x<span class="op">=</span>np.arange(<span class="bu">len</span>(Ipd)), y<span class="op">=</span>Ipd)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    xaxis_title <span class="op">=</span> <span class="st">'Day'</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    yaxis_title <span class="op">=</span> <span class="st">'Count'</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span>{</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'text'</span>:<span class="vs">r'$\text{Actual } I_</span><span class="sc">{pd}</span><span class="vs"> \text{ vs. } h_L[j]\circledast E_</span><span class="sc">{pd}</span><span class="vs">[j]$'</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'x'</span>:<span class="fl">0.5</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'xanchor'</span>:<span class="st">'center'</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.0.min.js"></script>                <div id="859389ff-c612-4dde-b46b-24bd94448914" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("859389ff-c612-4dde-b46b-24bd94448914")) {                    Plotly.newPlot(                        "859389ff-c612-4dde-b46b-24bd94448914",                        [{"name":"Ipd_Actual","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUAlgCXAJgAmQCaAJsAnACdAJ4AnwCgAKEAogCjAKQApQCmAKcAqACpAKoAqwCsAK0ArgCvALAAsQCyALMAtAC1ALYAtwC4ALkAugC7ALwAvQC+AL8AwADBAMIAwwDEAMUAxgDHAMgAyQDKAMsAzADNAM4AzwDQANEA0gDTANQA1QDWANcA2ADZANoA2wDcAN0A3gDfAOAA4QDiAOMA5ADlAOYA5wDoAOkA6gDrAOwA7QDuAO8A8ADxAPIA8wD0APUA9gD3APgA+QD6APsA\u002fAD9AP4A\u002fwAAAQEBAgEDAQQBBQEGAQcBCAEJAQoBCwEMAQ0BDgEPARABEQESARMBFAEVARYBFwEYARkBGgEbARwBHQEeAR8BIAEhASIBIwEkASUBJgEnASgBKQEqAQ=="},"y":{"dtype":"i2","bdata":"AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAABAAAAAQAAAAIAAQABAAAAAQABAAMAAgAAAAIABQAHAAQACAAIAAcAAwAMAAcADwATAAwADwAUABAAKAAjACQAOAAyADkAQABiAFMAcAByAIMAlQCuALUA9QD5APoADgFOAWgBWQGJAbEBtwGqAa0BqwGUAZkBggFjAUEBGAEFAe0A1gCkAHoAlABWAGAASwA2AC4AJwAaACEAEwAKAAgADQAJAAgABQAFAAMABAAAAAAAAAACAAEAAAAAAAEAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="},"type":"scatter"},{"name":"Ipd_convolved","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUAlgCXAJgAmQCaAJsAnACdAJ4AnwCgAKEAogCjAKQApQCmAKcAqACpAKoAqwCsAK0ArgCvALAAsQCyALMAtAC1ALYAtwC4ALkAugC7ALwAvQC+AL8AwADBAMIAwwDEAMUAxgDHAMgAyQDKAMsAzADNAM4AzwDQANEA0gDTANQA1QDWANcA2ADZANoA2wDcAN0A3gDfAOAA4QDiAOMA5ADlAOYA5wDoAOkA6gDrAOwA7QDuAO8A8ADxAPIA8wD0APUA9gD3APgA+QD6APsA\u002fAD9AP4A\u002fwAAAQEBAgEDAQQBBQEGAQcBCAEJAQoBCwEMAQ0BDgEPARABEQESARMBFAEVARYBFwEYARkBGgEbARwBHQEeAR8BIAEhASIBIwEkASUBJgEnASgBKQEqASsBLAEtAS4BLwEwATEBMgEzATQBNQE2ATcBOAE5AToBOwE8AT0BPgE\u002fAUABQQFCAUMBRAFFAUYBRwFIAUkBSgFLAUwBTQFOAU8BUAFRAVIBUwFUAVUBVgFXAVgBWQFaAVsBXAFdAV4BXwFgAWEBYgFjAWQBZQFmAWcBaAFpAWoBawFsAW0BbgFvAXABcQFyAXMBdAF1AXYBdwF4AXkBegF7AXwBfQF+AX8BgAGBAYIBgwGEAYUBhgGHAYgBiQGKAYsBjAGNAQ=="},"y":{"dtype":"f8","bdata":"exSuR+F6BD3Xo7BgmNZLP3E9lbRrHqs\u002frod+\u002f+Wytz\u002fsMXDo5vq6P1xPBs0t7bo\u002frsfMAk4suT8AgJFG\u002f6C2P6SwTWP20LM\u002fSEFxPgAIsT\u002fXw6fuJk2tP5oJ6qQH4Lk\u002f9kAPJXDfxz9xcQ2etZPVPyka44V8at4\u002f9hcWENDp4D\u002fXZ6QHgKvgP5zE8CyVHeE\u002fLCMkD0rS4D+XRezCAXjkPx+SkAd5n+Y\u002fZV6er3AS6z9oU511Bs\u002fuP3bgVuY6YPA\u002foReahwXi8D\u002fOJgfeRgryP2H5D\u002f\u002f6aPk\u002fSCoAAcSS\u002fz\u002foPpi3S88DQAgB\u002f2fb5gZARwOlev5+C0DPrOFGC\u002fcQQF+EnNFzCxRA7sBLZ9RSFkBVjw17ZV0ZQITqjg0roRxA26EwXu5nHkBFwzNbVmogQJbnht9KlSNAQVMgXWdmKECnoew+rpksQGZQsstIOTBAKRnHGtmcMkCz7Dws4gI1QENk5HH2NDhAIYKM7BfnPEDc7JcpEcNAQH+P58d\u002fJ0NAIR4UC+cqRkAaGcnPNuVJQPEhh0DmH05Ae3XT\u002fI+AUUDqd+lSPUdUQEVHCBI9iVdAEItZnKX\u002fWkCf4YBU6rZeQBUEoyH5q2FA89MrSV4iZEDTu8kMr2FmQGM+chjqpGhArlueA2k6a0CoCMbrkj1uQKmYQIfSt3BA93+iWuVEckAlrLyfPd5zQByN1HNCd3VAXGZauwD0dkDlh9BsVFJ4QBFSARluenlA+3thqpFhekCzXDB8Cd16QNdx\u002fhbw+HpA\u002flr0NYarekAWbktE+AR6QEUlARNmGHlAqD2+4UHNd0BfSqSHVR92QH94ZKyHMXRAyHTXyLcyckDA+l853zNwQG3g77r+gmxAR4htiT7BaEAACOg1CUJlQGcq6AdUEGJA5x93maNxXkAz3VML+39ZQOMIeqfUMVVAngJE0iSBUUCFKo4toclMQBthAKzCmEdA0iEgbnRGQ0CBRhkxcGU\u002fQKyxB5thdzlAlnq5ra+SNEA+cMzagJAwQIdW2kTsmCpASBM9cixNJUAonM38eSAhQBwfaCHFuRtAJYgCL+dlFkDDmkZCPwMSQG5WBljC4AxApYFybF8WB0AV0dguk2oCQPOuEjeaUv0\u002fjSfg+5hN9z+PbNeUf33yP5BXMlARTe0\u002f1d5zRLEv5z8iLlxla1PiP5dYiY3b79w\u002fA6VE267S1j\u002fttRUa5PvRP6ddcjEuUcw\u002feKF28oxGxj9erCjseoLBP6mCVLragbs\u002fiHJaEpCXtT\u002fVkoifKPCwP1COvWYHj6o\u002fNodQCl\u002fPpD+Y2JIHBUygP5oun7ojg5k\u002fDchofqj1kz\u002fXKTRJcTePP2h5izeGZog\u002f5voPcZEQgz+cXtqUlcd9P4h1E5PbP3c\u002fWh9k5wQlcj+6\u002fXOrtU9sP\u002fhYtox5FGY\u002fyvvx\u002fe82YT+D44wfmNVaP1xiwdie6FQ\u002fOkntwnBJUD8+q1hVz11JP+gChyikv0M\u002f4FGS9vO9Pj8NWpJY8Os3PyXn1YYnnDI\u002fKQFIUubyLD9s\u002f2FGu4ImP3Hn7cEhgCE\u002fHux8Zow0Gz\u002foOYBCNyQVP2DKKnQEbRA\u002fkHLuD9mECT9suoLdptEDP9M\u002fnwAix\u002f4+fjaktqjk9z4dt23+TYvyPqfZ20xhx+w+E9a9AidT5j4yGs9GnE\u002fhPn7iBm6U1to+SNgsujbM1D5NVtGmQRvQPqgIWCif7Mg+ksJWAhFDwz4fhesxcLy9PhWuR1GE67Y+mpmZWTSesT6F61H4UwKrPilcj8LZoaQ+XI\u002fCVcxcnz4Vrkdh1LaXPnsUrocgzZE+KVyPQo+Zij5cj8LVqqmDPlK4HsWu3nw+Z2Zm5pPndD5cj8L1U8ltPs3MzAxbOWU+Z2Zm5lhgXj4VrkdhPaRVPh+F69HxLE4+Ctej8AUQRT64HoXrQ1E9PnsUrsclFzU+KVyPwt\u002flLT5xPQpXaOwlPkjhehRjfh8+j8L1qOg7Fj4pXI\u002fC1ugQPjMzMzOQ9Ag+PgrXo0YXAj72KFyP0Iz5PQAAAADsjPI9UrgehTtB6j0+Ctej6FPkPbkehevBdd89CtejcC1a2D0pXI\u002fC7djSPc3MzMxwLs09XI\u002fC9QB0uT3Xo3A9CrcVPY\u002fC9ShcT\u002fG8PgrXo3BNKD32KFyPwjUUveF6FK5HGRg9exSuR+FaFD3D9Shcj9ohPQrXo3A9Kvo8pHA9CtcbCT0pXI\u002fC9VjxvPYoXI\u002fCuRk9CtejcD2SAb3Xo3A9Cq8EPexRuB6FhQG9exSuR+GmGD2uR+F6FFz4PDMzMzMzcAk9Fa5H4XpXAb0Vrkfheh\u002fzPB+F61G4swi9MzMzMzOb5zyamZmZGR77vHsUrkfhDfe8PgrXo3C\u002f\u002frwzMzMzM9ocvR+F61FYmQ+97FG4HvVFDr2F61G4Dl0dvT4K16OQWg294XoUrjeSEr24HoXrlUoTvexRuB4lLv28SOF6FJpzBj3hehSuC0oovYXrUbgUbRi9KVyPwlWhDL24HoXrlqkYvSlcj8KRaPu816NwPXGkJb0AAAAAyqQdvUjhehTG1cI8CtejcC1b2bzsUbi+SIwhvVyPwiVXqSC9mpmZmZmZGb3D9Shcj8IlvbgehetRuB69mpmZmZmZGb17FK5H4XoEveF6FK5H4Rq9CtejcD0KJ73sUbgehesRvSlcj8L1KBy9PgrXo3A9Ir2amZmZmZkhvXE9CtejcB29cT0K16NwHb1SuB6F61EkvXsUrkfheiC9UrgehetREL0pXI\u002fC9SjcPLgehetRuCS9Z2ZmZmZmBr17FK5H4XoAvc3MzMzMzBC9CtejcD0K87wfhetRuB4LvbgehetRuAc94XoUrkfhCL1xPQrXozAovc3MzMzMzBG9exSuR+F69rxnZmZmZmYEvVK4HoXrURY9zczMzMzM+LxxPQrXo3ASPa5H4XoUrgE9zczMzMxMHL2uR+F6FI4aPZqZmZmZGfe8kML1KFwP+zz2KFyPwkUVvcP1KFyPwua8MzMzMzOzDL0+CtejcF31PKRwPQrXkyC9CtejcD2K5TxI4XoUrg8SvaRwPQrXGwm9j8L1KFxDFb2kcD0K1ysCvTMzMzMzU+087FG4HoVL5bzXo3A9ivAjvXE9CtejEOw8rkfhehRc+LwzMzMzM7OUPOF6FK5Hnge9H4XrURjAIb0pXI\u002fCdV4SveF6FK5Hbhe9cT0K14MPHb2amZmZ2fQYvVK4HoWrwSW9H4XrUThLIL1xPQrX+9EmvR+F61EcCCK9rkfheiTWFb0K16Nw9UIivUjhehQ2byW9XI\u002fC9QYTJb1cj8L1\u002fqcyvR+F61GutB+9SOF6FEyTMr0zMzMzOL8svfYoXI+25jC9XI\u002fCdYZjIr32KFwPzw0hvVyPwvXBji299ihcj10jKr2F61F4jxEVvZqZmZl7TwG9mpmZWRJYGr32KFwPUYz+vHsUrkfheiQ9exSuR+F6JD0AAAAAAAAAAAAAAAAAAAAAexSuR+F6BL17FK5H4XoEvXsUrkfhehQ9exSuR+F69Lx7FK5H4Xr0PHsUrkfhegQ9AAAAAAAAAAC4HoXrUbgOPaRwPQrXoyA9uB6F61G4Dj1nZmZmZmYmPXsUrkfheuQ8exSuR+F61Dy4HoXrUbjuvB+F61G4HhU9AAAAAAAAAAB7FK5H4XrkvOxRuB6F6+G87FG4HoXr8TzD9Shcj8LlvD4K16NwPQK94XoUrkfhHj3hehSuR+EGPQrXo3A9Csc89ihcj8L1KT2kcD0K16P4vK5H4XoUrg89kML1KFyPDL1cj8L1KFwEPeF6FK5H4fI8mpmZmZkZHz3NzMzMzMzmPIXrUbgeRRc9SOF6FK5H\u002fryQwvUoXI8MPdejcD0KNxa9w\u002fUoXI9C+Dz2KFyPwnUAvdejcD0KZxE9exSuR+H6DT2amZmZmbnyPB+F61G4Pg29rkfhehSeCb2uR+F6FJYAva5H4XoULu88PgrXo3C95byF61G4HgEfPcP1KFyP1gc9hetRuB5F4Lz2KFyPwrXWvIXrUbgeJQE9hetRuB614zw+CtejcMv9PMP1KFwvziG916NwPQpIAT1xPQrXowYBPT4K16OwNCK9KVyPwvXExLxI4XoU7psBPcP1KFyPEvO8pHA9CreFFr32KFyPgkQOPaRwPQrXSd28AAAAAHCNAT2PwvUolBYCvY\u002fC9SjcXNI8PgrXo7yBGT0VrkfhDk8Wva5H4Xq0Gd68uB6F639iJ73NzMzM8iwKvRWuR2Gk5yQ97FG4HsyuHb2amZmZ+bv6vA=="},"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"$\\text{Actual } I_{pd} \\text{ vs. } h_L[j]\\circledast E_{pd}[j]$","x":0.5,"xanchor":"center"},"xaxis":{"title":{"text":"Day"}},"yaxis":{"title":{"text":"Count"}}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('859389ff-c612-4dde-b46b-24bd94448914');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+</section>
+<section id="comparing-r_pd-from-the-model-to-r_pd-obtained-by-convolving-i_pd" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-r_pd-from-the-model-to-r_pd-obtained-by-convolving-i_pd">Comparing <span class="math inline">\(R_{pd}\)</span> from the model to <span class="math inline">\(R_{pd}\)</span> obtained by convolving <span class="math inline">\(I_{pd}\)</span></h3>
+<p>We can use the actual <span class="math inline">\(R_{pd}\)</span> from the SEIR model above.</p>
+<p>Now obtain <span class="math inline">\(h_I[j]\circledast I_{pd}[j]\)</span>:</p>
+<div id="cell-25" class="cell" data-execution_count="40">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Rpd<span class="op">=</span>signal.fftconvolve(h_I, results_stoch0[<span class="dv">5</span>], mode<span class="op">=</span><span class="st">'full'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-26" class="cell" data-outputid="b256b295-afa5-4826-c3b5-6cae0869bddd" data-execution_count="41">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Rpd_Actual'</span>, x<span class="op">=</span>np.arange(<span class="bu">len</span>(results_stoch0[<span class="dv">6</span>])), y<span class="op">=</span>results_stoch0[<span class="dv">6</span>]),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Rpd_convolved'</span>, x<span class="op">=</span>np.arange(<span class="bu">len</span>(Rpd)), y<span class="op">=</span>Rpd)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    xaxis_title <span class="op">=</span> <span class="st">'Day'</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    yaxis_title <span class="op">=</span> <span class="st">'Count'</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span>{</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'text'</span>:<span class="vs">r'$\text{Actual } R_</span><span class="sc">{pd}</span><span class="vs"> \text{ vs. } h_I[j]\circledast I_</span><span class="sc">{pd}</span><span class="vs">[j]$'</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'x'</span>:<span class="fl">0.5</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'xanchor'</span>:<span class="st">'center'</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.0.min.js"></script>                <div id="810a19f1-4d40-4fbd-8aa7-32d37841f164" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("810a19f1-4d40-4fbd-8aa7-32d37841f164")) {                    Plotly.newPlot(                        "810a19f1-4d40-4fbd-8aa7-32d37841f164",                        [{"name":"Rpd_Actual","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUAlgCXAJgAmQCaAJsAnACdAJ4AnwCgAKEAogCjAKQApQCmAKcAqACpAKoAqwCsAK0ArgCvALAAsQCyALMAtAC1ALYAtwC4ALkAugC7ALwAvQC+AL8AwADBAMIAwwDEAMUAxgDHAMgAyQDKAMsAzADNAM4AzwDQANEA0gDTANQA1QDWANcA2ADZANoA2wDcAN0A3gDfAOAA4QDiAOMA5ADlAOYA5wDoAOkA6gDrAOwA7QDuAO8A8ADxAPIA8wD0APUA9gD3APgA+QD6APsA\u002fAD9AP4A\u002fwAAAQEBAgEDAQQBBQEGAQcBCAEJAQoBCwEMAQ0BDgEPARABEQESARMBFAEVARYBFwEYARkBGgEbARwBHQEeAR8BIAEhASIBIwEkASUBJgEnASgBKQEqAQ=="},"y":{"dtype":"i2","bdata":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAQAAAAEAAAABAAAAAgAAAAAAAAADAAEAAwABAAMAAgAIAAQAAgAIAAMACAAIAAoABgAMAAwAEQAOABEAFgAZACQAKgAqAC4AQgA1AEcAUQBeAGMAcAB0AJAAnwCzAKsAvwDkAPsABgHwAB0BGwEiARsBTAExAUkBNQFHAVYBLAE1AQsBAwEOAfIA6wDHAM4AwwC1AJIAjgCKAHgAdABWAFQATwBGADoAOAAxACYAJwAVABQAEgARAA8ACgAKAAgABwAFAAcABQABAAIAAQAAAAEAAAABAAEAAAACAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="},"type":"scatter"},{"name":"Rpd_convolved","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUAlgCXAJgAmQCaAJsAnACdAJ4AnwCgAKEAogCjAKQApQCmAKcAqACpAKoAqwCsAK0ArgCvALAAsQCyALMAtAC1ALYAtwC4ALkAugC7ALwAvQC+AL8AwADBAMIAwwDEAMUAxgDHAMgAyQDKAMsAzADNAM4AzwDQANEA0gDTANQA1QDWANcA2ADZANoA2wDcAN0A3gDfAOAA4QDiAOMA5ADlAOYA5wDoAOkA6gDrAOwA7QDuAO8A8ADxAPIA8wD0APUA9gD3APgA+QD6APsA\u002fAD9AP4A\u002fwAAAQEBAgEDAQQBBQEGAQcBCAEJAQoBCwEMAQ0BDgEPARABEQESARMBFAEVARYBFwEYARkBGgEbARwBHQEeAR8BIAEhASIBIwEkASUBJgEnASgBKQEqASsBLAEtAS4BLwEwATEBMgEzATQBNQE2ATcBOAE5AToBOwE8AT0BPgE\u002fAUABQQFCAUMBRAFFAUYBRwFIAUkBSgFLAUwBTQFOAU8BUAFRAVIBUwFUAVUBVgFXAVgBWQFaAVsBXAFdAV4BXwFgAWEBYgFjAWQBZQFmAWcBaAFpAWoBawFsAW0BbgFvAXABcQFyAXMBdAF1AXYBdwF4AXkBegF7AXwBfQF+AX8BgAGBAYIBgwGEAYUBhgGHAYgBiQGKAYsBjAGNAQ=="},"y":{"dtype":"f8","bdata":"exSuR+F6FL17FK5H4XoEPXsUrkfhehQ9exSuR+F6FD17FK5H4XoUvXsUrkfhehS9exSuR+F6FL17FK5H4XoUvQAAAAAAAAAAexSuR+F6FD3sUbglBnVQPwAA2BhfG3A\u002fw\u002fUYg1n3fj9xPab8ebeHP1yP4pzHM5A\u002fXI9o+IuilD\u002fNzO5TrgiZP9ej1tplSZ0\u002f4fpWcx6loD8p3NZDT\u002f2iP67H0DhFG6Y\u002fuJ6725DZqT8+iryQmIGuP7ie3NSgL7I\u002fHwVul1RVtj8z8yXAbny7P9fj\u002fFfMrMA\u002f10Oi3rfTwz\u002fhOorsUFTHPx\u002fV58Jbccs\u002frs\u002fCMRtB0D+4rth5fhXTP4XjzAufE9Y\u002f4dKXQYeP2T\u002fDZRRILAvePzNfSBVS2eE\u002fSO9fr0tG5T\u002fXQwN214HpP2dDJ+W4ke4\u002fQ4et4eAj8j\u002fNgUwHQFL1PxUclbbp8\u002fg\u002f5PxBGPoM\u002fT8tR8Fyf+8AQLGk\u002fzVDuwNAKaln\u002f7bZBkBxr1pWrVYKQF\u002fglPBLOA5AgdAyRMhPEUAzmJLExuoTQH4KTEap7xZAV6uTHLp0GkDYxuTTq5geQMwIAx\u002fbryFAOYPnrk1tJED+cJMKmJsnQIrjR0izUitAMAC43eyZL0Dy0820dUQyQNcCSJomFjVASZo4hsFMOEB2q4SCxfU7QHagEPivDkBAcyobphdrQkDfOrt7AR5FQAVyIVf9KUhAIOBG666PS0BKSIwOaVdPQO07YvuHx1FAO8Q9doocVEDfMlSV7alWQM1\u002f2KyDc1lAeH99QQJ7XECh1eH3orxfQJXVK4\u002fGmGFAAM68CD9pY0DeaRj4xUplQBIg05qcN2dAZ8zPXB8qaUAAkVlh7xprQGfuy22tAW1ASDykB0\u002fVbkBArBoGhUZwQOUxmPGsEHFAXnZp1qbFcUDFzr9d8mFyQHNbe\u002f7L4XJA+r2Nm\u002fNCc0CY8\u002fjGQoRzQCKKEK9ApHNA7V+Goh2jc0AewL9HGYFzQFcZn3sRP3NADEzIqLjeckC6r8tBNGJyQFjWkfMzzHFAvmdHZ+kfcUDQY0G4V2BwQFCQrSx+IW9Ac0fck2dpbUDzWh+Ht59rQIijV0I3y2lA5cd6r1TyZ0B75Ft\u002f+xpmQLhpm4KUSmRAC2VW8+OFYkDGusTK+tBgQAgwT+sjXl5A+ITRUKpFW0Beo4D3tFxYQO\u002fUuMU6plVAXJD+uL4jU0AP8\u002fGXr9VQQGflqBVkd01AJ+N6d2SpSUDnShcOxD1GQJtczrWzL0NAkXciiHp5QECIZ4FT9Ck8QDPoJw6Q9zdASj\u002ft+7FONEBIn34JUiIxQEUu8eBwyyxA5G7ch2QZKECskysvchckQAONFsUdsCBA\u002fssF+D2fG0DvSMX45McWQM\u002fUyKa4uRJACmmvOXqvDkAw5KoCmxAJQLUdL6\u002fTaQRANrDa1veTAEBhBcwQXNr6P202eZvVsPU\u002fXM10Qth58T9+Zp4X5BbsPydcZc+fhOY\u002fbkxvs7cB4j8XbQemurncP2pd65VY2tY\u002f1fzxW8Ah0j+fweCpyrDMP1ooFSF\u002focY\u002f2AfHsTXLwT\u002fbWsdWl+K7P3ICHu3pxLU\u002f9QYat2PtsD8pImvHcTaqP\u002f6o5BcFNKQ\u002fs\u002fO8WL79nj8+PBrNgqWXP\u002f5s5ad18ZE\u002fYIRzmJQSiz\u002fPojrNZ0yEP9dxRGtPPn4\u002f\u002fwbemBxhdj8VfGfU0XFwP39LCioT\u002fmc\u002fqEdT4hFfYT\u002fhesRu9PVYP+xRuBhkylE\u002frkcxwVUnST9xPRpxPqJBP+F6NH5rgzg\u002fKVxPP\u002fHjMD9nZuZ26BEnP2dmZggSOh8\u002fCtcju9bwFD\u002fNzMy1V9MLP1yPwk03UAI\u002frkfhdG3g9z6QwvWAr9TuPgrXo2w4tuM+rkfhYlb12D5xPQrH1knPPjMzM5OGasM+SOF6dNPatz6QwvUowgKtPsP1KFzUdaE+cT0KV\u002f\u002fMlD6uR+F6DIaIPuxRuB6BnHw+7FG4HuCDcD4AAAAAXt1iPlK4HoXrUVU+Fa5H4XrWRz7hehSuB146PtejcD3K2Sw+hetRuB46Hz7D9ShcD7cQPilcj8I1swE+zczMzMyI8j0zMzMzMzPjPcP1KFyPqdM9uB6F61Huwz1I4XoUru+zPcP1KFyPwqM9Fa5H4Xpkkz0zMzMzM9OCPa5H4XoUrnE9UrgehesRYj2uR+F6FO5QPYXrUbgehUE9exSuR+F6LD0fhetRuB4iPR+F61G4HuW8mpmZmZkZED0zMzMzMzP8vKRwPQrXoxM9PgrXo3A96jwK16NwPQodPdejcD0K1\u002fM8XI\u002fC9Shc7zwzMzMzMzPTPHE9CtejcBE9PgrXo3A9DL0fhetRuB4IPQAAAAAAgBE94XoUrkfhCz2uR+F6FK78PGdmZmZmZuS8exSuR+F68rykcD0K16P2PClcj8L1aBW9pHA9Ctcj\u002fjw+CtejcH33vOF6FK5HARY99ihcj8L14TyuR+F6FE7zPHsUrkfhahq9SOF6FK7H4bzXo3A9ChfbvHE9CtejOAI9rkfhehRmAb3hehSuRzHpPDMzMzMzzwE9uB6F61E4pDwfhetRuCwVvexRuB6F7Q89uB6F61G4Hr17FK5H4XoUvexRuB6F6yG97FG4HoXrIb24HoXrUbgOvbgehetRuB69uB6F61G4Hr17FK5H4XokvXsUrkfhevQ8uB6F61G4Dr17FK5H4XokvexRuB6F6yG9exSuR+F6BL0K16NwPQonvexRuB6F6yG9mpmZmZmZGb17FK5H4XoEvXsUrkfhevS8exSuR+F6FL17FK5H4XoUvXsUrkfhevS8exSuR+F6FL17FK5H4XoEvXsUrkfheuS8uB6F61G4\u002fjx7FK5H4XoUvXsUrkfhehS9exSuR+F6BD17FK5H4Xr0PHsUrkfhehS9exSuR+F69LykcD0K16MQPXsUrkfhevQ8uB6F61G4Dj3D9Shcj8IFvbgehetRuN48exSuR+F61Dx7FK5H4Xr0PJqZmZmZmek8PgrXo3A9Gj24HoXrUbjuvMP1KFyPwvW8hetRuB6F+7yamZmZmZnpvHsUrkfhetS8mpmZmZmZEz2amZmZmZnxPM3MzMzMzAk9pHA9CtcjDD0K16NwPYogPVyPwvUoXAM9j8L1KFyPFD0AAAAAAAAUvRWuR+F6FBQ9CtejcD0KET2QwvUoXI8ePRWuR+F6FN687FG4HoXrDj1xPQrXo3AKPSlcj8L1KPo8rkfhehRuEj2F61G4HgUHPbgehetRuA09cT0K16PwEz3D9Shcj2IiPaRwPQrX4wk9XI\u002fC9SisEj2F61G4HmUQPSlcj8L1SBm9MzMzMzMDCb0+CtejcC0QPaRwPQrXsxY9cT0K16NA+zyF61G4Hr0GPexRuB6Fows9hetRuB5d\u002fDwfhetRuNAVPbgehetRoxS9MzMzMzMXA70AAAAAAP8YPbgehetRuC49exSuR+F6FD17FK5H4XoUPXsUrkfhehQ9exSuR+F6JD17FK5H4XokPXsUrkfhehQ9uB6F61G4Lj17FK5H4XokPXsUrkfheiQ9exSuR+F6FD17FK5H4XokPXsUrkfhejQ9AAAAAAAAAAB7FK5H4XoUPbgehetRuC49exSuR+F6FL0AAAAAAAAAAHsUrkfhehQ9exSuR+F6FD17FK5H4XoUPQAAAAAAAAAAAAAAAAAAAAB7FK5H4XoUPbgehetRuB49exSuR+F6FL17FK5H4XoEvQAAAAAAAAAAexSuR+F6BD17FK5H4XoUvXsUrkfhehS9uB6F61G4Dj0AAAAAAAAAAHsUrkfhevQ8AAAAAAAAAAB7FK5H4XoEPXsUrkfhegS9exSuR+F69DyamZmZmZkJvQAAAAAAAAAAexSuR+F65DwAAAAAAAAAAHsUrkfhevS8exSuR+F69Ly4HoXrUbjevHsUrkfheuS84XoUrkfhCr24HoXrUbjuPDMzMzMzM\u002fO89ihcj8L1CD24HoXrUbjevArXo3A9Cuc8PgrXo3A9+rwVrkfhehT+PArXo3A9Cue8H4XrUbge9TyPwvUoXI8CvZqZmZmZmRM9MzMzMzMz+zyuR+F6FK4PPYXrUbgehRG9zczMzMzM\u002fDwVrkfhehQSvVyPwvUoXBk9SOF6FK7HFb0VrkfhepQUPY\u002fC9ShcjwO9H4XrUbheFz0fhetRuB4RvbgehetRuI68exSuR+FaAL0+CtejcD3TPPYoXI\u002fCNe08CtejcD3aFD0K16NwPYIFPeF6FK5HvRY9uB6F61H46jzsUbgehev\u002fvA=="},"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"$\\text{Actual } R_{pd} \\text{ vs. } h_I[j]\\circledast I_{pd}[j]$","x":0.5,"xanchor":"center"},"xaxis":{"title":{"text":"Day"}},"yaxis":{"title":{"text":"Count"}}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('810a19f1-4d40-4fbd-8aa7-32d37841f164');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+</section>
+</section>
+<section id="de-convolution" class="level2">
+<h2 class="anchored" data-anchor-id="de-convolution">De-convolution</h2>
+<p>We get very close matches when convlving, can we obtain similar results by deconvolving?</p>
+<section id="problems-with-de-convolution" class="level3">
+<h3 class="anchored" data-anchor-id="problems-with-de-convolution">Problems with de-convolution</h3>
+<p><strong>Illl-posed</strong></p>
+<p>Unfortunately de-convolution is not as straightforward as the convolution.</p>
+<p>A quick recap of the math, in the frequency domain we have (Fourier or z transform) <span class="math display">\[F \{ f ∗ g \} = F \{ f \} ~ F \{ g \}\]</span> And so if we have: <span class="math display">\[y=\ f ∗ g\]</span> Then: <span class="math display">\[F \{ y \} = F \{ f \} ~ F \{ g \}\]</span> And: <span class="math display">\[g = F^{-1} \left(\frac{F\{y\}}{F\{f\}} \right) \]</span></p>
+<p>But this last equation is often ill-posed.</p>
+<p><strong>Noise in data</strong></p>
+<p>We can see above that daily new data varies a lot from day to day due to the stochasticity of the model. This results in high-frequency decomposition in the frequency domain.</p>
+<p><strong>Initial conditions and boundary-value problems</strong></p>
+<p>Boundary values refer to the values on day 0 and the last day we have data for. Due to the way data is reported on JHU, we someimes have crayz values here, most commonly a value of 0 for the latest day if the data isn0t reported on time for example. These gaps can create issues for deconvolution.</p>
+<p>In the next blog post I go around this by simplz averaging the last 3 days instead of using only the last day.</p>
+</section>
+<section id="solutions-to-these-problems" class="level3">
+<h3 class="anchored" data-anchor-id="solutions-to-these-problems">Solutions to these problems</h3>
+<p>####Iterative deconvoluton</p>
+<p>Multiple iterative deconvolution algorithms exist: Lucy_Richardson, Gold, or Van Cittert among others.</p>
+<p>LR has already been used to get daily incidence of the Spanish flu based on death records in Philadelphia at the time for example <a href="https://doi.org/10.1073/pnas.0902958106">1</a>.</p>
+<p>An adaptation of those above is used here with the basics below (see code for details):</p>
+<p>Let’s use the equation for <span class="math inline">\(I_{pd}\)</span> as an example: <span class="math display">\[I_{pd}[j] = \sum_{n_L=0}^{M_L-1}h_L[n_L]~E_{pd}[j-n_L]= h_L[j]\circledast E_{pd}[j]\]</span></p>
+<p>The idea is that after an initial guess for <span class="math inline">\(E_{pd}\)</span> we can iteraively find a better one.</p>
+<p>With the <span class="math inline">\(n^{th}\)</span> guess for <span class="math inline">\(E_{pd}\)</span> written as <span class="math inline">\(E_{pd, n}\)</span> we have: <span class="math display">\[I_{pd}[j]= h_L[j]\circledast E_{pd, n}[j]\]</span> <span class="math display">\[\leftrightarrow 0 = I_{pd}[j] - h_L[j]\circledast E_{pd, n}[j]\]</span> <span class="math display">\[\leftrightarrow E_{pd,n+1} = E_{pd,n} + I_{pd}[j] - h_L[j]\circledast E_{pd, n}[j]\]</span></p>
+<p>Where <span class="math inline">\(O[j] = I_{pd}[j] - h_L[j]\circledast E_{pd, n}[j]\)</span> is the error term.</p>
+<p>Hence we want to minimze O[j].</p>
+<p><strong>Initial guess</strong></p>
+<p>We know our <span class="math inline">\(h_L\)</span> and <span class="math inline">\(h_I\)</span> are in part simply delay functions, so an initial first guess is to simply use the same signal delayed by the time difference caused by the impulse response.</p>
+<section id="low-pass-filter" class="level4">
+<h4 class="anchored" data-anchor-id="low-pass-filter">Low-pass filter</h4>
+<p>To go around those high-frequency notes in the data, we can siply use a lowpass filter implemented as a butterworth filter below:</p>
+<p>The basic effect is that it smoothes the daily values as we have when convolving from the previous state daily values.</p>
+<div id="cell-36" class="cell" data-execution_count="42">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lowpass(x, fc<span class="op">=</span><span class="fl">0.05</span>):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  fs <span class="op">=</span> <span class="dv">1</span>  <span class="co"># Sampling frequency</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  t <span class="op">=</span> np.arange(<span class="bu">len</span>(x)) <span class="co">#select number of days done in SEIR model</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  signala <span class="op">=</span> x</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#fc = 0.05  # Cut-off frequency of the filter</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  w <span class="op">=</span> fc <span class="op">/</span> (fs <span class="op">/</span> <span class="dv">2</span>) <span class="co"># Normalize the frequency</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  b, a <span class="op">=</span> signal.butter(<span class="dv">5</span>, w, <span class="st">'low'</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> signal.filtfilt(b, a, signala)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+</section>
+<section id="deconvolution-in-practice" class="level2">
+<h2 class="anchored" data-anchor-id="deconvolution-in-practice">Deconvolution in practice</h2>
+<section id="coding-the-iterative-deconvolution" class="level3">
+<h3 class="anchored" data-anchor-id="coding-the-iterative-deconvolution">Coding the iterative deconvolution</h3>
+<div id="cell-39" class="cell" data-execution_count="43">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's define an iteration function:</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> iter_deconv(alpha, impulse_response, input_signal, delay, comparator):</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  conv<span class="op">=</span>signal.fftconvolve(impulse_response, input_signal, mode<span class="op">=</span><span class="st">'full'</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  correction<span class="op">=</span>np.roll(comparator<span class="op">-</span>conv[:<span class="bu">len</span>(comparator)], delay)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  input_signal<span class="op">=</span>np.floor(lowpass(alpha<span class="op">*</span>correction<span class="op">+</span>input_signal))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  input_signal[input_signal<span class="op">&lt;</span><span class="dv">0</span>]<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> input_signal</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a function to return MSE between two signals as a measure of goodness of fit</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> msecalc(A, B):</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> ((A <span class="op">-</span> B)<span class="op">**</span><span class="dv">2</span>).mean(axis<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="comparing-e_pd-from-the-model-to-e_pd-obtained-by-de-convolving-i_pd" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-e_pd-from-the-model-to-e_pd-obtained-by-de-convolving-i_pd">Comparing <span class="math inline">\(E_{pd}\)</span> from the model to <span class="math inline">\(E_{pd}\)</span> obtained by de-convolving <span class="math inline">\(I_{pd}\)</span></h3>
+<div id="cell-41" class="cell" data-outputid="f6346e4f-cdb0-45d3-a5a8-5b9eef448d6d" data-execution_count="44">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#regularization parameter</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>alpha<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup up the resultant Ipd we want to compare our guess with</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>Ipd<span class="op">=</span>np.floor(lowpass(results_stoch0[<span class="dv">5</span>]))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>Ipd[Ipd<span class="op">&lt;</span><span class="dv">0</span>]<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Find delay caused by h_L</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>delay<span class="op">=</span>Ipd.argmax()<span class="op">-</span>signal.fftconvolve(Ipd, h_L, mode<span class="op">=</span><span class="st">'full'</span>).argmax()</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># We want initial guess to simply be the result of the convolution delayed</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>initial_guess<span class="op">=</span>np.roll(Ipd,delay)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>Enext <span class="op">=</span> initial_guess</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># AN array to record MSE between result we want and our iterated guess</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>mse<span class="op">=</span>np.array([])</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>mse<span class="op">=</span>np.append(mse, <span class="dv">100000</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>mse<span class="op">=</span>np.append(mse, msecalc(Ipd, signal.fftconvolve(h_L, Enext, mode<span class="op">=</span><span class="st">'full'</span>)[:<span class="bu">len</span>(Ipd)]))</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>itercount<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> mse[<span class="op">-</span><span class="dv">1</span>] <span class="op">&lt;</span> mse[<span class="op">-</span><span class="dv">2</span>]:</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  itercount<span class="op">=</span>itercount<span class="op">+</span><span class="dv">1</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  Enext<span class="op">=</span>iter_deconv(alpha, h_L, Enext, delay, Ipd)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  mse<span class="op">=</span>np.append(mse, msecalc(Ipd, signal.fftconvolve(h_L, Enext, mode<span class="op">=</span><span class="st">'full'</span>)[:<span class="bu">len</span>(Ipd)]))</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">"Iteration #"</span> <span class="op">+</span> <span class="bu">str</span>(itercount) <span class="op">+</span><span class="st">": MSE= "</span><span class="op">+</span><span class="bu">str</span>(mse[itercount]))</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Iteration #"</span> <span class="op">+</span> <span class="bu">str</span>(itercount<span class="op">+</span><span class="dv">1</span>) <span class="op">+</span><span class="st">": MSE= "</span><span class="op">+</span><span class="bu">str</span>(mse[<span class="op">-</span><span class="dv">1</span>])<span class="op">+</span><span class="st">" so we use the result of the previous iteration."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Iteration #1: MSE= 105.28720565338028
+Iteration #2: MSE= 29.158850842733937
+Iteration #3: MSE= 15.907016653536498
+Iteration #4: MSE= 10.980828050966586
+Iteration #5: MSE= 7.809812809705651
+Iteration #6: MSE= 6.028925550631545
+Iteration #7: MSE= 4.73466284803095
+Iteration #8: MSE= 3.9923169522974056
+Iteration #9: MSE= 3.4838714972997504
+Iteration #10: MSE= 3.0946057587859834
+Iteration #11: MSE= 2.760477996717779
+Iteration #12: MSE= 2.528570679407976
+Iteration #13: MSE= 2.368434059003949
+Iteration #14: MSE= 2.1886814628096554
+Iteration #15: MSE= 2.215493187867861 so we use the result of the previous iteration.</code></pre>
+</div>
+</div>
+<div id="cell-42" class="cell" data-outputid="3974bf33-4516-4519-d805-27bfab4c3fcb" data-execution_count="45">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'E_pd'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>results_stoch0[<span class="dv">4</span>]),</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Epd=lowpass(E_pd)'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>lowpass(results_stoch0[<span class="dv">4</span>])),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Epd=deconv(I_pd)'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>Enext),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'I_pd'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>results_stoch0[<span class="dv">5</span>]),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Ipd=lowpass(I_pd)'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>lowpass(results_stoch0[<span class="dv">5</span>])),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Ipd=conv(E_pd)'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>signal.fftconvolve(h_L, lowpass(results_stoch0[<span class="dv">4</span>]), mode<span class="op">=</span><span class="st">'full'</span>)),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Ipd=conv(deconv(Ipd))'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>signal.fftconvolve(h_L, Enext, mode<span class="op">=</span><span class="st">'full'</span>)[:<span class="bu">len</span>(Ipd)])</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    xaxis_title <span class="op">=</span> <span class="st">'Day'</span>,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    yaxis_title <span class="op">=</span> <span class="st">'Count'</span>,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span>{</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">'text'</span>:<span class="vs">r'$\text{Actual } E_</span><span class="sc">{pd}</span><span class="vs"> \text{ vs. deconvolution of } I_</span><span class="sc">{pd}</span><span class="vs">$'</span>,</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">'x'</span>:<span class="fl">0.5</span>,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">'xanchor'</span>:<span class="st">'center'</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.0.min.js"></script>                <div id="2066d89d-476b-4c32-9e8e-c4fb286daba2" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("2066d89d-476b-4c32-9e8e-c4fb286daba2")) {                    Plotly.newPlot(                        "2066d89d-476b-4c32-9e8e-c4fb286daba2",                        [{"name":"E_pd","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"i2","bdata":"AQAAAAAAAAAAAAAAAAAAAAAAAQABAAIAAQAAAAAAAQAAAAMAAAADAAEAAQABAAIACQACAAgAAwAKAAsACQAHAA4ADAAGAA8AHgAiABYAHAAnACIANgBJADkASABfAG8AeQCQAKIAwwDGAOIAKQEeAQ8BPQF1AagBswG0AeoB8gHwAf0B5wHbAZgBiAFLAS8BDgHAAIIAYgBXADwAKwAVABIACAAIAAcAAQACAAIAAgABAAEAAAAAAAAAAAAAAAEAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="},"type":"scatter"},{"name":"Epd=lowpass(E_pd)","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"9TGXm7A68T9ggBZI+x3tP2v6kqAQxec\u002fPrMI0ia24j+\u002fmHyh0m3cP55w4NVcBdU\u002fUHRgr\u002fMdzz80Jek7xpLIP+AV57OXrMY\u002fqbnDOyR6yT8eHWTG927QP1jMiZP8S9Y\u002fxIRsBZsn3j8Otq08fubjP2wUUPdQgek\u002f5ZtrXPDG7z9rP490tE3zPxCeCQxY8\u002fY\u002foqeOvv\u002fL+j9WJw\u002fPEdX+PzSS9msrigFASpfpA3DNA0BVvhfY\u002fEMGQO4eDrPmBQlAP2RlraA0DEBFINtfTfsPQL3Pe+0dRxJAQlCq7bcUFUCq42d3G4cYQGSzXbb7vxxA46zrKSXwIECq6QbZOwMkQH7HmsOKpidA+UfFvBvlK0DSXyvo+WMwQMPmof17KzNAWVS2pkVNNkDCUMpb7845QMmaCC\u002fpuD1AfxH1XQwMQUCMpRWHv39DQBEs8mTcREZAgOLo3BFtSUAiMiDwtw5NQJWj7kVYolBAbpnbzOIWU0BwH1uet\u002fVVQLxSP0z7T1lATfSgDPs1XUDLn6Ln0dpgQFzZ\u002fqZgbGNAvFkExo9RZkD4egYmWYhpQFUIQs32CW1AFQbk2B9lcECXFjm9pltyQPzRNtDAXHRAIO9Suf1ZdkBuWUU5xEJ4QIbLt8cGBXpAMn8FeC2Oe0AVDieCJ8x8QNlr2DuRrn1AJ8lAbNcnfkCu7dIuPy5+QHH4gFW6vH1A6S2heHPTfED+q2JzAnh7QOw42m9BtXlAwkIiGcOad0CJ934c8zt1QOsKT9\u002fxrnJA9mmxaEILcEC74\u002ffKytBqQCQGSCf7uGVAkdNUSzH2YEDeUSJrz1BZQOG5wMQ1zlFADBo8eGMCR0C44TIUANA5QOiw5I38\u002fSRAyvKfkd480b91vRs9RAUcwOd4L1AquCTAXtoPrcAZJsBozTLkiZ0jwCkRjO\u002fxTh3AitP+miHqEMC3KqSkQ3fwvwYyZyDb\u002ff0\u002fxmAtqefWEECGX9q7LEwXQHH3IoTTrxpARDrSPcsrG0C+3YjdgCwZQOg51TwASRVAO1EQbTMsEEAFaPn30AEFQHklPH8Oh\u002fM\u002fg6Voeuwgqb9pHmVyqXrxvwze7Uxxr\u002f2\u002fiUDuI3mLAsBObqqrm+4DwPgxOQ+JSAPAAK0g6wEDAcDGPHVhPjX7vyrJz3qwIPO\u002fuijgkLV05b8Vtrx6HovGv1Yzk00n088\u002fqT8BZS194j+Q7Y4Rz4zpP+AJwFsZHO0\u002fzZwSQQ117T+jihRNaR7rP8LmswgExeY\u002f0UZH\u002fbAl4T9LPCjSJPPVP\u002fZ6uyi4mMM\u002fZbXupdC+kb93f4KM3QfEv\u002fK+WRpdedC\u002fFS\u002fySMhV1L8c\u002fOOi1rTVv5RKNdRJ5tS\u002fBQxZUctd0r\u002fDbiGrq0TNv9zc85GRfcS\u002fE\u002fI3SkrTtr+pH6hnTS+Xv3rbc50akKE\u002fDjnHbVcItD\u002fTDT9FLYi7P1Uktp57Q78\u002fZ2H9fRKNvz8gwz9fGfi8PxDT6OCxP7g\u002fCaCYUkcvsj\u002fboMjHFRunP3+8nDMXLpQ\u002f1596LDXuaL948cRQmxKWv+r46Bk94KG\u002f0owpwgDtpb+AeVX6dk+nv\u002fct8z\u002fnXqa\u002fATk5t4yYo79Hy7J\u002fjxufv6rOO9g6p5W\u002fsQY0fBDTh78xsiEQqXBmv13vZQtQ3HM\u002fXRK3j8PfhT82Za169ceNP7+20OID05A\u002fvVucxOXqkD9ztGMoQ\u002feOPzR7e7Ny1Ik\u002fxvSnFgBIgz+D1yKPhk14PySnu1MSt2Q\u002fz+kdsQuoQL+DXFmFfFVov9riqLcTaHO\u002fmrby2mOmd7+bec2RVQp5v9RALvpu83e\u002fO0aT4kjpdL\u002fWVNmXdIhwvwmQOBKt4Wa\u002fRSqFnSHbWL+3jeifrH01v2DlK01RY0Y\u002fRjXClU7fVz+k5v+chhpgP+jLWu8JG2I\u002f80xPpwokYj\u002ffVydtgoxgP+Y4Wa3ygls\u002f6MRE7d5wVD\u002fR6rV5jI1JP1qACnvuOTU\u002fx1gLTQldFb+Gdiwol8w6vz3P85ebD0W\u002fY2Uy8TqBSb\u002frwMEDHOVKvyMgY0e7o0m\u002fK6IoEOJPRr9V0dUAKZJBv2l3Dio0LDi\u002fVg0WjWXpKb9JUFsffksEv2nrbHVtKxk\u002faeFc8lMKKj8IJTsIYWkxP34FfzRRezM\u002fYBTMzjpzMz\u002fs5qjboq8xP8xhVxtqTC0\u002fUVePtm2qJT83hEzp\u002fNoaPxAPG99DtAU\u002fN3lOPN+l6r4gZxAj1XwNv5RsTzF82Ra\u002f6BIEaB6AG7\u002fOT18HHuIcvyn4H120cRu\u002f2yJQ4L3NF79CVKQgwKsSvy1A71t8hwm\u002fQ0gU72D9+r4NFOOjWNLSviaaJhKWOuw+h5h5yWFk\u002fD7WD+wUZtICPx3DE7Kc9QQ\u002f7gSTXfzZBD8V3ZUONOYCP8sOMtp4Mv8+2fBH2Ib19j5ozPkMIDbsPsIB2LA8JNY+GI09V5NIwL6Gf2IohDXgvrGL89JiyOi+ohDbr7al7b4KX\u002fgvwwPvvtFJIz9VX+2+8er2bVBk6b7HpNp6HdbjvnUgKl419Nq+YHMQwIYWzL5aNFbF4AmhvsieC4Ajl78+UotWwkDxzj5PQIWCj1fUPm8F1dLKi9Y+X8w1q+xZ1j6Pg4r+eDHUPtXX2EZrm9A+zN1k\u002fRBTyD7uWB4UQp+9PsMbCWLph6Y+\u002fxo\u002fwyKXk76qpruGI86xvgrLKjwk37q+XotFNdb0v767Z73wTqbAvrhJbrDDbr++hhgSLjgVu77aTW1tThK1vsJ5jRZhc6y+pVeJNug0nb4B1mX6BNhtvtbuTHo7o5E+RIZwyDDaoD7X++vWxPqlPmzHt+DJP6g+jZOunuL0pz5u46RaHZOlPk1J9TE3rqE+gfWthoLFmT77n6OEYxqPPkQVM\u002fFy5XY+YyYsjBc2Z77Kq6p8LoeDvhCOQK3RHY2+W6bsFHU3kb4nAbQa1t+Rvgg0BQNe0pC+kogVoAbnjL5RcqmwqmiGvrfjleG1GH6+627oiP2Dbr6m51vUUVU6vkOU0WDJemM+Yw5lqP9Fcj7q1CcekbF3Pu8HVn8UEHo+LP4uV260eT7ixYL3OiF3PtFYoHKx9HI+iqyhqyaraz4eutQWZMVgPgcD316aMEk+sZareDU8N7531H6jJIFUvsbRDWUs3l6+5xpUvgBjYr6dsIWr1kFjvmNMAZ9ZWWK+XMAD5doQYL7NsTD3p7VZviE7qzQnUFK+Qi4lT8J1Rb6rWv+998gsvg=="},"type":"scatter"},{"name":"Epd=deconv(I_pd)","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAPA\u002fAAAAAAAA8D8AAAAAAAAAQAAAAAAAAABAAAAAAAAAAEAAAAAAAAAAQAAAAAAAAPA\u002fAAAAAAAA8D8AAAAAAADwPwAAAAAAAPA\u002fAAAAAAAA8D8AAAAAAADwPwAAAAAAAABAAAAAAAAAAEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAIEAAAAAAAAAkQAAAAAAAACpAAAAAAAAAMEAAAAAAAAAzQAAAAAAAADZAAAAAAAAAOUAAAAAAAAA8QAAAAAAAAEBAAAAAAACAQUAAAAAAAABDQAAAAAAAAEVAAAAAAAAAR0AAAAAAAIBJQAAAAAAAAE1AAAAAAACAUEAAAAAAAABTQAAAAAAAQFZAAAAAAABAWkAAAAAAAABfQAAAAAAAYGJAAAAAAACAZUAAAAAAAABpQAAAAAAAwGxAAAAAAABwcEAAAAAAAIByQAAAAAAAoHRAAAAAAACgdkAAAAAAAJB4QAAAAAAAQHpAAAAAAACwe0AAAAAAANB8QAAAAAAAkH1AAAAAAADwfUAAAAAAANB9QAAAAAAAUH1AAAAAAABQfEAAAAAAAAB7QAAAAAAAQHlAAAAAAABAd0AAAAAAAPB0QAAAAAAAgHJAAAAAAAAAcEAAAAAAAABrQAAAAAAAAGZAAAAAAABgYUAAAAAAAEBaQAAAAAAAgFJAAAAAAAAASEAAAAAAAAA6QAAAAAAAACJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABRAAAAAAAAAEEAAAAAAAAAIQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="},"type":"scatter"},{"name":"I_pd","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"i2","bdata":"AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAABAAAAAQAAAAIAAQABAAAAAQABAAMAAgAAAAIABQAHAAQACAAIAAcAAwAMAAcADwATAAwADwAUABAAKAAjACQAOAAyADkAQABiAFMAcAByAIMAlQCuALUA9QD5APoADgFOAWgBWQGJAbEBtwGqAa0BqwGUAZkBggFjAUEBGAEFAe0A1gCkAHoAlABWAGAASwA2AC4AJwAaACEAEwAKAAgADQAJAAgABQAFAAMABAAAAAAAAAACAAEAAAAAAAEAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="},"type":"scatter"},{"name":"Ipd=lowpass(I_pd)","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"wvFfLGq9gz9+RRO5zF2cP+Vtzkoud6c\u002fxnfCN8gBsD8E4vvTwo2zP96eQ826F7Y\u002fvlon32B5tz9xQ74jM7i3P7RDDTn3C7c\u002felo745PgtT\u002fLkmik+NK0P6CAINFHqbQ\u002fMY\u002f5OvBGtj97z1Kpup26P4vtyuB\u002fTsE\u002fh7lZ8CWQxz8PbzRMrTfQP94WMhAJF9Y\u002fcijFaXV33T92gY0cbizjPzpL79TFVOg\u002fM\u002fBhpvMj7j+Ji0BfmEHyPzxIyfmCrPU\u002fB6JXMvlG+T\u002fVCda2Lwn9PydPpXdneQBAExAh\u002flqHAkAN7VQNUrsEQMwpFVspKwdApb8Pwr72CUCur3tXLEgNQJML0E2DqRBA8q+ujEEpE0BW0fOPSUMWQGXRzckWGBpAnEArzZnGHkDq9dtCITUiQFTFUqW8jCVAr3U0u29yKUCj5eEt0+stQE4BlMFNfjFAV+Zy2BFUNEDKQv2q1Hk3QMSx3\u002fqO9DpATd+w\u002fCrNPkDbG0bqEIlBQAHG3pt17ENAgfaMlYKfRkAgfb\u002f\u002fLLVJQFB80tNoRE1A9FdMMrqzUECNtg+dTh1TQD8oMwNA7VVAHLiCH+kwWUDqebywaPNcQK6pXjggnmBA\u002fXh6p\u002foGY0CjYyQ3Z7JlQF6ZpMTommhAKh8K7Qy3a0AfJbNHUfluQM7wk98lKHFAfjnkl43TckBLhxIoEHN0QFuqcnj8+XVAFHCwo1hbd0As8hZ+jIp4QEckkH8SfHlAX5sJMyImekBLW1QrR4F6QAEz9a3YiHpAy3cDqUg7ekAZz2vMQ5p5QJuetVKgqnhAF2IByRx0d0AKSF+z8wB2QDJHZgtMXXRAo4icE5GWckBF1NqWvbpwQHCf2G5Or21AQPbMxKv0aUCY2qfi41xmQGRBBHai+2JA9pggKKLAX0A4fotyjytaQFPNOdSSRFVAf0AYpIsPUUBfRGiyUBFLQNNOzdhiS0VAbGfyzxGvQECDnwyi+S46QAv76OlnuDRAOYV2XxOoMEDlmJ62510rQEdHE643CidAzXTcR8TYI0Bdk50V3GMhQF4Sh8Xnuh5AXwoyIL8cG0ACMkO6NKgXQI6s1SkOOxRAIF5V9ijOEEAobNOLt9oKQD36p\u002fRPXwRAAvGOY0HB\u002fD8r0hCk9yTyPxI\u002f+yZrd+I\u002fh4MHYUu+wT+0D\u002fbzQMHGvxH\u002fwHJoINi\u002fjQK05PIm3r8Uezcx65Pev\u002fD2sMb1vNq\u002fxI7B2l4K1L\u002f47RDkTq7Hv2nxDw6kuKq\u002fzeSGr\u002fLusT+ts0qJg9bFP02tdT+fEM8\u002fqItPBs8m0j+Wc1Jgz9TSP9MkIDAjztE\u002fIVeEjG\u002fczj+t\u002fGh+bUPIP+M8UH5+ssA\u002fIXBZqMb4sT8HRNPvsUWNP+uq54e+86C\u002fOQY51ze9sb8okTtz\u002fM63v6rBTvtts7q\u002f1mC8fD22ur9Vr\u002fIEjVe4vz2J\u002fp59N7S\u002fi+lZFMgErr8LlIbsn76ivyUGtCOHEI+\u002f9zgn9R\u002fUbz\u002fQTI5UuLqTPyLhFVhr+J4\u002fnUUb6A++oj9oun5L\u002f8GjP7Z3CXfn1KI\u002fpve53qNioD\u002fVKGV0A86ZPxspKRzWv5E\u002f9YOBRCgHgz8Jsz5bcdldP6yfxly\u002fdXK\u002fXyPS+eEag78PzlkjzIyJv6LcViJdloy\u002fiFhm9UGKjL9A+nBhSfOJv3qrvhA0foW\u002fMhAs+7TIf7+0AnZ517Fzv8y1pbHxz1+\u002f4mqsXymeQz\u002fOgnJ8EqZlP3U7a+AIxXA\u002fs4lLLRMudD\u002foeLiASDF1P7EcLiiDInQ\u002fquhSb1p2cT9mHtDOBGRrP3FIltf+uGI\u002fiIk\u002fqRLJUz+HIMfenn0rP11WH6dCvUS\u002f7Wzka5zXVL+WqCe4cqBbv6g0vtWKwl6\u002f5yhHBy6ZXr8HNRF7Gbtbv78Nd8So4la\u002fe\u002flwSPnWUL86qb5VzK9Ev7bv5FyeODC\u002fOvxxdIH7Fz8LUEUUss03P8WrBMegMEI\u002fGHPFgq3BRT8J1pZl4MFGP9kXSBHYjEU\u002fFySOs7ugQj\u002fT7JYs4Bk9P2\u002fWRSqMxDM\u002f5py\u002fFSqXJD86+1OC+t34ProNhjgZNRe\u002fxdvisdC2Jr\u002ff57ZHpdstv\u002fDffZNTizC\u002faJMu\u002f0tmML+1zgFgLKEtv5SQn6VxXSi\u002flrpTJVTXIb9fPieohrgVv7Oq0DhFgQC\u002fJOPIS4PX7D5YsO1ErCUKP8qVqaYbuRM\u002fwLAiDHRzFz+mEK7M\u002fG4YP2\u002f2CYLCDxc\u002fCGJQmTzeEz8bypXIhOkOP+Xc9rJF3QQ\u002foLx4EmNo9T4AojqEoLvFPtDbYH\u002fg6um+kP8VNlC++L7oMOfhniEAv9tSRBZLywG\u002fOCg1gbiTAb9wuBOFiKf\u002fvkqCIzu67\u002fm+PYobf9Pl8r5nfpDvjsvmvg+oZw3+vtC+71So78EhwT5ptsKlIrPcPj81SWkpYeU+asdjyvhF6T5K+i3d4TrqPhT4pZAXreg+VGXR4zAw5T48tdVwR2rgPl87L6fLA9Y+3i0ofUk8xj47a2k4LwiSPrFf15EO5Ly+JeSkE1rxyr4vDu4\u002fTm3Rvv6G+9fCItO+vMwCIjrW0r7aooIfJujQvoUxy1rvmsu+kNRTnjEDxL5qN5XdEum3vglPOq0C8KC+hVLjsH0mlD7VJIiMdXqvPrmQnGgyK7c+8UHsYZs7uz4BCb0Zsie8Psz5QSaXZro++wDgDuCXtj6q3ck8R26xPvvbt2G6OKc+nn3xtWwSlz4B0y8eMmtbPsDS8xT\u002fEpC+ecCcxCBTnb75v86fjdKivgqnFmpUk6S+psYGQDovpL6++1rR4g6ivqHXNInKYJ2+ZZvKwZQwlb7uEC9oVBKJvqEHlHMYFXG+MkICtCV7Zz64RU28oD6BPtEt4CtkGIk+JoMQgtNVjT6UKnBaKDeOPr8I0eBDPow+NYs6r58XiD5ZYIVOdYOCPv0eFz07gng+Nq+I6HT4Zz4rYz4NdG8iPmf0E+rqyWG+mDqn\u002fIfWb77W1XGzP0x0vs5YcMAzGna+DYFZ0B6fdb6NaZYWVkxzvhN5yjH7Um++oqTFGvSIZr6DzUsdhY5avkOurKUS2EG+qccFFuKsOT6AH75zcIFSPjJiLPbc1lo+swxxRGpYXz7JRNmKESdgPhM3BIl0RF4+LpdeGTrzWT5g9PteOCVUPui2Z6hfREs+fIGx\u002f1t0PD52yBuueXYSPsy7D5CbsS6+Grt0qDB4Pr6sIHgbTzZEvg=="},"type":"scatter"},{"name":"Ipd=conv(E_pd)","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"exSuR+F6FD1SuF4WH\u002fpNP3uUU0kema0\u002fFS4acW0Cwz\u002fNXHqHb2jOP+Gavmsby9M\u002f9nBIwnPm1j\u002fXS1KnWYXYP5BmubOq3tg\u002fe2jrAvlH2D+PZhLhgCTXPzNLLN5o2dU\u002fewwm7crF1D\u002f2sLzFlT3UP7hMsx2bhtQ\u002fXHeoB0TX1T\u002fXoMi5flbYP4V\u002f8NiSHNw\u002fSPFDKVOa4D9pnYt\u002fbc\u002fjP8ggLS6Eqec\u002fhZto9BMi7D\u002fT0ziUJJnwP5daJl7JavM\u002f1VECslWG9j86A3qxhPD5P5qwiGtHtP0\u002fUTYxuE7yAEDV2i8KIU8DQFh0mzJ9BAZAqZOYKCcsCUAfdwKUv+UMQFv96ewnqxBAZQzOmrNTE0CkJtmt7YIWQFwV0MIpUBpA\u002f8CvRezSHkBVx30YLREiQEzuBuR8KiVA2F3xRnbAKEBsnVrtYd4sQBOS4jdByDBAkwkg3ZdyM0BnKJB4IXc2QOnyLAhf4TlA3OU1BUfAPUAHeVt9jhNBQARcB8QRl0NATeHIYYR5RkDQex6ZdcxJQOGr+FTro01AUr9TQOcKUUCabCCzfZxTQPWsmyz5kVZA+BFGeZb1WUBnhUTRks9dQBIVom6KEmFAVYuyG4Z7Y0DMutekjiBmQGkBjm9Z\u002fGhAJxbuKygGbEAkLTVLnzFvQMjgAH5qN3FATNymOVDVckCP6cxIlmd0QIpDcaRl4nVArcU4ioA5d0Ao62L83GB4QImr+UJKTXlAuL+o6RX1eUCOssrso1B6QIOTdBzuWnpAUF4FM+ARekBkzJmaiHZ5QCWUrigZjXhADCD+4bZcd0CKUoLGG+91QP6qRlcRUHRAl6bTos2MckBEl+jbPrNwQJY3HDSlom1AQN2bmYvoaUA2WDFaElBmQId00YKH7WJAB+kvd+ihX0DS+OLwdgtaQHZugcYRJVVAEZIaxBPzUEDDng4MluNKQMzZhKeRLUVAXy8nHd+kQEDQv31yb0Y6QOwn\u002fBoh\u002fTRAXkJp9TsYMUDavEWznYssQO7+EIo2dyhA0f+LFdNzJUAlpIaARhojQJ4X9EeVHCFAvP8C1OGJHkC\u002f5pzdWOYaQEcvMGREMhdASWOkJAhtE0D3qijwF1IPQNWBhx0IBwhAc620mH46AUDTOHyVelP2PyXg3f9CFeg\u002fX7BmAci\u002fzj93e6yu4XTBv1vADrUJZ9i\u002fY8\u002fL2gg34L\u002fVpT\u002fK+f7gvyw8Lr5Sht6\u002fikEqDwmS179e4nFNGkjNv4rV7NiVaLS\u002faYucFjRGrz\u002fALgAJ7xPHP7FrwLPeO9E\u002fQ6lQgca71D8nBQE0hQnWP5NwpwLwWtU\u002fRMMD8N0M0z9+qu3+5ibPP1XfvSVs1sY\u002fbsrazUswvD\u002fxmPPBM\u002fmmP3GgeXU3Com\u002f1+FpbkWGrb+73PbTzuy2vy2HsVtEhbu\u002fAE\u002fLsfjHvL8xeEfTIjG7vzaiMFmXZ7e\u002fetGymaQmsr\u002fXTY8D2FOov\u002fuhiOC7cpi\u002fZB0RGZ+uYb8KLfMIbWaQP\u002fHB7JZEV54\u002f7PkdXPWVoz9IOGYRVH6lP2PaRD5UKKU\u002f2BxKaj3\u002foj96hdjr\u002fAqfPwy1\u002fI3riZY\u002fXLTXmDkFiz+feWXUZWpzPz4q6GM6yGW\u002f2vEjgcJ2gb\u002fln5FhR9KJv0CWWjAdaY6\u002f\u002flHjwLF6j7\u002f46fJJ34uNv8i+zOD1Tom\u002f2XsU5+GLg78XvPwkGBV6v4d+0Rn6A2q\u002fgE8MhOjHML8fhYuZFddhP2ZmwszWWnA\u002fCtdwvGAIdT\u002fsUfFlJwR3PzMzWwIEmXY\u002f16Os\u002f7Y7dD\u002fNzEXWKnlwP4Xre8VLy2c\u002fPgoD+wc5XD+4Hh\u002fLhmxDPwrXK03NwTm\u002fuB4Ah\u002fsyU7\u002f2qLPH0gRcv5pZWBoLZmC\u002f16NCmuvnYL8VrnPn2qBfvykcYmTR\u002f1q\u002fzcxWksPDVL\u002fDdWYQ7oVLvwAAfP6q\u002fzq\u002fj8L1YSva9r5IYWx2388zP3uU9UYfykE\u002fHwVL24m1Rj+koFdC7r1IP\u002fZeshKjNUg\u002fXF9WsFGbRT97lJ\u002fJ6oZBPwDwuCJVLzk\u002fhRth0mKSLT8Vrj81voMTP+xRoEUT5g2\u002fM3ORj90IJb+Fqwkb31kuv\u002fZodjBoqjG\u002fpAAVuaUkMr\u002fNkDqjjuowv2fmDxaKyCy\u002fFU7hB+UKJr8+CkQ5vwMdv6Tw9Uox9Qu\u002fZ2Z2jXAutL4K17RkHP0FPzMzO\u002faXWRM\u002f4bovqBiFGD8fRSjE+pgaP1K4LHy57xk\u002fzfxHL7ASFz9ccy1bqKUSP1KYxOc2pwo\u002fM7Mzfaz4\u002fj6amadUh4bjPh+Fi4faPeG+Z+Y2onYH975mJrT+FW8Av+xR9+33BgO\u002fUljv0d53A7\u002fN\u002fDdDwhcCv8NpemlUrv6+PnpKkv5k975cj46qa5PuvvYoZO8O6ty+pHC9VjVYcj5IYfNJBl\u002fYPuG6l+UlCuU+Ujj5WFp46j4A4AHxspbsPh8l4YOJyOs+uJbgwsei6D7Xf4P+9NXjPnvUijw\u002fM9w+KZxvR3k10D6kcLh6Y3CzPilcDlm9x7O+uB6Fh4Yyyb6uB6i00crRvq6nRQiYfdS+AGAwvTnj1L4zE0hnV1nTvsOGxNSFWdC+H4XrkSLTyL5SuB5lzxrAvrgehcsR3a2+AAAAAFpgZT4zMzMzH\u002fqqPkjhepRj3rY+KVyPsveRvD5nZma2jrm+PlyPwqUqwr0+H4Xr5TBNuj7NzMw03Bi1PhWuR+ls1K0+KVyPNpv0oD4fheshCz6DPuF6FO5rloa+w\u002fUovK+Nm75xPQrVHkKjvj4K10s+EKa+MzMzCX5opr4VrkeZyrCkvpqZmfF3bKG+CtejCspWmr4K16Os4fWQvh+F6yFEzn6+rkfhqp42RD4zM\u002fNJqtJ9PuxRuDso2Yg+KVyP8j\u002fVjj6amdm9joKQPrkexTY64I8+uB6Fu2kVjD72KFznk3GGPlK4HndKkH8+7FG4PBa+cT4K16OA4PpSPh+F623CpVm+PgpXaxIbbr4fheslXth0vlyPwui3xHe+uB6Ft9cPeL4zMzMCZih2vh+F66Dmm3K+rkfhPm8JbL4VrkchCPRhvq5H4S5WC1C+4XoU7qrJHD7D9Sh82mNQPuF6FPvl\u002f1o+KVxva8CwYD4K1yPZTtphPgAAAP+5PGE+zczMsC5qXj5nZmam+V9YPq5H4bwrOlE+16NwGZ+SQz5I4XrUPfolPtejcBUW1yq+SOF6YRdTQL7D9YjQRPxGvlK4nulXpUq+SOF65PqFS77NzMy8TExKvuF6FBL68Ue+PgrXlLsmRb72KFycIEtCvoXrUYy9Jz++UrgelPM2Or6kcD23Ztk1vnsUbiMcEjK+Fa4HD4yzLb5nZmZMDUcovnE9CtnKwCO+CtejZh4CIL7sUbgiK9sZvmdmZmaG0RS+KVyPVlm3EL6F61EscscKvjMzMyeNZwW+SOF6eCsTAb6QwrVENTH7vR+F61G4nvW94XoUrkcp8b2F61G4HjXrvZqZmZmZieW9SOF6FK4H4b24HoXrUejavc3MzMzMPNW9PgrXo3C90L2QwvUoXF\u002fKvQAAAAAAwMS9mpmZmZlRwL1xPQrXo6C5veF6FK5HIbS9H4XrUbier73NzMzMzMyovXE9CtejYKO916NwPQqXnr24HoXrUdiXvbgehetRuJK9Z2ZmZmYmjb1I4XoUroeGva5H4XoU7oG9KVyPwvUofL2F61G4HsV1vRWuR+F6FHG916NwPQo3ar3Xo3A9CpdkvexRuB6FS2C9Z2ZmZmaGWr2F61G4Hn1UvcP1KFyPYlC97FG4HoWLRb3NzMzMzOxEvQrXo3A9Cj69SOF6FK5HO70AAAAAAMAzvXE9CtejcCi9j8L1KFwvMr2kcD0K16MrvVK4HoXrUfq8rkfhehSuFr2amZmZmZkPvc3MzMzMzOw8pHA9Ctej2DwfhetRuJ4bvdejcD0K1\u002f28XI\u002fC9ShcGr3hehSuRyEHPdejcD0KDxG9cT0K16Pw+DzhehSuR+H\u002fvDMzMzMzsxw9XI\u002fC9ShcB70+CtejcP0UvcP1KFyPwhC916NwPQqXIz3D9Shcj6IcvY\u002fC9ShcnxI9MzMzMzNjDj0VrkfheqQaPdejcD0KtwU9UrgehetRCD3D9Shcj6IevQAAAAAAYCs9mpmZmZm5EL1xPQrXozAFvRWuR+F6NBG9KVyPwvXoIj32KFyPwrkWvcP1KFyPcBm99ihcj8KNG732KFyPwg0mPZDC9Shcj+s8mpmZmZnJDj0AAAAAAGDxPOxRuB6FC\u002fy8KVyPwvU8JL2F61G4HrXwvA=="},"type":"scatter"},{"name":"Ipd=conv(deconv(Ipd))","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"AAAAAAAAAAAAAAAAAAAAALgehetRuB49exSuR+F6BL17FK5H4XoEPXsUrkfhegS9exSuR+F6FD17FK5H4XoEPZqZmZmZmRk9CtejcD0KFz0K16NwPQoXPbgehetRuA49exSuR+F6FD24HoXrUbj+PAAAuGCY1ks\u002fewQYFsaNqz+aRUWF5LzCP3EK70gXK9A\u002f10XDMjBK2j+DDKuZ\u002fkDjP9JCi197dOk\u002f0JV9P0pF7z\u002fMAS6m9mzxP9ZYCJ\u002fGQvI\u002fnRBU4LmR8j9x6FeoPZTyP05KQzcWbfI\u002ftAwRGOE08j9W73W+YMryPztiVv\u002fPCPQ\u002f+FJikRou9z\u002fee7DE8nz8P79dcbKZpAJA2sYD\u002f0HhCEBznKYaTZIQQB+s+s7wxBVAnwbYChz8G0DxfKjjDJAhQEiDR\u002fZ1iiVAJ2V4c3jfKUBzejiy1ZsuQLwZXX101jFA9gG3Q1B9NEDxrj0e10c3QGG\u002fhEO6OjpAZCCHi+hiPUDFcW9cKXFAQMZ2zZUkbUJAD7uQpkS5REB+qxIZrnJHQNIG08ZHu0pA3FNdShq1TkCwaeE9NsNRQDsi\u002fSgRpVRAwYqZddAKWEAY8GLd\u002ffpbQCxWcLXFPWBA6KYq9nfEYkBlJwxicI1lQBWXbnpLj2hAPoWv64K+a0BbLDn+5QpvQCQpVBmjMHFA8R7MHFDWckDdfdUqGWt0QACb9yWm43VAt82ky8gzd0CRz6lUz1B4QLKrbRF3MHlAM8hxIkrLeUDzOhCq\u002fBp6QGSeTHAsHHpA9nk62kDNeUBEYDha2C95QPtVphjJSHhA1d6fv0kfd0BvDEPYnLt1QLGgA25+KHRA78Z\u002fMwdyckC8se6gLaRwQLuQLfFjl21AxF2qJTTpaUAf2muHnFRmQAB3OGPU82JA83jCXvvHX0AE9tu4f2ZaQNcvTCS2xFVAAyJHPwfXUUBXsRN4exdNQLxBNyDtnUdAO+ekoLUZQ0Da2mDiTss+QEcpjxeAwDhAYnjPHJfYM0BVk2CsJfcvQFAVEDvvJCpAV4OBnUHkJUAl1A8WVskiQIQ84KjuZSBAXKqj3qXYHECS09KkFlkZQDrxgQR53hVA9\u002fQYTrmGEkBXBCm\u002figAPQH\u002ffAnntsglAhOi2\u002f44lBUBDBGSdAEwBQMTWiUCpJ\u002fw\u002f7iskT1XR9j+SAycAzmzyP0l0T6dqqe0\u002fNkVLSi7P5z\u002fzZQ0zfRDjP74HEx2Fdt4\u002f0cI6wEZK2D88rx1dXVXTPyy2p\u002f30uc4\u002fu4rfhldhyD+UHkCLhlHDPzM+yj6qk74\u002fUOSvAo4ruD83p48d2RWzP\u002fPH0xFKHK4\u002fNjZKm\u002fO6pz\u002fwJlLbjq+iP8o0FM5BZ50\u002ftzJ+4NEdlz\u002ftIrerLCmSP2jQH3IShIw\u002fD+m07Jdfhj\u002fHcRGTIouBP8Dqpmkxf3s\u002fHHAfRnmJdT+qXZ2mPNxwP+6OB\u002fCpYmo\u002f+FSgtOGiZD+PMSWA9iFgP\u002fUxIcSVNlk\u002fAP1pxcyxUz8ukqi+dcFOP4Wmvtp5AUg\u002fQ3N8gAm7Qj9AFDZQKjg9P2CPRaaOyDY\u002fOnUO127CMT\u002fSpWccrq0rP1OOLWP1jyU\u002fAksKeQDLID+wPzeLYSYaP+o\u002fN5vUWhQ\u002fThgNkfatDz\u002fTHXhfYqUIP5g5thBGKwM\u002f34rOE27P\u002fT4VgZPKOiz3Ps+sRDH3AfI+H0dmHXL66z5TDt6x\u002f7nlPtBQ1PBH3eA+XEetTc4q2j5nZmYW20nUPkjhevQhcM8+XI\u002fCzQRWyD6kcD2iiNHCPrgehTtFEb0+XI\u002fCZWtqtj5cj8KVn0GxPj4K1wP7g6o+CtejQGBTpD4pXI\u002fyShWfPsP1KMwqtJc+Urge9ZoGkj57FK6nylaLPqRwPUp8rYQ+pHA9CjE3fz7NzMzs04d3PuxRuL4zvHE+Z2ZmhhvIaj6amZkZpEtkPj4K1+MM9V4+MzMzc+HQVz4AAAAABXRSPpDC9ajDl0w+SOF69EYmRj5I4XpUBChBPsP1KDwgkzo+w\u002fUoLGOUND7D9Sj85d4vPkjheqT5rCg+PgrXg3saIz7sUbiedpMdPmdmZmaO5BY+pHA9ikQaET5SuB6FhgIIPmdmZmYEAv89w\u002fUoXJvX8T3sUbges8PhPXE9Ctc7cck9SOF6FK4HC71SuB6F61HkPHsUrkfheu6816NwPQrX4bx7FK5H4RoCPR+F61G4DiA9KVyPwvVIDj2PwvUoXM\u002fnPClcj8L1qPO8MzMzMzPrAD2kcD0K13MPPR+F61G40go9uB6F61FY4rxSuB6F6xMYPQAAAAAA\u002fhA9AAAAAABPFT0pXI\u002fC9Z4QvbgehevRVxo9AAAAAACgxTzsUbgehVIHPZDC9ShcsBy9H4XrUbg+7bzXo3A9ykofvSlcj8J18PG8mpmZmQkzIb0+CtejoGUhvSlcj8I1nfW8cT0K1xOAHD2PwvUoLJshvbkeheth9w+9exSuR+nSF724HoXrXUgkPaRwPQqp8iW97FG4HuWGCL3Xo3A98J4YvcP1KFxbgwq9kML1KMwyCL17FK5H+X4bvQrXo3DdAA69AAAAgH88Iz0zMzMzCTr3vIXrUTiDIBG9exSuR+F6BL17FK5H4XoEvXsUrkfheuS8uB6F61G4\u002fjy4HoXrUbj+vJqZmZmZmQm9exSuR+F69Dx7FK5H4XrkvHsUrkfhetQ84XoUrkfhCr0fhetRuB4VvZqZmZmZmem8exSuR+F6xLyamZmZmZn5vHsUrkfhegQ9UrgehetREL3D9Shcj8L1vFyPwvUoXP88AAAAAAAAAAApXI\u002fC9SjcvK5H4XoUriE9mpmZmZmZ+TyamZmZmZkdPZqZmZmZmf28PgrXo3A98jzXo3A9Chcivc3MzMzMzP+8XI\u002fC9SgcEr24HoXrUUgrPa5H4XoULgs99ihcj8J1HD3sUbgehesJvZqZmZmZGRo94XoUrkdhFT0zMzMzM7MbPWZmZmZmZgA9XI\u002fC9SicGT0pXI\u002fC9cglPZDC9Shcbx89Z2ZmZmZm3rykcD0K1+MRPfYoXI\u002fC9eY87FG4HoVLBD32KFyPwhUTPWdmZmZm3iU9pHA9CtdTCz3Xo3A9CrcRPVyPwvUofOg8pHA9CtcD8zyuR+F6FEb8PClcj8L1QA+97FG4HoVvAb3NzMzMzMTwvIXrUbgeNhY94XoUrkf1Ab17FK5H4TsNPVyPwvUoCRC9hetRuB691ryuR+F6lJ0qvQ=="},"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"$\\text{Actual } E_{pd} \\text{ vs. deconvolution of } I_{pd}$","x":0.5,"xanchor":"center"},"xaxis":{"title":{"text":"Day"}},"yaxis":{"title":{"text":"Count"}}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('2066d89d-476b-4c32-9e8e-c4fb286daba2');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+<p>The iterative deconvolution seems to work nicely and we get close results.</p>
+</section>
+<section id="comparing-i_pd-from-the-model-to-i_pd-obtained-by-de-convolving-r_pd" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-i_pd-from-the-model-to-i_pd-obtained-by-de-convolving-r_pd">Comparing <span class="math inline">\(I_{pd}\)</span> from the model to <span class="math inline">\(I_{pd}\)</span> obtained by de-convolving <span class="math inline">\(R_{pd}\)</span></h3>
+<p>Let’s try the same thing but using <span class="math inline">\(R_{pd}\)</span> to get <span class="math inline">\(I_{pd}\)</span>:</p>
+<div id="cell-45" class="cell" data-outputid="d4e785ff-ad76-4c90-b22e-6dcc5b140e73" data-execution_count="46">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#regularization parameter</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>alpha<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup up the resultant Ipd we want to compare our guess with</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>Rpd<span class="op">=</span>np.floor(lowpass(results_stoch0[<span class="dv">6</span>]))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>Rpd[Rpd<span class="op">&lt;</span><span class="dv">0</span>]<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Find delay caused by h_I</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>delay<span class="op">=</span>Rpd.argmax()<span class="op">-</span>signal.fftconvolve(Rpd, h_I, mode<span class="op">=</span><span class="st">'full'</span>).argmax()</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># We want initial guess to simply be the result of the convolution delayed</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>initial_guess<span class="op">=</span>np.roll(Rpd,delay)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>Inext <span class="op">=</span> initial_guess</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co"># AN array to record MSE between result we want and our iterated guess</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>mse<span class="op">=</span>np.array([])</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>mse<span class="op">=</span>np.append(mse, <span class="dv">100000</span>)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>mse<span class="op">=</span>np.append(mse, msecalc(Rpd, signal.fftconvolve(h_I, Inext, mode<span class="op">=</span><span class="st">'full'</span>)[:<span class="bu">len</span>(Rpd)]))</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>itercount<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> mse[<span class="op">-</span><span class="dv">1</span>] <span class="op">&lt;</span> mse[<span class="op">-</span><span class="dv">2</span>]:</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  itercount<span class="op">=</span>itercount<span class="op">+</span><span class="dv">1</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  Inext<span class="op">=</span>iter_deconv(alpha, h_I, Inext, delay, Rpd)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  mse<span class="op">=</span>np.append(mse, msecalc(Rpd, signal.fftconvolve(h_I, Inext, mode<span class="op">=</span><span class="st">'full'</span>)[:<span class="bu">len</span>(Rpd)]))</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">"Iteration #"</span> <span class="op">+</span> <span class="bu">str</span>(itercount) <span class="op">+</span><span class="st">": MSE= "</span><span class="op">+</span><span class="bu">str</span>(mse[itercount]))</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Iteration #"</span> <span class="op">+</span> <span class="bu">str</span>(itercount<span class="op">+</span><span class="dv">1</span>) <span class="op">+</span><span class="st">": MSE= "</span><span class="op">+</span><span class="bu">str</span>(mse[<span class="op">-</span><span class="dv">1</span>])<span class="op">+</span><span class="st">" so we use the result of the previous iteration."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Iteration #1: MSE= 168.02986011970452
+Iteration #2: MSE= 26.155188027057374
+Iteration #3: MSE= 15.208955516350267
+Iteration #4: MSE= 9.68774175626153
+Iteration #5: MSE= 8.633576098657265
+Iteration #6: MSE= 6.236478479865712
+Iteration #7: MSE= 5.886804145182413
+Iteration #8: MSE= 4.195848429178922
+Iteration #9: MSE= 4.152702388971084
+Iteration #10: MSE= 2.8487123145005766
+Iteration #11: MSE= 2.96724338404858 so we use the result of the previous iteration.</code></pre>
+</div>
+</div>
+<div id="cell-46" class="cell" data-outputid="7cb8ce23-05c4-4a92-c04b-d01472fbc4bf" data-execution_count="47">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Ipd'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>results_stoch0[<span class="dv">5</span>]),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Ipd=lowpass(Ipd)'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>lowpass(results_stoch0[<span class="dv">5</span>])),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Ipd=deconv(Rpd)'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>Inext),</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Rpd'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>results_stoch0[<span class="dv">6</span>]),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Rpd=conv(Inext)'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>signal.fftconvolve(h_I, Inext, mode<span class="op">=</span><span class="st">'full'</span>)),</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Rpd=lowpass(Rpd)'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>lowpass(results_stoch0[<span class="dv">6</span>])),</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Rpd=conv(deconv(Rpd))'</span>, x<span class="op">=</span>np.arange(<span class="dv">150</span>), y<span class="op">=</span>signal.fftconvolve(h_I, Inext, mode<span class="op">=</span><span class="st">'full'</span>)[:<span class="bu">len</span>(Rpd)])    </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    xaxis_title <span class="op">=</span> <span class="st">'Day'</span>,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    yaxis_title <span class="op">=</span> <span class="st">'Count'</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span>{</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">'text'</span>:<span class="vs">r'$\text{Actual } I_</span><span class="sc">{pd}</span><span class="vs"> \text{ vs. deconvolution of } R_</span><span class="sc">{pd}</span><span class="vs">$'</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">'x'</span>:<span class="fl">0.5</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">'xanchor'</span>:<span class="st">'center'</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.0.min.js"></script>                <div id="d75ffcba-60fe-43f2-9b63-347c15438689" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("d75ffcba-60fe-43f2-9b63-347c15438689")) {                    Plotly.newPlot(                        "d75ffcba-60fe-43f2-9b63-347c15438689",                        [{"name":"Ipd","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"i2","bdata":"AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAABAAAAAQAAAAIAAQABAAAAAQABAAMAAgAAAAIABQAHAAQACAAIAAcAAwAMAAcADwATAAwADwAUABAAKAAjACQAOAAyADkAQABiAFMAcAByAIMAlQCuALUA9QD5APoADgFOAWgBWQGJAbEBtwGqAa0BqwGUAZkBggFjAUEBGAEFAe0A1gCkAHoAlABWAGAASwA2AC4AJwAaACEAEwAKAAgADQAJAAgABQAFAAMABAAAAAAAAAACAAEAAAAAAAEAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="},"type":"scatter"},{"name":"Ipd=lowpass(Ipd)","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"wvFfLGq9gz9+RRO5zF2cP+Vtzkoud6c\u002fxnfCN8gBsD8E4vvTwo2zP96eQ826F7Y\u002fvlon32B5tz9xQ74jM7i3P7RDDTn3C7c\u002felo745PgtT\u002fLkmik+NK0P6CAINFHqbQ\u002fMY\u002f5OvBGtj97z1Kpup26P4vtyuB\u002fTsE\u002fh7lZ8CWQxz8PbzRMrTfQP94WMhAJF9Y\u002fcijFaXV33T92gY0cbizjPzpL79TFVOg\u002fM\u002fBhpvMj7j+Ji0BfmEHyPzxIyfmCrPU\u002fB6JXMvlG+T\u002fVCda2Lwn9PydPpXdneQBAExAh\u002flqHAkAN7VQNUrsEQMwpFVspKwdApb8Pwr72CUCur3tXLEgNQJML0E2DqRBA8q+ujEEpE0BW0fOPSUMWQGXRzckWGBpAnEArzZnGHkDq9dtCITUiQFTFUqW8jCVAr3U0u29yKUCj5eEt0+stQE4BlMFNfjFAV+Zy2BFUNEDKQv2q1Hk3QMSx3\u002fqO9DpATd+w\u002fCrNPkDbG0bqEIlBQAHG3pt17ENAgfaMlYKfRkAgfb\u002f\u002fLLVJQFB80tNoRE1A9FdMMrqzUECNtg+dTh1TQD8oMwNA7VVAHLiCH+kwWUDqebywaPNcQK6pXjggnmBA\u002fXh6p\u002foGY0CjYyQ3Z7JlQF6ZpMTommhAKh8K7Qy3a0AfJbNHUfluQM7wk98lKHFAfjnkl43TckBLhxIoEHN0QFuqcnj8+XVAFHCwo1hbd0As8hZ+jIp4QEckkH8SfHlAX5sJMyImekBLW1QrR4F6QAEz9a3YiHpAy3cDqUg7ekAZz2vMQ5p5QJuetVKgqnhAF2IByRx0d0AKSF+z8wB2QDJHZgtMXXRAo4icE5GWckBF1NqWvbpwQHCf2G5Or21AQPbMxKv0aUCY2qfi41xmQGRBBHai+2JA9pggKKLAX0A4fotyjytaQFPNOdSSRFVAf0AYpIsPUUBfRGiyUBFLQNNOzdhiS0VAbGfyzxGvQECDnwyi+S46QAv76OlnuDRAOYV2XxOoMEDlmJ62510rQEdHE643CidAzXTcR8TYI0Bdk50V3GMhQF4Sh8Xnuh5AXwoyIL8cG0ACMkO6NKgXQI6s1SkOOxRAIF5V9ijOEEAobNOLt9oKQD36p\u002fRPXwRAAvGOY0HB\u002fD8r0hCk9yTyPxI\u002f+yZrd+I\u002fh4MHYUu+wT+0D\u002fbzQMHGvxH\u002fwHJoINi\u002fjQK05PIm3r8Uezcx65Pev\u002fD2sMb1vNq\u002fxI7B2l4K1L\u002f47RDkTq7Hv2nxDw6kuKq\u002fzeSGr\u002fLusT+ts0qJg9bFP02tdT+fEM8\u002fqItPBs8m0j+Wc1Jgz9TSP9MkIDAjztE\u002fIVeEjG\u002fczj+t\u002fGh+bUPIP+M8UH5+ssA\u002fIXBZqMb4sT8HRNPvsUWNP+uq54e+86C\u002fOQY51ze9sb8okTtz\u002fM63v6rBTvtts7q\u002f1mC8fD22ur9Vr\u002fIEjVe4vz2J\u002fp59N7S\u002fi+lZFMgErr8LlIbsn76ivyUGtCOHEI+\u002f9zgn9R\u002fUbz\u002fQTI5UuLqTPyLhFVhr+J4\u002fnUUb6A++oj9oun5L\u002f8GjP7Z3CXfn1KI\u002fpve53qNioD\u002fVKGV0A86ZPxspKRzWv5E\u002f9YOBRCgHgz8Jsz5bcdldP6yfxly\u002fdXK\u002fXyPS+eEag78PzlkjzIyJv6LcViJdloy\u002fiFhm9UGKjL9A+nBhSfOJv3qrvhA0foW\u002fMhAs+7TIf7+0AnZ517Fzv8y1pbHxz1+\u002f4mqsXymeQz\u002fOgnJ8EqZlP3U7a+AIxXA\u002fs4lLLRMudD\u002foeLiASDF1P7EcLiiDInQ\u002fquhSb1p2cT9mHtDOBGRrP3FIltf+uGI\u002fiIk\u002fqRLJUz+HIMfenn0rP11WH6dCvUS\u002f7Wzka5zXVL+WqCe4cqBbv6g0vtWKwl6\u002f5yhHBy6ZXr8HNRF7Gbtbv78Nd8So4la\u002fe\u002flwSPnWUL86qb5VzK9Ev7bv5FyeODC\u002fOvxxdIH7Fz8LUEUUss03P8WrBMegMEI\u002fGHPFgq3BRT8J1pZl4MFGP9kXSBHYjEU\u002fFySOs7ugQj\u002fT7JYs4Bk9P2\u002fWRSqMxDM\u002f5py\u002fFSqXJD86+1OC+t34ProNhjgZNRe\u002fxdvisdC2Jr\u002ff57ZHpdstv\u002fDffZNTizC\u002faJMu\u002f0tmML+1zgFgLKEtv5SQn6VxXSi\u002flrpTJVTXIb9fPieohrgVv7Oq0DhFgQC\u002fJOPIS4PX7D5YsO1ErCUKP8qVqaYbuRM\u002fwLAiDHRzFz+mEK7M\u002fG4YP2\u002f2CYLCDxc\u002fCGJQmTzeEz8bypXIhOkOP+Xc9rJF3QQ\u002foLx4EmNo9T4AojqEoLvFPtDbYH\u002fg6um+kP8VNlC++L7oMOfhniEAv9tSRBZLywG\u002fOCg1gbiTAb9wuBOFiKf\u002fvkqCIzu67\u002fm+PYobf9Pl8r5nfpDvjsvmvg+oZw3+vtC+71So78EhwT5ptsKlIrPcPj81SWkpYeU+asdjyvhF6T5K+i3d4TrqPhT4pZAXreg+VGXR4zAw5T48tdVwR2rgPl87L6fLA9Y+3i0ofUk8xj47a2k4LwiSPrFf15EO5Ly+JeSkE1rxyr4vDu4\u002fTm3Rvv6G+9fCItO+vMwCIjrW0r7aooIfJujQvoUxy1rvmsu+kNRTnjEDxL5qN5XdEum3vglPOq0C8KC+hVLjsH0mlD7VJIiMdXqvPrmQnGgyK7c+8UHsYZs7uz4BCb0Zsie8Psz5QSaXZro++wDgDuCXtj6q3ck8R26xPvvbt2G6OKc+nn3xtWwSlz4B0y8eMmtbPsDS8xT\u002fEpC+ecCcxCBTnb75v86fjdKivgqnFmpUk6S+psYGQDovpL6++1rR4g6ivqHXNInKYJ2+ZZvKwZQwlb7uEC9oVBKJvqEHlHMYFXG+MkICtCV7Zz64RU28oD6BPtEt4CtkGIk+JoMQgtNVjT6UKnBaKDeOPr8I0eBDPow+NYs6r58XiD5ZYIVOdYOCPv0eFz07gng+Nq+I6HT4Zz4rYz4NdG8iPmf0E+rqyWG+mDqn\u002fIfWb77W1XGzP0x0vs5YcMAzGna+DYFZ0B6fdb6NaZYWVkxzvhN5yjH7Um++oqTFGvSIZr6DzUsdhY5avkOurKUS2EG+qccFFuKsOT6AH75zcIFSPjJiLPbc1lo+swxxRGpYXz7JRNmKESdgPhM3BIl0RF4+LpdeGTrzWT5g9PteOCVUPui2Z6hfREs+fIGx\u002f1t0PD52yBuueXYSPsy7D5CbsS6+Grt0qDB4Pr6sIHgbTzZEvg=="},"type":"scatter"},{"name":"Ipd=deconv(Rpd)","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAPA\u002fAAAAAAAAAEAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAEAAAAAAAAAAQAAAAAAAAPA\u002fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAAhAAAAAAAAAFEAAAAAAAAAgQAAAAAAAAChAAAAAAAAALkAAAAAAAAAyQAAAAAAAADVAAAAAAAAAOEAAAAAAAAA7QAAAAAAAAD1AAAAAAAAAP0AAAAAAAIBAQAAAAAAAAEJAAAAAAACAQ0AAAAAAAABFQAAAAAAAgEdAAAAAAAAAS0AAAAAAAABPQAAAAAAAQFJAAAAAAACAVUAAAAAAAIBZQAAAAAAAQF5AAAAAAADgYUAAAAAAAOBkQAAAAAAAIGhAAAAAAACga0AAAAAAAEBvQAAAAAAAcHFAAAAAAABAc0AAAAAAAAB1QAAAAAAAkHZAAAAAAADwd0AAAAAAACB5QAAAAAAAAHpAAAAAAACQekAAAAAAANB6QAAAAAAAsHpAAAAAAABAekAAAAAAAHB5QAAAAAAAYHhAAAAAAAAQd0AAAAAAAIB1QAAAAAAAwHNAAAAAAADgcUAAAAAAAABwQAAAAAAAIGxAAAAAAABgaEAAAAAAAMBkQAAAAAAAgGFAAAAAAADAXEAAAAAAAIBXQAAAAAAAwFJAAAAAAACATUAAAAAAAABHQAAAAAAAAEJAAAAAAAAAPEAAAAAAAAA2QAAAAAAAADFAAAAAAAAALEAAAAAAAAAoQAAAAAAAACZAAAAAAAAAJEAAAAAAAAAiQAAAAAAAACBAAAAAAAAAHEAAAAAAAAAYQAAAAAAAABRAAAAAAAAACEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="},"type":"scatter"},{"name":"Rpd","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"i2","bdata":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAQAAAAEAAAABAAAAAgAAAAAAAAADAAEAAwABAAMAAgAIAAQAAgAIAAMACAAIAAoABgAMAAwAEQAOABEAFgAZACQAKgAqAC4AQgA1AEcAUQBeAGMAcAB0AJAAnwCzAKsAvwDkAPsABgHwAB0BGwEiARsBTAExAUkBNQFHAVYBLAE1AQsBAwEOAfIA6wDHAM4AwwC1AJIAjgCKAHgAdABWAFQATwBGADoAOAAxACYAJwAVABQAEgARAA8ACgAKAAgABwAFAAcABQABAAIAAQAAAAEAAAABAAEAAAACAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="},"type":"scatter"},{"name":"Rpd=conv(Inext)","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"exSuR+F6FD17FK5H4XoUPXsUrkfhehQ9exSuR+F6FD0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB7FK5H4XoUPXsUrkfheiQ9exSuR+F6FD17FK5H4XoUPXsUrkfhehQ9AAAAAAAAAAAAAAAAAAAAAHsUrkfheiQ9exSuR+F6FD17FK5H4XoUPXsUrkfhehQ9exSuR+F6BD0VrrclBnVQP4\u002fCRaKgOHQ\u002fcT1m152miz+uRzyw47WdPx+F8tbA06o\u002fwzUoqXKJtT+uh1wlkNi\u002fP1K4ykDcCMY\u002fhRsMo3SxzD8f1RivOsDRP+HSSHJAHtU\u002fFfYvulxb2D\u002fh+mBx\u002fGLbPzML8sQMI94\u002fuAKs7wpG4D8Ku1V\u002fu0jhP3GN\u002f7jRFOI\u002fZ8CgOSin4j9IRXoLgAbjP67OEBM\u002fU+M\u002fUvz8+t7E4z9x8JVwfKXkPzhKVnKAXeY\u002fhWwvFC1m6T92ibdnNTPuP7i374hZm\u002fI\u002fHOMV2pRv9z8TYcVXgMr9P7fmEpz36wJArq9uVD7bB0DkO2U4070NQM4jO7wdThJAeEhXiV8\u002fFkBxwopHhrUaQP+kZdD3sx9AlnG7iUqhIkCSeIHyGLclQPy9dzfLJClAFSM8vyX4LEBBiDTqwqEwQGEb36dtDzNAyaitevnTNUDxnm5W\u002fgA5QOezQjs1qjxAMfBw0pFyQEAsdCK2Q+RCQA3PGCigtUVAOKXHtqTxSEC\u002fYg2FaaJMQFz5PAQvaFBAZc2ci77AUkAzWRAgc1xVQHFfyDItO1hA8gf+uctaW0CKB410DrdeQMxscKu+JGFAZtV24bAEY0ABIHRZ8PVkQNpefDES8mZAJ22+buDxaECpLPQAf+1qQFiUt8yY3GxAmhPHMp22bkDyji3VhTlwQOjK0GzcBHFAE9nMc4G5cUAFwqNbClRyQJjylOSP0XJAuvBNfcQvc0A\u002f\u002f0WFAG1zQETsqHxUiHNAw9czc4WBc0AF6DGhD1lzQFXQnsYgEHNAXNuSsomockCBpTNMqCRyQJJ2CodPh3FARF5rtq7TcEBONzG+PA1wQK66dQ83b25AEF5qbfisbEBIWJRwA9tqQOkzxv1UAGlAA\u002fa573sjZ0A4Q2PeekplQG6tqcywemNAaqDffsC4YUAAIJZzhwhgQGQb+qFH2lxAe\u002frzaPDRWUAAM9VElvtWQFxqheuBWVRAnYaljs7sUUBttw1UE2tPQNWd2vytZUtA+9EQ4izGR0BB\u002fms0FIhEQGOJrUX2pUFAvjaGX3EzPkA+jiSDprk5QLZd0hwP0TVAhrTJ7yBsMkDX3vTgJfsuQO5EDUU38SlA1rHGQ0CiJUC6Y3BZqvchQK60nEpPuR1A6ixfa458GEA896MB8BYUQLznLmf8aRBAJE1pBHm1CkC+tpkPA6MFQElxYldHcwFAWvjhgPAE\u002fD\u002fxaZuMd2P2P6xbMOw\u002fzfE\u002f4dDtM1gq7D9cxxPA2inmP2qgvIpCWOE\u002fLFwJahT+2j+8lF8+\u002fuDUPy\u002fdGpn9DNA\u002fJ62zZW6FyD+Ko\u002flElZvCP6rjayaQDLw\u002fgKT4khz+tD\u002f8I4SqaDKvPxfYNa12Aqc\u002fsOKQdLfXoD9kEKx1WneYPxNL6qw3oZE\u002fPvHbQsMziT\u002fqTYsIlt2BPwSFB54cHnk\u002fpbi48rSBcT8o\u002f16xejFoPxi47eESkmA\u002fnGNt1Hh\u002fVj84LFK5a0VOP+Q+jpUVLkQ\u002ffwDMVpGoOj8K1wPT43ExPz4KFxQEniY\u002fpHC98LILHT9nZmYH+ngSP4XrUdwsRQc\u002fMzMzi4MH\u002fT7hehRqBu7xPrgehZcf7uU+PgrXA5GO2j4Vrkcxo9bPPrgeheup5MI+j8L1SCUytj4fhesRc8+pPgAAAIC7tJ0+MzMzsy\u002frkD4AAAAAchKDPhWuR+GKRnU+4XoUrjN8Zz7NzMzMxKZZPgAAAACguEs+rkfherSjPT7hehSuJ1ovPqRwPQp3ZyA+w\u002fUoXA\u002f7ED6F61G4HmMBPo\u002fC9ShcnPE9Fa5H4Xqk4T3Xo3A9CnvRPbgehetRIME9j8L1KFyfsD0AAAAAAOCfPZqZmZmZWY49Z2ZmZmZmfD3hehSuR+FqPQrXo3A9Clo9UrgehetRSD1cj8L1KFw3PZDC9Shcjyo9MzMzMzMzJz3NzMzMzMwgPbgehetRuCY99ihcj8L1ED3hehSuR+ESPZqZmZmZmSE9SOF6FK5HGT0K16NwPQr\u002fPD4K16NwPfI8Z2ZmZmZmFz3hehSuR6EYPbgehetRuBU9w\u002fUoXI\u002fCFz2uR+F6FK4XPc3MzMzMzBI9j8L1KFyPBD1cj8L1KFwVPbgehetRuAY94XoUrkehJD0pXI\u002fC9SjyPHE9Ctej8BU9AAAAAABAFD3sUbgehSsUPVK4HoXrkRC9w\u002fUoXI9C8bwAAAAAAAD+PIXrUbgeVRc9CtejcD2K\u002fjyF61G4HgUHPVyPwvUodBk9w\u002fUoXI\u002fCxzwpXI\u002fC9ZATPXE9CtejUO28XI\u002fC9SjQAz3NzMzMzAQNPdejcD0KcwY9KVyPwvXI0Dy4HoXrUVQYPT4K16PwFge9pHA9CtcOCL17FK5H4fL\u002fvArXo3A9isE8exSuR+F69LzsUbgeheshvSlcj8L1KCy9uB6F61G4Hr17FK5H4XokvXsUrkfhehS9mpmZmZmZKb2amZmZmZkZvXsUrkfhehS9KVyPwvUoLL24HoXrUbguvbgehetRuA69CtejcD0KJ70K16NwPQonvSlcj8L1KCy9mpmZmZmZKb17FK5H4XokvaRwPQrXozC9mpmZmZmZGb24HoXrUbgevexRuB6F6yG9AAAAAAAAML0pXI\u002fC9SgcvQrXo3A9Cie9exSuR+F6JL1SuB6F61EovXsUrkfheiS9exSuR+F65DzsUbgehesRvTMzMzMzMyO9AAAAAAAAIL3hehSuR+EavbgehetRuA69CtejcD0KJ72PwvUoXI8SvbgehetRuP68pHA9CtejEL3NzMzMzMwcvZqZmZmZmRG99ihcj8L1CL1I4XoUrkcpva5H4XoUrh+97FG4HoXrGb3sUbgehesBPTMzMzMzM\u002fO87FG4HoXrwbwzMzMzMzMRvbgehetRuPq8exSuR+F6\u002fbzhehSuR+EMvSlcj8L1KAC9zczMzMzMED0+CtejcD3qPIXrUbgehQ29zczMzMzMEr0+CtejcD0CvZqZmZmZWSO9exSuR+H6Eb3NzMzMzEwVvSlcj8L1qAM9PgrXo3A987xcj8L1KFzTPPYoXI\u002fCNQu9PgrXo3C9Eb2QwvUoXC8KvaRwPQrXYwS9kML1KFyP+bw+CtejcG0OvbgehetRyBe9UrgehesFJL1xPQrXo1DtPArXo3A9RBm9pHA9Cte\u002fGL0K16NwPVgQvR+F61G4aBC9Fa5H4XpU1DzXo3A9SmodvVK4HoXr5gC97FG4HoV8IL0zMzMzMwcVvXsUrkfheiQ9exSuR+F6FL0AAAAAAAAAAAAAAAAAAAAAexSuR+F6FL0AAAAAAAAAAHsUrkfhehQ9exSuR+F6JD0AAAAAAAAAAAAAAAAAAAAAexSuR+F6FL24HoXrUbguPQAAAAAAAAAAAAAAAAAAAAB7FK5H4XoUvQAAAAAAAAAAexSuR+F6FD17FK5H4XoUvXsUrkfhehS9exSuR+F6JD17FK5H4XoUvQAAAAAAAAAAexSuR+F6FL17FK5H4XoUPXsUrkfhegS9exSuR+F6FL17FK5H4XoEvXsUrkfhehQ9uB6F61G4Hr24HoXrUbgevbgehetRuA69exSuR+F6BL17FK5H4XoEvexRuB6F6yG9exSuR+F6FL17FK5H4XoEvXsUrkfhehS9uB6F61G4Hr17FK5H4XrkvOxRuB6F6xG9CtejcD0KF71xPQrXo3AdvTMzMzMzMxO9exSuR+F65Dx7FK5H4XrkvLgehetRuA697FG4HoXrAb24HoXrUbj+vJqZmZmZmdk8w\u002fUoXI\u002fCBb2kcD0K16PwPD4K16NwPfo8exSuR+F6pDyF61G4HoX7vFK4HoXrUQg9Fa5H4XoU7jyamZmZmZkJPSlcj8L1KAY916NwPQrX8zykcD0K16MaPXsUrkfhehM9AAAAAAAABD17FK5H4XqkvEjhehSuR\u002fc8uB6F61H4Fj2uR+F6FG4ePQAAAAAAoBw9MzMzMzODID0pXI\u002fC9agMPfYoXI\u002fCFRE9Fa5H4XrcGz2uR+F6FH78PArXo3A9fiQ9rkfhehThIT3sUbgehQ0gPa5H4XqUAyA99ihcj8IbBj3NzMzMTHUSPQ=="},"type":"scatter"},{"name":"Rpd=lowpass(Rpd)","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"uOHHSF6efj8UTA28PweDP7B+yey1doU\u002f4NxSeLYShj+gr\u002f5\u002fAWWEP2ymX+0IHYA\u002fEomihz5Bcj+AivtsM2Ypv+BxzW3o93e\u002fIELbXKbViL8EZgNkMuuSv\u002fRmyf5uz5i\u002f3F6pVCtRnb9ERfEgZaKfv6xDuQ3q\u002f56\u002fRn1qycHFmr8EpcAsmIOSv8A19NwcO3i\u002fYORhrDbhhD8QABx1RHqeP+CEHEEJnao\u002ffAw8Hfdlsz\u002fQ0uxb0ZS5P8giSC+1ir8\u002f2KZyvoCBwj94++aXDOnEP0hCU\u002fhI+cY\u002fZYlYH1TIyD\u002fyaLCCHYnKPzhms93YjMw\u002fIoDGWUpBzz+kwc9L0JXRP4hq5FX8b9Q\u002f8o9fsA172D94ES5LO\u002f7dP7kjhequmuI\u002fCSrVaXUl5z9NYM+CwqnsP9sJGT8Ak\u002fE\u002f\u002fzlV2KRG9T+ep0H45GT5P5nX70B24P0\u002f8caxj0dWAUAjKboQLeADQP+4ac5WjQZA5ZaT2tViCUAis3Is9WwMQG0tA9dkwA9AIGsd0my9EUDsHycnh+ETQLDHDLATZBZAV7+7ckdgGUDLQc9UN\u002fQcQHCd\u002f1T\u002fnyBADTuA4HYyI0DNiAM6cEImQCTDpjLt4ClAzKwhzv8eLkAhungo\u002fYYxQPneAnHoXzRAicUzvtCjN0BfpreeJl07QGmdbI6Clz9AT0+jdOkvQkCt0fVZL+JEQMWKH45G6kdA\u002ftn8tDNQS0CLjfCV6RtPQNvoudRiqlFAjSwozHkAVEA+07czYZJWQMZtkAv8YFlAqvXpn5hrXEBUuDzarK9fQHuT2lpSlGFA64+efuNnY0DDX1xOGU5lQDXpP3N6QWdA8Idqwps7aUDpOALAQTVrQEE6vuiKJm1Ada5SySAHb0ADBswNN2dwQKDvLVvsOXFAlDOpZ3\u002f3cUCTHMa3+5tyQPTIJtzKI3NAAU8B0taLc0BjBhbBq9FzQNKjvPOW83NAe1E8UcDwc0BqpVhvO8lzQGp5sJoNfnNAuswgBCcRc0AF34uDToVyQA7HkOgA3nFAMrraUkYfcUAX13UugU1wQBPKefJ12m5AOzTDuuUFbUBwF5At4yVrQGQUnm9KQmlA9w2SvwxiZ0AAcyzlDotlQMMk4vgawmNAqBKzfeMKYkAVfmThFGhgQFOoAuTjtl1AdyRSOu\u002fLWkCiu0W1CBBYQE387+n\u002fglVA37w4xQEkU0D\u002fIQLh2fFQQLW33y1O1k1Aqwy1IQIdSkDaRTLPG7VGQHW3B8cQnENAvNKnEnLPQEAApKxDlpk8QMhn36rtIjhAdjYpQek0NEC6GkaGjcgwQFwdSriAqytA0VhuN5WmJkA67Bck\u002fm0iQPpgGusC2B1AzBGDMngUGEB7QkSq1GQTQJeNPumlPA9AvE2zPHcyCUAijBTXtmMEQDyP7y0rkgBAl36euEwS+z\u002fCQfOUdjr2P94QR1nrVvI\u002fBlsiVhph7j8irmq2TTnpP+bQGn0s9eQ\u002fEAbOE2Nj4T9qNr+M+b3cPwaNtK36mNc\u002frQFU7Cwv0z\u002f4\u002fZgYe8XOP7hHw9y4O8g\u002f86n6JRqhwj\u002f3QE2Gnru7PzlsefK3vrM\u002fDY++3itZqj9Q8YI6\u002fqKfP25Dj51qtI4\u002fl8aWfZbwaj\u002f9bqaXyVVzv7Aqn2kOnIO\u002f42u+Xr8\u002fiL9WXMl2msGIv0l4kw7TRIa\u002f0HkObFvYgb9wIzvgt9h4v05En+AjKGu\u002fzl3aAUfoSL8276B4jrdWPwJgRLFmjmg\u002fshxhrxJ6cD8aBdBvvVVyP98n2hcZHnI\u002fz5wu7xY7cD\u002f8Xe5wqVBqP+VcFG1zzGI\u002fR1BFu\u002f+1VT9sVgmrGlw6P8EBFLNOCzq\u002fcwfrioG\u002fUL+Q1wR9fbBXv7AoOn+2R1u\u002fNqBlcoPHW78Xt45\u002fSK5Zv4wf0slgoFW\u002foBIxf5FSUL+t\u002fjVKse1Ev0Di90SJszK\u002fMmRsIsQjAT+xgR0N4jMzP25OBdyhmj8\u002fbe4oyGCFQz+L0bZG79pEP7zz1ZY4GUQ\u002f54ukVFuuQT8WRInIyTY8P8kZgQrqyjM\u002fO1Y8KXEkJj\u002fd3L\u002fIMAsHPxlk56n1jxC\u002fKD0r4C0jI7\u002fzkRaaqWQqvxZJ6M0aBy6\u002fPVUh8epYLr+wMXprqeYrv6WpS0ypYye\u002ftIjp0zqTIb8Xp87f3WgWv186OgIKxwO\u002f+yrzgeRQ1T7j2Cveg\u002fQEP09uVmOSFxE\u002favdo8KwGFT+sIl1sO2UWP0akhBRkhhU\u002fpH9OAQniEj+9x+q\u002fVQcOP26umjMN9QQ\u002fBIkBdIkw9z5fFW0WEKHWPpdhuTrLpeK+ADJ50iHc9L6FZFnUUIX8vjy+9ikVJgC\u002fI2tLVdJDAL\u002fEbHifoND9vldFK5LC6Pi+uZF4tgmi8r71uNYtZZLnvvUbFmxaUdS+m1nWR+MsrT4LIdgEnBvXPjcwZHQ9juI+oiE80rut5j5iGsGYcg7oPsTHvY1iC+c+uIxdQVkm5D4JHFtkKOvfPksvVPSHJdY+8JWS7doyyD7PKj1ctMelPtC0lfUrDbW+SFEero3Fxr7oA\u002fb\u002fFtnOvsuH9XNFYdG+ve8uTyRx0b5PS94wiN7PvrwztgVTiMq+YTCXPV\u002fBw74DB5\u002fU+Mm4vpQ64CNi1qS+cvH+PZEEgz7LLuf4vnWpPiwAr3LwI7Q+qX+XQ5N1uD6NlGeK9ta5PtPIkairq7g+L\u002fnPIzqAtT7BBdLvbPawPknIWOVQZqc+tO58MpE8mT4ay0cfVbZ0PjKrLKNAsYe+vbIiXhDYmL7QLoNTj62gvjtOhZWms6K+KgMPkKOzor6kyDzm2gehvoaDYE01Qpy++l+tY1XxlL4eMz8E8A+KvsuuM2CrVnW+RafGOw7yVz4H1a38KwN8PrZyCTUI2YU+NVx4PtNeij6LQqd5tL+LPmIOV1yIaIo+ep9FmWDxhj5z2KAbYwiCPglZpfK9vHg+DdANsx1aaj7iG465y6NDPvg\u002fHuPRdVq+k+\u002fknGcGa74H05VpRwByviWISnziGXS+RHNW7PUKdL6KYO6igzVyvmQc3KQDJm6+kZF9NbxKZr70UWvHcqdbvoPjWs5xdUa+lZHSsKaJKj6I1s+U5QtOPrIPDvPUWVc+3tmuqw8pXD4OL\u002fRo3KZdPkBLEjlWSVw+MwE\u002fpsuyWD62U1dyBptTPkV7VEE7dUs+4AgyY3PnPj55HKkvsyEhPp0Y5Lvu+iS+xChGgt9EOb5NEuKDLK9Bvg=="},"type":"scatter"},{"name":"Rpd=conv(deconv(Rpd))","x":{"dtype":"i2","bdata":"AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AfgB\u002fAIAAgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AkACRAJIAkwCUAJUA"},"y":{"dtype":"f8","bdata":"exSuR+F6FD17FK5H4XoUPXsUrkfhehQ9exSuR+F6FD0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB7FK5H4XoUPXsUrkfheiQ9exSuR+F6FD17FK5H4XoUPXsUrkfhehQ9AAAAAAAAAAAAAAAAAAAAAHsUrkfheiQ9exSuR+F6FD17FK5H4XoUPXsUrkfhehQ9exSuR+F6BD0VrrclBnVQP4\u002fCRaKgOHQ\u002fcT1m152miz+uRzyw47WdPx+F8tbA06o\u002fwzUoqXKJtT+uh1wlkNi\u002fP1K4ykDcCMY\u002fhRsMo3SxzD8f1RivOsDRP+HSSHJAHtU\u002fFfYvulxb2D\u002fh+mBx\u002fGLbPzML8sQMI94\u002fuAKs7wpG4D8Ku1V\u002fu0jhP3GN\u002f7jRFOI\u002fZ8CgOSin4j9IRXoLgAbjP67OEBM\u002fU+M\u002fUvz8+t7E4z9x8JVwfKXkPzhKVnKAXeY\u002fhWwvFC1m6T92ibdnNTPuP7i374hZm\u002fI\u002fHOMV2pRv9z8TYcVXgMr9P7fmEpz36wJArq9uVD7bB0DkO2U4070NQM4jO7wdThJAeEhXiV8\u002fFkBxwopHhrUaQP+kZdD3sx9AlnG7iUqhIkCSeIHyGLclQPy9dzfLJClAFSM8vyX4LEBBiDTqwqEwQGEb36dtDzNAyaitevnTNUDxnm5W\u002fgA5QOezQjs1qjxAMfBw0pFyQEAsdCK2Q+RCQA3PGCigtUVAOKXHtqTxSEC\u002fYg2FaaJMQFz5PAQvaFBAZc2ci77AUkAzWRAgc1xVQHFfyDItO1hA8gf+uctaW0CKB410DrdeQMxscKu+JGFAZtV24bAEY0ABIHRZ8PVkQNpefDES8mZAJ22+buDxaECpLPQAf+1qQFiUt8yY3GxAmhPHMp22bkDyji3VhTlwQOjK0GzcBHFAE9nMc4G5cUAFwqNbClRyQJjylOSP0XJAuvBNfcQvc0A\u002f\u002f0WFAG1zQETsqHxUiHNAw9czc4WBc0AF6DGhD1lzQFXQnsYgEHNAXNuSsomockCBpTNMqCRyQJJ2CodPh3FARF5rtq7TcEBONzG+PA1wQK66dQ83b25AEF5qbfisbEBIWJRwA9tqQOkzxv1UAGlAA\u002fa573sjZ0A4Q2PeekplQG6tqcywemNAaqDffsC4YUAAIJZzhwhgQGQb+qFH2lxAe\u002frzaPDRWUAAM9VElvtWQFxqheuBWVRAnYaljs7sUUBttw1UE2tPQNWd2vytZUtA+9EQ4izGR0BB\u002fms0FIhEQGOJrUX2pUFAvjaGX3EzPkA+jiSDprk5QLZd0hwP0TVAhrTJ7yBsMkDX3vTgJfsuQO5EDUU38SlA1rHGQ0CiJUC6Y3BZqvchQK60nEpPuR1A6ixfa458GEA896MB8BYUQLznLmf8aRBAJE1pBHm1CkC+tpkPA6MFQElxYldHcwFAWvjhgPAE\u002fD\u002fxaZuMd2P2P6xbMOw\u002fzfE\u002f4dDtM1gq7D9cxxPA2inmP2qgvIpCWOE\u002fLFwJahT+2j+8lF8+\u002fuDUPy\u002fdGpn9DNA\u002fJ62zZW6FyD+Ko\u002flElZvCP6rjayaQDLw\u002fgKT4khz+tD\u002f8I4SqaDKvPxfYNa12Aqc\u002fsOKQdLfXoD9kEKx1WneYPxNL6qw3oZE\u002fPvHbQsMziT\u002fqTYsIlt2BPwSFB54cHnk\u002fpbi48rSBcT8o\u002f16xejFoPxi47eESkmA\u002fnGNt1Hh\u002fVj84LFK5a0VOP+Q+jpUVLkQ\u002ffwDMVpGoOj8K1wPT43ExPz4KFxQEniY\u002fpHC98LILHT9nZmYH+ngSP4XrUdwsRQc\u002fMzMzi4MH\u002fT7hehRqBu7xPrgehZcf7uU+PgrXA5GO2j4Vrkcxo9bPPrgeheup5MI+j8L1SCUytj4fhesRc8+pPgAAAIC7tJ0+MzMzsy\u002frkD4AAAAAchKDPhWuR+GKRnU+4XoUrjN8Zz7NzMzMxKZZPgAAAACguEs+rkfherSjPT7hehSuJ1ovPqRwPQp3ZyA+w\u002fUoXA\u002f7ED6F61G4HmMBPo\u002fC9ShcnPE9Fa5H4Xqk4T3Xo3A9CnvRPbgehetRIME9j8L1KFyfsD0AAAAAAOCfPZqZmZmZWY49Z2ZmZmZmfD3hehSuR+FqPQrXo3A9Clo9UrgehetRSD1cj8L1KFw3PZDC9Shcjyo9MzMzMzMzJz3NzMzMzMwgPbgehetRuCY99ihcj8L1ED3hehSuR+ESPZqZmZmZmSE9SOF6FK5HGT0K16NwPQr\u002fPD4K16NwPfI8Z2ZmZmZmFz3hehSuR6EYPbgehetRuBU9w\u002fUoXI\u002fCFz2uR+F6FK4XPc3MzMzMzBI9j8L1KFyPBD1cj8L1KFwVPbgehetRuAY94XoUrkehJD0pXI\u002fC9SjyPHE9Ctej8BU9AAAAAABAFD3sUbgehSsUPVK4HoXrkRC9w\u002fUoXI9C8bwAAAAAAAD+PIXrUbgeVRc9CtejcD2K\u002fjyF61G4HgUHPVyPwvUodBk9w\u002fUoXI\u002fCxzwpXI\u002fC9ZATPXE9CtejUO28XI\u002fC9SjQAz3NzMzMzAQNPdejcD0KcwY9KVyPwvXI0Dy4HoXrUVQYPT4K16PwFge9pHA9CtcOCL17FK5H4fL\u002fvArXo3A9isE8exSuR+F69LzsUbgeheshvSlcj8L1KCy9uB6F61G4Hr17FK5H4XokvXsUrkfhehS9mpmZmZmZKb2amZmZmZkZvXsUrkfhehS9KVyPwvUoLL24HoXrUbguvbgehetRuA69CtejcD0KJ70K16NwPQonvSlcj8L1KCy9mpmZmZmZKb17FK5H4XokvaRwPQrXozC9mpmZmZmZGb24HoXrUbgevexRuB6F6yG9AAAAAAAAML0pXI\u002fC9SgcvQrXo3A9Cie9exSuR+F6JL1SuB6F61EovXsUrkfheiS9exSuR+F65DzsUbgehesRvTMzMzMzMyO9AAAAAAAAIL3hehSuR+EavbgehetRuA69CtejcD0KJ72PwvUoXI8SvbgehetRuP68pHA9CtejEL3NzMzMzMwcvZqZmZmZmRG99ihcj8L1CL1I4XoUrkcpva5H4XoUrh+97FG4HoXrGb3sUbgehesBPTMzMzMzM\u002fO87FG4HoXrwbwzMzMzMzMRvbgehetRuPq8exSuR+F6\u002fbzhehSuR+EMvSlcj8L1KAC9zczMzMzMED0+CtejcD3qPIXrUbgehQ29zczMzMzMEr0+CtejcD0CvZqZmZmZWSO9exSuR+H6Eb3NzMzMzEwVvQ=="},"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"$\\text{Actual } I_{pd} \\text{ vs. deconvolution of } R_{pd}$","x":0.5,"xanchor":"center"},"xaxis":{"title":{"text":"Day"}},"yaxis":{"title":{"text":"Count"}}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('d75ffcba-60fe-43f2-9b63-347c15438689');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+<p>Again our algorithm works nicely.</p>
+</section>
+</section>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
+<p>There are a lot of papers and research done in the field of deconvolution in general but I have found only one using it in epidemic models (link above).</p>
+<p>The theory is skipped here but it is required if we want to use more advanced techniques. I may write another blog post with more details.</p>
+<p>After doing this you might be left wondering, well what’s the point ?</p>
+<p>A few things:</p>
+<ul>
+<li>If we have daily data of infectious <span class="math inline">\(I_{pd}\)</span> we can then use the deconvolution technique to find an approximation for <span class="math inline">\(E_{pd}\)</span></li>
+<li>If we have a close estimate for <span class="math inline">\(E_{pd}\)</span> we can in turn estimate the value of <span class="math inline">\(\beta\)</span> or <span class="math inline">\(R\)</span></li>
+<li>We can verify the robusteness of <span class="math inline">\(h_L\)</span> and <span class="math inline">\(h_I\)</span> against real world data and how these vary geographically in a pandemic</li>
+</ul>
+<p>These points will be studied a bit more in the next blog post.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/jeffreypost\.dev\/scattered-thoughts");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
