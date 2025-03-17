@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2020-06-02">
 <meta name="description" content="Studying real-world data">
 
-<title>Scattered Thoughts - Epidemic modeling - Part 8</title>
+<title>Epidemic modeling - Part 8 – Scattered Thoughts</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -36,7 +36,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -60,7 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -73,12 +73,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d4be639c637f3db3c684c66cefad7e0c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-ae2d0dcda2edce4ab590422bb373b64f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -87,7 +87,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -96,6 +102,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -116,52 +123,79 @@ ga('send', {
 });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Scattered Thoughts</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https:/github.com/jeffufpost" rel="" target="">
- <span class="menu-text"><i class="fa-brands fa-github" aria-label="github"></i></span></a>
+    <a class="nav-link" href="https:/github.com/jeffufpost"> 
+<span class="menu-text"><i class="fa-brands fa-github" aria-label="github"></i></span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://renkulab.io/gitlab/jeffrey.post" rel="" target="">
- <span class="menu-text"><i class="fa-brands fa-gitlab" aria-label="gitlab"></i></span></a>
+    <a class="nav-link" href="https://renkulab.io/gitlab/jeffrey.post"> 
+<span class="menu-text"><i class="fa-brands fa-gitlab" aria-label="gitlab"></i></span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="mailto:contact@jeffreypost.dev" rel="" target="">
- <span class="menu-text"><i class="fa-solid fa-envelope" aria-label="envelope"></i></span></a>
+    <a class="nav-link" href="mailto:contact@jeffreypost.dev"> 
+<span class="menu-text"><i class="fa-solid fa-envelope" aria-label="envelope"></i></span></a>
   </li>  
 </ul>
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
-          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -261,9 +295,10 @@ ga('send', {
 
 
 
+
 <p><img src="../my_icons/goodness-of-fit.png" class="img-fluid"></p>
-<div class="cell" data-outputid="b95ca25a-7d16-4820-b9d0-eb170c6c0e9e" data-execution_count="384">
-<details>
+<div id="cell-2" class="cell" data-outputid="b95ca25a-7d16-4820-b9d0-eb170c6c0e9e" data-execution_count="384">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This code wrangles the data from JHU</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install plotly<span class="op">==</span><span class="fl">4.9.0</span></span>
@@ -388,7 +423,7 @@ Requirement already satisfied: click&gt;=5.1 in /usr/local/lib/python3.6/dist-pa
 Requirement already satisfied: MarkupSafe&gt;=0.23 in /usr/local/lib/python3.6/dist-packages (from Jinja2&gt;=2.10.1-&gt;Flask&gt;=1.0.2-&gt;dash==1.16.0) (1.1.1)</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="395">
+<div id="cell-3" class="cell" data-execution_count="395">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This code is the lowpass filter </span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lowpass(x, fc<span class="op">=</span><span class="fl">0.05</span>, pad<span class="op">=</span><span class="dv">0</span>): <span class="co"># starts with cutoff freq at 0.05 but can be adjusted, should use 0.02 for France for example</span></span>
@@ -409,7 +444,7 @@ Requirement already satisfied: MarkupSafe&gt;=0.23 in /usr/local/lib/python3.6/d
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  b, a <span class="op">=</span> signal.butter(<span class="dv">5</span>, w, <span class="st">'low'</span>)</span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> signal.filtfilt(b, a, signala), w</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="386">
+<div id="cell-4" class="cell" data-execution_count="386">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This code creates the impulse responses</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>days <span class="op">=</span> np.arange(<span class="dv">100</span>)</span>
@@ -422,7 +457,7 @@ Requirement already satisfied: MarkupSafe&gt;=0.23 in /usr/local/lib/python3.6/d
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>h_L[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>h_I[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="442">
+<div id="cell-5" class="cell" data-execution_count="442">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This code is for the iterative deconvolution</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's define an iteration function:</span></span>
@@ -481,7 +516,7 @@ Requirement already satisfied: MarkupSafe&gt;=0.23 in /usr/local/lib/python3.6/d
 <p>Use fc = 0.05</p>
 <section id="checking-h_i" class="level4">
 <h4 class="anchored" data-anchor-id="checking-h_i">1. Checking <span class="math inline">\(h_I\)</span></h4>
-<div class="cell" data-outputid="3fdf699b-fc62-43f1-c89d-d269aef81a4d" data-execution_count="461">
+<div id="cell-14" class="cell" data-outputid="3fdf699b-fc62-43f1-c89d-d269aef81a4d" data-execution_count="461">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    go.Bar(name<span class="op">=</span><span class="st">'Ipd'</span>, x<span class="op">=</span>conf_df_pd.loc[<span class="st">'Austria'</span>].index, y<span class="op">=</span>conf_df_pd.loc[<span class="st">'Austria'</span>]),</span>
@@ -503,7 +538,6 @@ Requirement already satisfied: MarkupSafe&gt;=0.23 in /usr/local/lib/python3.6/d
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -563,7 +597,7 @@ if (outputEl) {{
 </section>
 <section id="estimating-e_pd-by-deconvolution-of-i_pd" class="level4">
 <h4 class="anchored" data-anchor-id="estimating-e_pd-by-deconvolution-of-i_pd">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></h4>
-<div class="cell" data-outputid="28507318-5744-4eae-ba27-f601f0d936a9" data-execution_count="462">
+<div id="cell-17" class="cell" data-outputid="28507318-5744-4eae-ba27-f601f0d936a9" data-execution_count="462">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Settting up for deconvolution of Ipd</span></span>
@@ -612,7 +646,7 @@ Iteration #7: MSE= 45.65200740982705
 Iteration #8: MSE= 47.295703271338205 so we use the result of the previous iteration.</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="53ad37ac-4ba1-429b-aa20-bd3c2c69c7fe" data-execution_count="467">
+<div id="cell-18" class="cell" data-outputid="53ad37ac-4ba1-429b-aa20-bd3c2c69c7fe" data-execution_count="467">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We can keep going the iteration until lowest MSE</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -638,7 +672,7 @@ Iteration #8: MSE= 47.295703271338205 so we use the result of the previous itera
 34.802404169985934</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="2cecfcc6-a839-453f-e401-ebc21d6a4ca3" data-execution_count="468">
+<div id="cell-19" class="cell" data-outputid="2cecfcc6-a839-453f-e401-ebc21d6a4ca3" data-execution_count="468">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Epd=deconv(Ipd)'</span>, x<span class="op">=</span>inf_df.loc[<span class="st">'Austria'</span>].index, y<span class="op">=</span>Enext),</span>
@@ -660,7 +694,6 @@ Iteration #8: MSE= 47.295703271338205 so we use the result of the previous itera
 <span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -719,7 +752,7 @@ if (outputEl) {{
 <h4 class="anchored" data-anchor-id="beta-and-r-from-e_pd-and-i">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></h4>
 <p>As described above:</p>
 <p><span class="math display">\[R = \frac{E_{pd}}{\gamma~I}\]</span></p>
-<div class="cell" data-outputid="9d6962d6-d1ac-42cc-ef2b-3b3e4565095c" data-execution_count="426">
+<div id="cell-22" class="cell" data-outputid="9d6962d6-d1ac-42cc-ef2b-3b3e4565095c" data-execution_count="426">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R</span></span>
@@ -745,7 +778,6 @@ if (outputEl) {{
 <span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -804,7 +836,7 @@ if (outputEl) {{
 <p>Better to use fc = 0.02 here</p>
 <section id="checking-h_i-1" class="level4">
 <h4 class="anchored" data-anchor-id="checking-h_i-1">1. Checking <span class="math inline">\(h_I\)</span></h4>
-<div class="cell" data-outputid="7d95c261-86c0-4d44-c344-fed5ac2a691b" data-execution_count="469">
+<div id="cell-25" class="cell" data-outputid="7d95c261-86c0-4d44-c344-fed5ac2a691b" data-execution_count="469">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    go.Bar(name<span class="op">=</span><span class="st">'Ipd'</span>, x<span class="op">=</span>conf_df_pd.loc[<span class="st">'France'</span>].index, y<span class="op">=</span>conf_df_pd.loc[<span class="st">'France'</span>]),</span>
@@ -826,7 +858,6 @@ if (outputEl) {{
 <span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -882,7 +913,7 @@ if (outputEl) {{
 </section>
 <section id="estimating-e_pd-by-deconvolution-of-i_pd-1" class="level4">
 <h4 class="anchored" data-anchor-id="estimating-e_pd-by-deconvolution-of-i_pd-1">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></h4>
-<div class="cell" data-outputid="1fe20b64-071d-4a0b-8d9e-39c88d8d24ac" data-execution_count="470">
+<div id="cell-28" class="cell" data-outputid="1fe20b64-071d-4a0b-8d9e-39c88d8d24ac" data-execution_count="470">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Settting up for deconvolution of Ipd</span></span>
@@ -959,7 +990,7 @@ Iteration #29: MSE= 2030.0926377297346
 Iteration #30: MSE= 2034.180323331884 so we use the result of the previous iteration.</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="b16c2bda-d693-4b3c-bc6b-369e543c9b5d" data-execution_count="476">
+<div id="cell-29" class="cell" data-outputid="b16c2bda-d693-4b3c-bc6b-369e543c9b5d" data-execution_count="476">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We can keep going the iteration until lowest MSE</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -985,7 +1016,7 @@ Iteration #30: MSE= 2034.180323331884 so we use the result of the previous itera
 188.7970643390086</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="4e57d66e-ed31-4577-d4f6-6f9b47583f05" data-execution_count="477">
+<div id="cell-30" class="cell" data-outputid="4e57d66e-ed31-4577-d4f6-6f9b47583f05" data-execution_count="477">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Epd=deconv(Ipd)'</span>, x<span class="op">=</span>inf_df.loc[<span class="st">'France'</span>].index, y<span class="op">=</span>Enext),</span>
@@ -1007,7 +1038,6 @@ Iteration #30: MSE= 2034.180323331884 so we use the result of the previous itera
 <span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -1064,7 +1094,7 @@ if (outputEl) {{
 <h4 class="anchored" data-anchor-id="beta-and-r-from-e_pd-and-i-1">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></h4>
 <p>As described above:</p>
 <p><span class="math display">\[R = \frac{E_{pd}}{\gamma~I}\]</span></p>
-<div class="cell" data-outputid="a70d75a5-447f-423a-fe02-b18ac6f1a8f1" data-execution_count="478">
+<div id="cell-32" class="cell" data-outputid="a70d75a5-447f-423a-fe02-b18ac6f1a8f1" data-execution_count="478">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R</span></span>
@@ -1090,7 +1120,6 @@ if (outputEl) {{
 <span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -1150,7 +1179,7 @@ if (outputEl) {{
 <p>Use fc = 0.05</p>
 <section id="checking-h_i-2" class="level4">
 <h4 class="anchored" data-anchor-id="checking-h_i-2">1. Checking <span class="math inline">\(h_I\)</span></h4>
-<div class="cell" data-outputid="9a08fba4-1198-450f-9092-47ccb3c9485e" data-execution_count="479">
+<div id="cell-36" class="cell" data-outputid="9a08fba4-1198-450f-9092-47ccb3c9485e" data-execution_count="479">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    go.Bar(name<span class="op">=</span><span class="st">'Ipd'</span>, x<span class="op">=</span>conf_df_pd.loc[<span class="st">'Germany'</span>].index, y<span class="op">=</span>conf_df_pd.loc[<span class="st">'Germany'</span>]),</span>
@@ -1172,7 +1201,6 @@ if (outputEl) {{
 <span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -1229,7 +1257,7 @@ if (outputEl) {{
 </section>
 <section id="estimating-e_pd-by-deconvolution-of-i_pd-2" class="level4">
 <h4 class="anchored" data-anchor-id="estimating-e_pd-by-deconvolution-of-i_pd-2">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></h4>
-<div class="cell" data-outputid="e67fd1aa-92f0-4c37-ba2d-db4f75c67692" data-execution_count="480">
+<div id="cell-39" class="cell" data-outputid="e67fd1aa-92f0-4c37-ba2d-db4f75c67692" data-execution_count="480">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Settting up for deconvolution of Ipd</span></span>
@@ -1319,7 +1347,7 @@ Iteration #48: MSE= 226.27080566070512
 Iteration #49: MSE= 226.32595033054216 so we use the result of the previous iteration.</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="99973412-2d20-465a-f08c-db3fa2a0945e" data-execution_count="483">
+<div id="cell-40" class="cell" data-outputid="99973412-2d20-465a-f08c-db3fa2a0945e" data-execution_count="483">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We can keep going the iteration until lowest MSE</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1345,7 +1373,7 @@ Iteration #49: MSE= 226.32595033054216 so we use the result of the previous iter
 208.05908470510605</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="3e0c6e7c-6179-4868-df81-9391b9b19e72" data-execution_count="484">
+<div id="cell-41" class="cell" data-outputid="3e0c6e7c-6179-4868-df81-9391b9b19e72" data-execution_count="484">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Epd=deconv(Ipd)'</span>, x<span class="op">=</span>inf_df.loc[<span class="st">'Germany'</span>].index, y<span class="op">=</span>Enext),</span>
@@ -1367,7 +1395,6 @@ Iteration #49: MSE= 226.32595033054216 so we use the result of the previous iter
 <span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -1426,7 +1453,7 @@ if (outputEl) {{
 <h4 class="anchored" data-anchor-id="beta-and-r-from-e_pd-and-i-2">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></h4>
 <p>As described above:</p>
 <p><span class="math display">\[R = \frac{E_{pd}}{\gamma~I}\]</span></p>
-<div class="cell" data-outputid="0da0a33e-596c-45a5-c59f-8744628ef9b8" data-execution_count="485">
+<div id="cell-44" class="cell" data-outputid="0da0a33e-596c-45a5-c59f-8744628ef9b8" data-execution_count="485">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R</span></span>
@@ -1452,7 +1479,6 @@ if (outputEl) {{
 <span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -1511,7 +1537,7 @@ if (outputEl) {{
 <h3 class="anchored" data-anchor-id="switzerland">Switzerland</h3>
 <section id="checking-h_i-3" class="level4">
 <h4 class="anchored" data-anchor-id="checking-h_i-3">1. Checking <span class="math inline">\(h_I\)</span></h4>
-<div class="cell" data-outputid="125c1968-babc-4160-cdfe-4e4fac90f533" data-execution_count="486">
+<div id="cell-48" class="cell" data-outputid="125c1968-babc-4160-cdfe-4e4fac90f533" data-execution_count="486">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    go.Bar(name<span class="op">=</span><span class="st">'Ipd'</span>, x<span class="op">=</span>conf_df_pd.loc[<span class="st">'Switzerland'</span>].index, y<span class="op">=</span>conf_df_pd.loc[<span class="st">'Switzerland'</span>]),</span>
@@ -1533,7 +1559,6 @@ if (outputEl) {{
 <span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -1589,7 +1614,7 @@ if (outputEl) {{
 </section>
 <section id="estimating-e_pd-by-deconvolution-of-i_pd-3" class="level4">
 <h4 class="anchored" data-anchor-id="estimating-e_pd-by-deconvolution-of-i_pd-3">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></h4>
-<div class="cell" data-outputid="8423ab93-7851-4064-8872-a2f2b6543a8c" data-execution_count="488">
+<div id="cell-51" class="cell" data-outputid="8423ab93-7851-4064-8872-a2f2b6543a8c" data-execution_count="488">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Settting up for deconvolution of Ipd</span></span>
@@ -1638,7 +1663,7 @@ Iteration #7: MSE= 73.32554749188243
 Iteration #8: MSE= 73.40930143937898 so we use the result of the previous iteration.</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="5d21fb94-ec35-4760-e78e-43db729f8b5f" data-execution_count="493">
+<div id="cell-52" class="cell" data-outputid="5d21fb94-ec35-4760-e78e-43db729f8b5f" data-execution_count="493">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We can keep going the iteration until lowest MSE</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1664,7 +1689,7 @@ Iteration #8: MSE= 73.40930143937898 so we use the result of the previous iterat
 35.613648731822856</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="387448fa-1a80-4ef9-aa87-8932821f090d" data-execution_count="494">
+<div id="cell-53" class="cell" data-outputid="387448fa-1a80-4ef9-aa87-8932821f090d" data-execution_count="494">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Epd=deconv(Ipd)'</span>, x<span class="op">=</span>inf_df.loc[<span class="st">'Switzerland'</span>].index, y<span class="op">=</span>Enext),</span>
@@ -1686,7 +1711,6 @@ Iteration #8: MSE= 73.40930143937898 so we use the result of the previous iterat
 <span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -1745,7 +1769,7 @@ if (outputEl) {{
 <h4 class="anchored" data-anchor-id="beta-and-r-from-e_pd-and-i-3">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></h4>
 <p>As described above:</p>
 <p><span class="math display">\[R = \frac{E_{pd}}{\gamma~I}\]</span></p>
-<div class="cell" data-outputid="a69e7c23-5f85-413b-bd2d-9951f7f3b5a0" data-execution_count="495">
+<div id="cell-56" class="cell" data-outputid="a69e7c23-5f85-413b-bd2d-9951f7f3b5a0" data-execution_count="495">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R</span></span>
@@ -1771,7 +1795,6 @@ if (outputEl) {{
 <span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -1829,7 +1852,7 @@ if (outputEl) {{
 <h3 class="anchored" data-anchor-id="united-states">United States</h3>
 <section id="checking-h_i-4" class="level4">
 <h4 class="anchored" data-anchor-id="checking-h_i-4">1. Checking <span class="math inline">\(h_I\)</span></h4>
-<div class="cell" data-outputid="c9894c4e-0f31-40ab-b5a7-bd5ec5b2c5b0" data-execution_count="496">
+<div id="cell-59" class="cell" data-outputid="c9894c4e-0f31-40ab-b5a7-bd5ec5b2c5b0" data-execution_count="496">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
@@ -1852,7 +1875,6 @@ if (outputEl) {{
 <span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -1908,7 +1930,7 @@ if (outputEl) {{
 </section>
 <section id="estimating-e_pd-by-deconvolution-of-i_pd-4" class="level4">
 <h4 class="anchored" data-anchor-id="estimating-e_pd-by-deconvolution-of-i_pd-4">2. Estimating <span class="math inline">\(E_{pd}\)</span> by deconvolution of <span class="math inline">\(I_{pd}\)</span></h4>
-<div class="cell" data-outputid="bf00c861-9829-4542-b6ff-ca7729a8bf2e" data-execution_count="527">
+<div id="cell-62" class="cell" data-outputid="bf00c861-9829-4542-b6ff-ca7729a8bf2e" data-execution_count="527">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Settting up for deconvolution of Ipd</span></span>
@@ -1981,7 +2003,7 @@ Iteration #28: MSE= 53959.94059590202
 Iteration #29: MSE= 54120.03347178106 so we use the result of the previous iteration.</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="065ffeb3-ad5d-4b84-df39-80e10e2c7c0c" data-execution_count="530">
+<div id="cell-63" class="cell" data-outputid="065ffeb3-ad5d-4b84-df39-80e10e2c7c0c" data-execution_count="530">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We can keep going the iteration until lowest MSE</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2007,7 +2029,7 @@ Iteration #29: MSE= 54120.03347178106 so we use the result of the previous itera
 33274.1027461995</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="4b6f337f-d678-4f78-f3a4-6a5de2675792" data-execution_count="531">
+<div id="cell-64" class="cell" data-outputid="4b6f337f-d678-4f78-f3a4-6a5de2675792" data-execution_count="531">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[    </span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    go.Scatter(name<span class="op">=</span><span class="st">'Epd=deconv(Ipd)'</span>, x<span class="op">=</span>inf_df.loc[<span class="st">'US'</span>].index, y<span class="op">=</span>Enext),</span>
@@ -2029,7 +2051,6 @@ Iteration #29: MSE= 54120.03347178106 so we use the result of the previous itera
 <span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -2086,7 +2107,7 @@ if (outputEl) {{
 <h4 class="anchored" data-anchor-id="beta-and-r-from-e_pd-and-i-4">3. <span class="math inline">\(\beta\)</span> and <span class="math inline">\(R\)</span> from <span class="math inline">\(E_{pd}\)</span> and <span class="math inline">\(I\)</span></h4>
 <p>As described above:</p>
 <p><span class="math display">\[R = \frac{E_{pd}}{\gamma~I}\]</span></p>
-<div class="cell" data-outputid="d34d895d-d958-4eae-cc05-549f97d7f2eb" data-execution_count="532">
+<div id="cell-66" class="cell" data-outputid="d34d895d-d958-4eae-cc05-549f97d7f2eb" data-execution_count="532">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collapse_hide</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R</span></span>
@@ -2112,7 +2133,6 @@ if (outputEl) {{
 <span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-
 
 <meta charset="utf-8">
 
@@ -2216,6 +2236,33 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
   }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
   const toggleColorMode = (alternate) => {
     // Switch the stylesheets
     const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
@@ -2282,13 +2329,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return localAlternateSentinel;
     }
   }
-  let localAlternateSentinel = 'alternate';
+  const darkModeDefault = true;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
   // Dark / light mode switch
   window.quartoToggleColorScheme = () => {
     // Read the current dark / light value 
     let toAlternate = !hasAlternateSentinel();
     toggleColorMode(toAlternate);
     setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
   };
   // Ensure there is a toggle, if there isn't float one in the top right
   if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -2323,18 +2372,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -2366,11 +2404,48 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/jeffreypost\.dev\/scattered-thoughts");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -2380,8 +2455,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -2393,7 +2477,129 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -2437,6 +2643,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -2462,6 +2669,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -2522,6 +2755,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
