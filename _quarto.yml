@@ -21,7 +21,8 @@ format:
   html:
     html-math-method:
       method: mathjax
-      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+      #url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+      url: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG"
     #execute: true
 #    theme: sandstone
 #    css: styles.css
