@@ -19,5 +19,8 @@ website:
         href: mailto:contact@jeffreypost.dev
 format:
   html:
-    theme: sandstone
-    css: styles.css
+#    theme: sandstone
+#    css: styles.css
+    theme:
+#      light: flatly
+      dark: darkly
