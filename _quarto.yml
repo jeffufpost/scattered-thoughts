@@ -19,6 +19,10 @@ website:
         href: mailto:contact@jeffreypost.dev
 format:
   html:
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    #execute: true
 #    theme: sandstone
 #    css: styles.css
     theme:
