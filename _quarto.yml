@@ -26,6 +26,7 @@ format:
     #execute: true
 #    theme: sandstone
 #    css: styles.css
+    include-after-body: plausible.html
     theme:
 #      light: flatly
       dark: darkly
