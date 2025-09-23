@@ -2,54 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/about.html</loc>
-    <lastmod>2025-09-23T11:57:48.216Z</lastmod>
+    <lastmod>2025-09-23T12:10:02.354Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html</loc>
-    <lastmod>2025-09-23T11:57:46.316Z</lastmod>
+    <lastmod>2025-09-23T12:10:00.422Z</lastmod>
   </url>
   <url>
-    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-control-measures/2020-04-02-control-measures.html</loc>
-    <lastmod>2025-09-23T11:57:45.348Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-12-on-testing/2020-04-12-on-testing.html</loc>
-    <lastmod>2025-09-23T11:57:43.204Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html</loc>
-    <lastmod>2025-09-23T11:57:42.064Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2021_05_05_stochastic_HIV_model/2021_05_05_stochastic_HIV_model.html</loc>
-    <lastmod>2025-09-23T11:57:40.679Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html</loc>
-    <lastmod>2025-09-23T11:57:39.475Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html</loc>
-    <lastmod>2025-09-23T11:57:40.115Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-convolution/2020-04-02-convolution.html</loc>
-    <lastmod>2025-09-23T11:57:41.300Z</lastmod>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html</loc>
+    <lastmod>2025-09-23T12:09:59.466Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html</loc>
-    <lastmod>2025-09-23T11:57:44.760Z</lastmod>
+    <lastmod>2025-09-23T12:09:58.342Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html</loc>
+    <lastmod>2025-09-23T12:09:55.158Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html</loc>
+    <lastmod>2025-09-23T12:09:53.814Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html</loc>
+    <lastmod>2025-09-23T12:09:53.182Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-convolution/2020-04-02-convolution.html</loc>
+    <lastmod>2025-09-23T12:09:54.422Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html</loc>
+    <lastmod>2025-09-23T12:09:55.702Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-12-on-testing/2020-04-12-on-testing.html</loc>
+    <lastmod>2025-09-23T12:09:56.826Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-control-measures/2020-04-02-control-measures.html</loc>
+    <lastmod>2025-09-23T12:09:58.926Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html</loc>
-    <lastmod>2025-09-23T11:57:45.524Z</lastmod>
+    <lastmod>2025-09-23T12:09:59.634Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-06-02-real-world/2020-06-02-real-world.html</loc>
-    <lastmod>2025-09-23T11:57:47.308Z</lastmod>
+    <lastmod>2025-09-23T12:10:01.410Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/index.html</loc>
-    <lastmod>2025-09-23T11:57:48.060Z</lastmod>
+    <lastmod>2025-09-23T12:10:02.198Z</lastmod>
   </url>
 </urlset>
