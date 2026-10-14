@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -38,12 +38,12 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-637429c65f85fc40a9fd37027d131457.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-e8eed2d3bb732bbf8e11ed88ff86d3dd.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-1e60175aab249deffa387b4b6cb09dbc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-80109ac5f732ec2d0f094952867d48e0.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -52,7 +52,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -61,6 +67,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -104,9 +111,39 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-M3QJE9ZPZT', { 'anonymize_ip': true});
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap">
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -114,70 +151,76 @@ gtag('config', 'G-M3QJE9ZPZT', { 'anonymize_ip': true});
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Scattered Thoughts</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="https:/github.com/jeffufpost" rel="" target="">
- <span class="menu-text"><i class="fa-brands fa-github" aria-label="github"></i></span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="https://renkulab.io/gitlab/jeffrey.post" rel="" target="">
- <span class="menu-text"><i class="fa-brands fa-gitlab" aria-label="gitlab"></i></span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="mailto:contact@jeffreypost.dev" rel="" target="">
- <span class="menu-text"><i class="fa-solid fa-envelope" aria-label="envelope"></i></span></a>
+    <a class="nav-link" href="https://jeffreypost.dev"> 
+<span class="menu-text">jeffreypost.dev</span></a>
   </li>  
 </ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/jeffufpost"> 
+<span class="menu-text"><i class="fa-brands fa-github" aria-label="github"></i></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://renkulab.io/gitlab/jeffrey.post"> 
+<span class="menu-text"><i class="fa-brands fa-gitlab" aria-label="gitlab"></i></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="mailto:contact@jeffreypost.dev"> 
+<span class="menu-text"><i class="fa-solid fa-envelope" aria-label="envelope"></i></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
-          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Scattered Thoughts</h1>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(12)</span></div><div class="category" data-category="AIDS">AIDS <span class="quarto-category-count">(2)</span></div><div class="category" data-category="COVID-19">COVID-19 <span class="quarto-category-count">(7)</span></div><div class="category" data-category="Dashboards">Dashboards <span class="quarto-category-count">(1)</span></div><div class="category" data-category="HIV">HIV <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Plotly">Plotly <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SEIR">SEIR <span class="quarto-category-count">(10)</span></div><div class="category" data-category="compartmentalization">compartmentalization <span class="quarto-category-count">(2)</span></div><div class="category" data-category="disease dynamics">disease dynamics <span class="quarto-category-count">(2)</span></div><div class="category" data-category="epidemiology">epidemiology <span class="quarto-category-count">(10)</span></div><div class="category" data-category="modeling">modeling <span class="quarto-category-count">(10)</span></div><div class="category" data-category="probability distributions">probability distributions <span class="quarto-category-count">(4)</span></div><div class="category" data-category="real-world">real-world <span class="quarto-category-count">(2)</span></div><div class="category" data-category="reproduction number">reproduction number <span class="quarto-category-count">(1)</span></div><div class="category" data-category="serology">serology <span class="quarto-category-count">(1)</span></div><div class="category" data-category="stochastic">stochastic <span class="quarto-category-count">(7)</span></div><div class="category" data-category="testing">testing <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(12)</span></div><div class="category" data-category="QUlEUw==">AIDS <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Q09WSUQtMTk=">COVID-19 <span class="quarto-category-count">(7)</span></div><div class="category" data-category="RGFzaGJvYXJkcw==">Dashboards <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SElW">HIV <span class="quarto-category-count">(2)</span></div><div class="category" data-category="UGxvdGx5">Plotly <span class="quarto-category-count">(1)</span></div><div class="category" data-category="U0VJUg==">SEIR <span class="quarto-category-count">(10)</span></div><div class="category" data-category="Y29tcGFydG1lbnRhbGl6YXRpb24=">compartmentalization <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ZGlzZWFzZSUyMGR5bmFtaWNz">disease dynamics <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ZXBpZGVtaW9sb2d5">epidemiology <span class="quarto-category-count">(10)</span></div><div class="category" data-category="bW9kZWxpbmc=">modeling <span class="quarto-category-count">(10)</span></div><div class="category" data-category="cHJvYmFiaWxpdHklMjBkaXN0cmlidXRpb25z">probability distributions <span class="quarto-category-count">(4)</span></div><div class="category" data-category="cmVhbC13b3JsZA==">real-world <span class="quarto-category-count">(2)</span></div><div class="category" data-category="cmVwcm9kdWN0aW9uJTIwbnVtYmVy">reproduction number <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c2Vyb2xvZ3k=">serology <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c3RvY2hhc3RpYw==">stochastic <span class="quarto-category-count">(7)</span></div><div class="category" data-category="dGVzdGluZw==">testing <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Scattered Thoughts</h1>
+</div>
 
 
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
 
 
 
@@ -186,50 +229,48 @@ gtag('config', 'G-M3QJE9ZPZT', { 'anonymize_ip': true});
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="probability distributions,modeling,SEIR,epidemiology,stochastic,HIV,AIDS" data-listing-date-sort="1632348000000" data-listing-file-modified-sort="1758629389554" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="0" data-categories="cHJvYmFiaWxpdHklMjBkaXN0cmlidXRpb25zJTJDbW9kZWxpbmclMkNTRUlSJTJDZXBpZGVtaW9sb2d5JTJDc3RvY2hhc3RpYyUyQ0hJViUyQ0FJRFM=" data-listing-date-sort="1632355200000" data-listing-file-modified-sort="1791972648365" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="255">
 <div class="thumbnail">
-<p><a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html"> <img src="./posts/images/HIV_stochastic.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html" class="no-external"></a></p><a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/HIV_stochastic.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html">
 <h3 class="no-anchor listing-title">
-HIV modeling
+<a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html" class="no-external">HIV modeling</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('probability distributions'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('cHJvYmFiaWxpdHklMjBkaXN0cmlidXRpb25z'); return false;">
 probability distributions
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('stochastic'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('c3RvY2hhc3RpYw=='); return false;">
 stochastic
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('HIV'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('SElW'); return false;">
 HIV
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('AIDS'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('QUlEUw=='); return false;">
 AIDS
 </div>
 </div>
-<a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html">
 <div class="listing-description">
-<p>Building a new stochastic SEIR model to deal with probability distributions.. but faster</p>
+<a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html" class="no-external">Building a new stochastic SEIR model to deal with probability distributions.. but faster</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html">
+<a href="./posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html" class="no-external">
 <div class="listing-date">
 Sep 23, 2021
 </div>
@@ -239,47 +280,45 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="modeling,SEIR,epidemiology,stochastic,COVID-19,real-world" data-listing-date-sort="1591048800000" data-listing-file-modified-sort="1742904416658" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="1" data-categories="bW9kZWxpbmclMkNTRUlSJTJDZXBpZGVtaW9sb2d5JTJDc3RvY2hhc3RpYyUyQ0NPVklELTE5JTJDcmVhbC13b3JsZA==" data-listing-date-sort="1591056000000" data-listing-file-modified-sort="1791972648329" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="848">
 <div class="thumbnail">
-<p><a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html"> <img src="./posts/images/goodness-of-fit.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html" class="no-external"></a></p><a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/goodness-of-fit.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html">
 <h3 class="no-anchor listing-title">
-Epidemic modeling - Part 8
+<a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html" class="no-external">Epidemic modeling - Part 8</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('stochastic'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('c3RvY2hhc3RpYw=='); return false;">
 stochastic
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('COVID-19'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('Q09WSUQtMTk='); return false;">
 COVID-19
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('real-world'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('cmVhbC13b3JsZA=='); return false;">
 real-world
 </div>
 </div>
-<a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html">
 <div class="listing-description">
-<p>Studying real-world data</p>
+<a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html" class="no-external">Studying real-world data</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html">
+<a href="./posts/2020-06-02-real-world/2020-06-02-real-world.html" class="no-external">
 <div class="listing-date">
 Jun 2, 2020
 </div>
@@ -289,50 +328,48 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="probability distributions,modeling,SEIR,epidemiology,stochastic,HIV,AIDS" data-listing-date-sort="1588629600000" data-listing-file-modified-sort="1758549687077" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="2" data-categories="cHJvYmFiaWxpdHklMjBkaXN0cmlidXRpb25zJTJDbW9kZWxpbmclMkNTRUlSJTJDZXBpZGVtaW9sb2d5JTJDc3RvY2hhc3RpYyUyQ0hJViUyQ0FJRFM=" data-listing-date-sort="1588636800000" data-listing-file-modified-sort="1791972648347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="255">
 <div class="thumbnail">
-<p><a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html"> <img src="./posts/images/HIV_stochastic.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html" class="no-external"></a></p><a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/HIV_stochastic.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html">
 <h3 class="no-anchor listing-title">
-HIV modeling
+<a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html" class="no-external">HIV modeling</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('probability distributions'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('cHJvYmFiaWxpdHklMjBkaXN0cmlidXRpb25z'); return false;">
 probability distributions
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('stochastic'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('c3RvY2hhc3RpYw=='); return false;">
 stochastic
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('HIV'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('SElW'); return false;">
 HIV
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('AIDS'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('QUlEUw=='); return false;">
 AIDS
 </div>
 </div>
-<a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html">
 <div class="listing-description">
-<p>Building a new stochastic SEIR model to deal with probability distributions</p>
+<a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html" class="no-external">Building a new stochastic SEIR model to deal with probability distributions</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html">
+<a href="./posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html" class="no-external">
 <div class="listing-date">
 May 5, 2020
 </div>
@@ -342,38 +379,36 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="COVID-19,testing,serology" data-listing-date-sort="1586642400000" data-listing-file-modified-sort="1742415463103" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9">
+<div class="quarto-post image-right" data-index="3" data-categories="Q09WSUQtMTklMkN0ZXN0aW5nJTJDc2Vyb2xvZ3k=" data-listing-date-sort="1586649600000" data-listing-file-modified-sort="1791972648295" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1791">
 <div class="thumbnail">
-<p><a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html"> <img src="./posts/images/testing.jpg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html" class="no-external"></a></p><a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/testing.jpg" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html">
 <h3 class="no-anchor listing-title">
-Testing - what to be aware of
+<a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html" class="no-external">Testing - what to be aware of</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('COVID-19'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('Q09WSUQtMTk='); return false;">
 COVID-19
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('testing'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('dGVzdGluZw=='); return false;">
 testing
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('serology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('c2Vyb2xvZ3k='); return false;">
 serology
 </div>
 </div>
-<a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html">
 <div class="listing-description">
-<p>A common case used to identify gaps in knowledge on serology testing</p>
+<a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html" class="no-external">A common case used to identify gaps in knowledge on serology testing</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html">
+<a href="./posts/2020-04-12-on-testing/2020-04-12-on-testing.html" class="no-external">
 <div class="listing-date">
 Apr 12, 2020
 </div>
@@ -383,44 +418,42 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="modeling,SEIR,epidemiology,stochastic,COVID-19" data-listing-date-sort="1585864800000" data-listing-file-modified-sort="1742281203496" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="4" data-categories="bW9kZWxpbmclMkNTRUlSJTJDZXBpZGVtaW9sb2d5JTJDc3RvY2hhc3RpYyUyQ0NPVklELTE5" data-listing-date-sort="1585872000000" data-listing-file-modified-sort="1791972648257" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="891">
 <div class="thumbnail">
-<p><a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html"> <img src="./posts/images/kalman_filter.jpg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html" class="no-external"></a></p><a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/kalman_filter.jpg" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html">
 <h3 class="no-anchor listing-title">
-Epidemic modeling - Part 7
+<a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html" class="no-external">Epidemic modeling - Part 7</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('stochastic'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('c3RvY2hhc3RpYw=='); return false;">
 stochastic
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('COVID-19'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('Q09WSUQtMTk='); return false;">
 COVID-19
 </div>
 </div>
-<a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html">
 <div class="listing-description">
-<p>Convolution, deconvolution, and daily data</p>
+<a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html" class="no-external">Convolution, deconvolution, and daily data</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html">
+<a href="./posts/2020-04-02-convolution/2020-04-02-convolution.html" class="no-external">
 <div class="listing-date">
 Apr 3, 2020
 </div>
@@ -430,47 +463,45 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="modeling,SEIR,epidemiology,stochastic,COVID-19,real-world" data-listing-date-sort="1585778400000" data-listing-file-modified-sort="1742280434908" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="5" data-categories="bW9kZWxpbmclMkNTRUlSJTJDZXBpZGVtaW9sb2d5JTJDc3RvY2hhc3RpYyUyQ0NPVklELTE5JTJDcmVhbC13b3JsZA==" data-listing-date-sort="1585785600000" data-listing-file-modified-sort="1791972648239" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="938">
 <div class="thumbnail">
-<p><a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html"> <img src="./posts/images/control_measures.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html" class="no-external"></a></p><a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/control_measures.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html">
 <h3 class="no-anchor listing-title">
-Epidemic modeling - Part 6
+<a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html" class="no-external">Epidemic modeling - Part 6</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('stochastic'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('c3RvY2hhc3RpYw=='); return false;">
 stochastic
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('COVID-19'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('Q09WSUQtMTk='); return false;">
 COVID-19
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('real-world'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('cmVhbC13b3JsZA=='); return false;">
 real-world
 </div>
 </div>
-<a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html">
 <div class="listing-description">
-<p>A quick overview of control measures in times of pandemic/epidemic</p>
+<a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html" class="no-external">A quick overview of control measures in times of pandemic/epidemic</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html">
+<a href="./posts/2020-04-02-control-measures/2020-04-02-control-measures.html" class="no-external">
 <div class="listing-date">
 Apr 2, 2020
 </div>
@@ -480,47 +511,45 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="modeling,SEIR,epidemiology,stochastic,COVID-19,reproduction number" data-listing-date-sort="1585692000000" data-listing-file-modified-sort="1742280226962" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="6" data-categories="bW9kZWxpbmclMkNTRUlSJTJDZXBpZGVtaW9sb2d5JTJDc3RvY2hhc3RpYyUyQ0NPVklELTE5JTJDcmVwcm9kdWN0aW9uJTIwbnVtYmVy" data-listing-date-sort="1585699200000" data-listing-file-modified-sort="1791972648221" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="735">
 <div class="thumbnail">
-<p><a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html"> <img src="./posts/images/reprod_number.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html" class="no-external"></a></p><a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/reprod_number.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html">
 <h3 class="no-anchor listing-title">
-Epidemic modeling - Part 5
+<a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html" class="no-external">Epidemic modeling - Part 5</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('stochastic'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('c3RvY2hhc3RpYw=='); return false;">
 stochastic
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('COVID-19'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('Q09WSUQtMTk='); return false;">
 COVID-19
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('reproduction number'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('cmVwcm9kdWN0aW9uJTIwbnVtYmVy'); return false;">
 reproduction number
 </div>
 </div>
-<a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html">
 <div class="listing-description">
-<p>Further discussion on <span class="math inline">\(R_0\)</span>, distribution of <span class="math inline">\(T_{Infectious}\)</span>, and their impact on peak infectious in SEIR model</p>
+<a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html" class="no-external">Further discussion on <span class="math inline">\(R_0\)</span>, distribution of <span class="math inline">\(T_{Infectious}\)</span>, and their impact on peak infectious in SEIR model</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html">
+<a href="./posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html" class="no-external">
 <div class="listing-date">
 Apr 1, 2020
 </div>
@@ -530,47 +559,45 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="probability distributions,modeling,SEIR,epidemiology,stochastic,COVID-19" data-listing-date-sort="1585605600000" data-listing-file-modified-sort="1742280123777" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6">
+<div class="quarto-post image-right" data-index="7" data-categories="cHJvYmFiaWxpdHklMjBkaXN0cmlidXRpb25zJTJDbW9kZWxpbmclMkNTRUlSJTJDZXBpZGVtaW9sb2d5JTJDc3RvY2hhc3RpYyUyQ0NPVklELTE5" data-listing-date-sort="1585612800000" data-listing-file-modified-sort="1791972648197" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1130">
 <div class="thumbnail">
-<p><a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html"> <img src="./posts/images/stochastic_SEIR.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html" class="no-external"></a></p><a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/stochastic_SEIR.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html">
 <h3 class="no-anchor listing-title">
-Epidemic modeling - Part 4
+<a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html" class="no-external">Epidemic modeling - Part 4</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('probability distributions'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('cHJvYmFiaWxpdHklMjBkaXN0cmlidXRpb25z'); return false;">
 probability distributions
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('stochastic'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('c3RvY2hhc3RpYw=='); return false;">
 stochastic
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('COVID-19'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('Q09WSUQtMTk='); return false;">
 COVID-19
 </div>
 </div>
-<a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html">
 <div class="listing-description">
-<p>Building a new stochastic SEIR model to deal with probability distributions</p>
+<a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html" class="no-external">Building a new stochastic SEIR model to deal with probability distributions</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html">
+<a href="./posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html" class="no-external">
 <div class="listing-date">
 Mar 31, 2020
 </div>
@@ -580,41 +607,39 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="probability distributions,modeling,SEIR,epidemiology" data-listing-date-sort="1585090800000" data-listing-file-modified-sort="1742279984882" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6">
+<div class="quarto-post image-right" data-index="8" data-categories="cHJvYmFiaWxpdHklMjBkaXN0cmlidXRpb25zJTJDbW9kZWxpbmclMkNTRUlSJTJDZXBpZGVtaW9sb2d5" data-listing-date-sort="1585094400000" data-listing-file-modified-sort="1791972648175" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1020">
 <div class="thumbnail">
-<p><a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html"> <img src="./posts/images/proba_distrib.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html" class="no-external"></a></p><a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/proba_distrib.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html">
 <h3 class="no-anchor listing-title">
-Epidemic modeling - Part 3
+<a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html" class="no-external">Epidemic modeling - Part 3</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('probability distributions'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('cHJvYmFiaWxpdHklMjBkaXN0cmlidXRpb25z'); return false;">
 probability distributions
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
 </div>
-<a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html">
 <div class="listing-description">
-<p>Examining the major flaw of the deterministic SEIR model</p>
+<a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html" class="no-external">Examining the major flaw of the deterministic SEIR model</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html">
+<a href="./posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html" class="no-external">
 <div class="listing-date">
 Mar 25, 2020
 </div>
@@ -624,44 +649,42 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="9" data-categories="modeling,compartmentalization,SEIR,epidemiology,disease dynamics" data-listing-date-sort="1584486000000" data-listing-file-modified-sort="1742278896772" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7">
+<div class="quarto-post image-right" data-index="9" data-categories="bW9kZWxpbmclMkNjb21wYXJ0bWVudGFsaXphdGlvbiUyQ1NFSVIlMkNlcGlkZW1pb2xvZ3klMkNkaXNlYXNlJTIwZHluYW1pY3M=" data-listing-date-sort="1584489600000" data-listing-file-modified-sort="1791972648139" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1201">
 <div class="thumbnail">
-<p><a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html"> <img src="./posts/images/deterministic_SEIR.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html" class="no-external"></a></p><a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/deterministic_SEIR.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html">
 <h3 class="no-anchor listing-title">
-Epidemic modeling - Part 2
+<a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html" class="no-external">Epidemic modeling - Part 2</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('compartmentalization'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('Y29tcGFydG1lbnRhbGl6YXRpb24='); return false;">
 compartmentalization
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('disease dynamics'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZGlzZWFzZSUyMGR5bmFtaWNz'); return false;">
 disease dynamics
 </div>
 </div>
-<a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html">
 <div class="listing-description">
-<p>A deterministic numerical SEIR model</p>
+<a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html" class="no-external">A deterministic numerical SEIR model</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html">
+<a href="./posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html" class="no-external">
 <div class="listing-date">
 Mar 18, 2020
 </div>
@@ -671,44 +694,42 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="10" data-categories="modeling,compartmentalization,SEIR,epidemiology,disease dynamics" data-listing-date-sort="1584226800000" data-listing-file-modified-sort="1742204731517" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12">
+<div class="quarto-post image-right" data-index="10" data-categories="bW9kZWxpbmclMkNjb21wYXJ0bWVudGFsaXphdGlvbiUyQ1NFSVIlMkNlcGlkZW1pb2xvZ3klMkNkaXNlYXNlJTIwZHluYW1pY3M=" data-listing-date-sort="1584230400000" data-listing-file-modified-sort="1791972648045" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2342">
 <div class="thumbnail">
-<p><a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html"> <img src="./posts/images/compartmentalization.jpg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html" class="no-external"></a></p><a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html" class="no-external">
+<p><img loading="lazy" src="./posts/images/compartmentalization.jpg" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html">
 <h3 class="no-anchor listing-title">
-Epidemic modeling - Part 1
+<a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html" class="no-external">Epidemic modeling - Part 1</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('bW9kZWxpbmc='); return false;">
 modeling
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('compartmentalization'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('Y29tcGFydG1lbnRhbGl6YXRpb24='); return false;">
 compartmentalization
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('SEIR'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('U0VJUg=='); return false;">
 SEIR
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('epidemiology'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZXBpZGVtaW9sb2d5'); return false;">
 epidemiology
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('disease dynamics'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('ZGlzZWFzZSUyMGR5bmFtaWNz'); return false;">
 disease dynamics
 </div>
 </div>
-<a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html">
 <div class="listing-description">
-<p>Compartmentalization models and disease dynamics</p>
+<a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html" class="no-external">Compartmentalization models and disease dynamics</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html">
+<a href="./posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html" class="no-external">
 <div class="listing-date">
 Mar 15, 2020
 </div>
@@ -718,38 +739,36 @@ Jeffrey Post
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="11" data-categories="COVID-19,Dashboards,Plotly" data-listing-date-sort="1583967600000" data-listing-file-modified-sort="1742204731513" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="11" data-categories="Q09WSUQtMTklMkNEYXNoYm9hcmRzJTJDUGxvdGx5" data-listing-date-sort="1583971200000" data-listing-file-modified-sort="1791972648044" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="140">
 <div class="thumbnail">
-<p><a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html"> <img src="./posts/2020-03-12-COVID-19-Tracker/sars-cov2-world-tracker.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html" class="no-external"></a></p><a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html" class="no-external">
+<p><img loading="lazy" src="./posts/2020-03-12-COVID-19-Tracker/sars-cov2-world-tracker.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html">
 <h3 class="no-anchor listing-title">
-COVID-19 Tracker Map
+<a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html" class="no-external">COVID-19 Tracker Map</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('COVID-19'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('Q09WSUQtMTk='); return false;">
 COVID-19
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('Dashboards'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('RGFzaGJvYXJkcw=='); return false;">
 Dashboards
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('Plotly'); return false;">
+<div class="listing-category" onclick="window.quartoListingCategory('UGxvdGx5'); return false;">
 Plotly
 </div>
 </div>
-<a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html">
 <div class="listing-description">
-<p>A link to my COVID-19 map tracker</p>
+<a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html" class="no-external">A link to my COVID-19 map tracker</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html">
+<a href="./posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html" class="no-external">
 <div class="listing-date">
 Mar 12, 2020
 </div>
@@ -764,6 +783,8 @@ Jeffrey Post
 No matching items
 </div>
 </div></main> <!-- /main -->
+<script defer="" data-domain="plausible.jeffreypost.dev" src="https://plausible.jeffreypost.dev/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
+<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -805,6 +826,33 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       } else {
         el.classList.add('notransition');
       }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
     }
   }
   const toggleColorMode = (alternate) => {
@@ -873,13 +921,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return localAlternateSentinel;
     }
   }
-  let localAlternateSentinel = 'alternate';
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
   // Dark / light mode switch
   window.quartoToggleColorScheme = () => {
     // Read the current dark / light value 
     let toAlternate = !hasAlternateSentinel();
     toggleColorMode(toAlternate);
     setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
   };
   // Ensure there is a toggle, if there isn't float one in the top right
   if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -914,18 +964,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -957,11 +996,48 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/jeffreypost\.dev\/scattered-thoughts");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -971,8 +1047,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -984,7 +1069,129 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1028,6 +1235,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1053,6 +1261,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1113,6 +1347,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 

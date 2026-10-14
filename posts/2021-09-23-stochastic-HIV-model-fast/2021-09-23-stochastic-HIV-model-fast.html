@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2021-09-23">
 <meta name="description" content="Building a new stochastic SEIR model to deal with probability distributions.. but faster">
 
-<title>Scattered Thoughts - HIV modeling</title>
+<title>HIV modeling – Scattered Thoughts</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -36,7 +36,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -60,7 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -73,12 +73,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-637429c65f85fc40a9fd37027d131457.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-e8eed2d3bb732bbf8e11ed88ff86d3dd.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-1e60175aab249deffa387b4b6cb09dbc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-80109ac5f732ec2d0f094952867d48e0.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -87,7 +87,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -96,6 +102,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -110,9 +117,11 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-M3QJE9ZPZT', { 'anonymize_ip': true});
 </script>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
         <script type="text/javascript">
         window.PlotlyConfig = {MathJaxConfig: 'local'};
@@ -152,8 +161,35 @@ require(['plotly'], function(Plotly) {
 </script>
 
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -161,87 +197,51 @@ require(['plotly'], function(Plotly) {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Scattered Thoughts</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
- <span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="https:/github.com/jeffufpost" rel="" target="">
- <span class="menu-text"><i class="fa-brands fa-github" aria-label="github"></i></span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="https://renkulab.io/gitlab/jeffrey.post" rel="" target="">
- <span class="menu-text"><i class="fa-brands fa-gitlab" aria-label="gitlab"></i></span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="mailto:contact@jeffreypost.dev" rel="" target="">
- <span class="menu-text"><i class="fa-solid fa-envelope" aria-label="envelope"></i></span></a>
+    <a class="nav-link" href="https://jeffreypost.dev"> 
+<span class="menu-text">jeffreypost.dev</span></a>
   </li>  
 </ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/jeffufpost"> 
+<span class="menu-text"><i class="fa-brands fa-github" aria-label="github"></i></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://renkulab.io/gitlab/jeffrey.post"> 
+<span class="menu-text"><i class="fa-brands fa-gitlab" aria-label="gitlab"></i></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="mailto:contact@jeffreypost.dev"> 
+<span class="menu-text"><i class="fa-solid fa-envelope" aria-label="envelope"></i></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
-          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">HIV modeling</h1>
-                  <div>
-        <div class="description">
-          Building a new stochastic SEIR model to deal with probability distributions.. but faster
-        </div>
-      </div>
-                          <div class="quarto-categories">
-                <div class="quarto-category">probability distributions</div>
-                <div class="quarto-category">modeling</div>
-                <div class="quarto-category">SEIR</div>
-                <div class="quarto-category">epidemiology</div>
-                <div class="quarto-category">stochastic</div>
-                <div class="quarto-category">HIV</div>
-                <div class="quarto-category">AIDS</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Jeffrey Post </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">September 23, 2021</p>
-      </div>
-    </div>
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -259,9 +259,51 @@ require(['plotly'], function(Plotly) {
 </nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">HIV modeling</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">probability distributions</div>
+    <div class="quarto-category">modeling</div>
+    <div class="quarto-category">SEIR</div>
+    <div class="quarto-category">epidemiology</div>
+    <div class="quarto-category">stochastic</div>
+    <div class="quarto-category">HIV</div>
+    <div class="quarto-category">AIDS</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Building a new stochastic SEIR model to deal with probability distributions.. but faster
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jeffrey Post </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 23, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
 
 
 <p><img src="../my_icons/HIV_stochastic.png" class="img-fluid"></p>
@@ -288,8 +330,8 @@ require(['plotly'], function(Plotly) {
 </ol>
 <p>This is done stochastically.</p>
 <p>Once a person becomes I, their progression is unique to them. This progression is calculated in advance for computational reason, but it allows to use the time ditributions we want.</p>
-<div class="cell" data-outputid="84dd1725-aa80-4a84-bd0f-9bc0ae2fea38" data-execution_count="1">
-<details>
+<div id="cell-4" class="cell" data-outputid="84dd1725-aa80-4a84-bd0f-9bc0ae2fea38" data-execution_count="1">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -326,8 +368,8 @@ require(['plotly'], function(Plotly) {
 <section id="creating-the-initial-population-dataframe" class="level3">
 <h3 class="anchored" data-anchor-id="creating-the-initial-population-dataframe">Creating the initial population dataframe</h3>
 <p>Below is a function to create the initial population dataframe: * <span class="math inline">\(p\)</span> is the population number * <span class="math inline">\(num_I\)</span> is the number of infectious on day 0 * <span class="math inline">\(num_R\)</span> is the number of people recovered on day 0</p>
-<div class="cell" data-execution_count="2">
-<details>
+<div id="cell-6" class="cell" data-execution_count="2">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Need this new function for model below:</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_df(p, num_I, num_R):</span>
@@ -343,8 +385,8 @@ require(['plotly'], function(Plotly) {
 </section>
 <section id="building-the-model" class="level3">
 <h3 class="anchored" data-anchor-id="building-the-model">Building the model</h3>
-<div class="cell" data-outputid="b5387391-fdc9-472b-f171-aa5eeb1c921a" data-execution_count="3">
-<details>
+<div id="cell-8" class="cell" data-outputid="b5387391-fdc9-472b-f171-aa5eeb1c921a" data-execution_count="3">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelling the decrease of beta over time</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -363,8 +405,8 @@ require(['plotly'], function(Plotly) {
 <pre><code>np.float64(0.19397059336956546)</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="4">
-<details>
+<div id="cell-9" class="cell" data-execution_count="4">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> seir_model_stoch_fast(beta, beta2, p, num_I, num_R, years, T_Infectious, ART, control):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -582,8 +624,8 @@ require(['plotly'], function(Plotly) {
 </section>
 <section id="testing-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="testing-the-model">Testing the model</h2>
-<div class="cell" data-outputid="ea3d8591-d636-4a16-d089-21f018a731b9" data-execution_count="6">
-<details>
+<div id="cell-11" class="cell" data-outputid="ea3d8591-d636-4a16-d089-21f018a731b9" data-execution_count="6">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define parameters for stochastic model</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>years <span class="op">=</span> <span class="dv">50</span></span>
@@ -612,8 +654,8 @@ require(['plotly'], function(Plotly) {
 <pre><code>100%|██████████| 6/6 [00:02&lt;00:00,  2.88it/s]</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="75aa7a3d-0061-47b4-b60d-ef1863728e24" data-execution_count="7">
-<details>
+<div id="cell-12" class="cell" data-outputid="75aa7a3d-0061-47b4-b60d-ef1863728e24" data-execution_count="7">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -638,7 +680,6 @@ require(['plotly'], function(Plotly) {
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-
 <div>                            <div id="adf24b39-9ae2-402c-ad45-97f493c6618d" class="plotly-graph-div" style="height:600px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("adf24b39-9ae2-402c-ad45-97f493c6618d")) {                    Plotly.newPlot(                        "adf24b39-9ae2-402c-ad45-97f493c6618d",                        [{"legendgroup":"Sim_0","line":{"color":"yellow","dash":"dot"},"name":"Beta_meas0","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319,0.05065820946395319],"type":"scatter"},{"legendgroup":"Sim_0","line":{"color":"red","dash":"dot"},"name":"I_stoch0","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.00055,0.00064,0.00076,0.00087,0.00102,0.00116,0.00135,0.0015,0.00161,0.00172,0.00185,0.00196,0.00215,0.00225,0.00243,0.0026,0.00291,0.00319,0.00354,0.00392,0.00444,0.0049,0.00551,0.00581,0.00644,0.00719,0.00754,0.00801,0.00812,0.00833,0.00858,0.00849,0.00826,0.00789,0.00768,0.00711,0.00654,0.00587,0.00546,0.00504,0.00462,0.00419,0.0038,0.00356,0.00318,0.00287,0.00256,0.00234,0.00212],"type":"scatter"},{"legendgroup":"Sim_0","name":"Ip_stoch0","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0058,0.0011,0.0012,0.0013,0.0019,0.0019,0.0024,0.002,0.0022,0.0021,0.0031,0.0028,0.0039,0.0031,0.0042,0.0033,0.0059,0.0048,0.006,0.0073,0.0085,0.0084,0.0098,0.0075,0.01,0.0123,0.0103,0.0114,0.0085,0.0094,0.0085,0.0071,0.0065,0.0054,0.0055,0.0044,0.0037,0.0028,0.0034,0.0024,0.0023,0.0021,0.0019,0.003,0.0015,0.0022,0.0016,0.0013,0.0011],"type":"bar"},{"legendgroup":"Sim_0","line":{"color":"green","dash":"dot"},"name":"R_stoch0","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0,0.0,0.0,0.0,0.0,1e-05,6e-05,9e-05,0.00017,0.00024,0.00031,0.00038,0.00041,0.00054,0.0006,0.00067,0.00082,0.00087,0.00097,0.0011,0.00122,0.00136,0.00144,0.00154,0.00165,0.00178,0.00204,0.00227,0.00255,0.00291,0.00314,0.00339,0.00379,0.00419,0.00444,0.00487,0.00525,0.00557,0.00571,0.00589,0.00597,0.00602,0.00595,0.00604,0.00599,0.00592,0.00576,0.00563,0.00534],"type":"scatter"},{"legendgroup":"Sim_1","line":{"color":"yellow","dash":"dot"},"name":"Beta_meas1","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716,0.051265367643467716],"type":"scatter"},{"legendgroup":"Sim_1","line":{"color":"red","dash":"dot"},"name":"I_stoch1","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.00057,0.00069,0.00076,0.00087,0.00095,0.00108,0.00116,0.00122,0.00133,0.00142,0.00154,0.00173,0.00179,0.002,0.00227,0.00246,0.00282,0.00297,0.0032,0.00345,0.00382,0.0041,0.00439,0.00472,0.00504,0.00549,0.00583,0.00625,0.00673,0.00706,0.00731,0.00751,0.00767,0.00749,0.00727,0.00706,0.00677,0.00647,0.00607,0.00566,0.00526,0.00477,0.00435,0.00414,0.00381,0.00337,0.00292,0.00275,0.00264],"type":"scatter"},{"legendgroup":"Sim_1","name":"Ip_stoch1","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.006,0.0015,0.0009,0.0017,0.0011,0.0015,0.0017,0.0018,0.0021,0.0018,0.0024,0.0035,0.0022,0.0033,0.0044,0.0034,0.0047,0.0042,0.0048,0.0055,0.0061,0.0068,0.0066,0.007,0.0058,0.0084,0.0083,0.0098,0.0103,0.0104,0.0092,0.0084,0.009,0.007,0.0052,0.0054,0.0051,0.0051,0.0041,0.0037,0.0039,0.0021,0.002,0.003,0.002,0.0017,0.0014,0.0021,0.0022],"type":"bar"},{"legendgroup":"Sim_1","line":{"color":"green","dash":"dot"},"name":"R_stoch1","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0,0.0,0.0,0.0,0.0,0.0,3e-05,0.00011,0.00017,0.00022,0.00029,0.00038,0.00046,0.00052,0.00061,0.00065,0.00068,0.00085,0.00091,0.00103,0.00106,0.00123,0.00136,0.00149,0.00147,0.00164,0.00188,0.00201,0.00224,0.00253,0.00275,0.00294,0.00329,0.00348,0.00368,0.00398,0.0043,0.00471,0.00492,0.00503,0.00525,0.0053,0.00534,0.0053,0.00529,0.00536,0.00533,0.00518,0.00502],"type":"scatter"},{"legendgroup":"Sim_2","line":{"color":"yellow","dash":"dot"},"name":"Beta_meas2","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987],"type":"scatter"},{"legendgroup":"Sim_2","line":{"color":"red","dash":"dot"},"name":"I_stoch2","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.00062,0.00077,0.0009,0.00114,0.00141,0.00179,0.00202,0.00246,0.0029,0.00337,0.0039,0.00487,0.0057,0.00692,0.0081,0.00937,0.01069,0.01207,0.01304,0.01381,0.01459,0.01514,0.0155,0.0154,0.01528,0.01507,0.01477,0.01448,0.0141,0.0134,0.01275,0.0121,0.01124,0.01036,0.00958,0.00893,0.00813,0.00738,0.00672,0.00624,0.00563,0.00502,0.00458,0.00415,0.00384,0.00343,0.00311,0.00276,0.0025],"type":"scatter"},{"legendgroup":"Sim_2","name":"Ip_stoch2","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0063,0.0017,0.0017,0.0027,0.0028,0.0042,0.0031,0.0056,0.0064,0.007,0.0074,0.0122,0.0118,0.0158,0.0179,0.0188,0.0191,0.0211,0.0193,0.018,0.0196,0.0168,0.0171,0.0136,0.0151,0.0151,0.013,0.0119,0.0113,0.0091,0.0097,0.0081,0.0071,0.0071,0.0068,0.005,0.0051,0.0052,0.004,0.0037,0.0029,0.003,0.0023,0.0022,0.0024,0.0022,0.0024,0.0014,0.0013],"type":"bar"},{"legendgroup":"Sim_2","line":{"color":"green","dash":"dot"},"name":"R_stoch2","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0,0.0,0.0,0.0,0.0,0.0,3e-05,8e-05,0.00016,0.00027,0.00035,0.00045,0.00057,0.00066,0.00094,0.00122,0.00142,0.00175,0.00211,0.00243,0.00289,0.00337,0.00401,0.00466,0.00547,0.00619,0.00691,0.00742,0.00799,0.00859,0.00912,0.00957,0.01022,0.01082,0.01124,0.0114,0.0116,0.01177,0.0117,0.01153,0.01128,0.01112,0.01087,0.01054,0.00997,0.00938,0.00882,0.00819,0.00765],"type":"scatter"},{"legendgroup":"Sim_3","line":{"color":"yellow","dash":"dot"},"name":"Beta_meas3","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987,0.05138412627943987],"type":"scatter"},{"legendgroup":"Sim_3","line":{"color":"red","dash":"dot"},"name":"I_stoch3","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.00063,0.00074,0.00088,0.00112,0.00142,0.00172,0.002,0.00237,0.00282,0.0034,0.004,0.00486,0.00582,0.00696,0.00826,0.00971,0.01121,0.01239,0.01315,0.0139,0.01473,0.01525,0.01582,0.01615,0.0161,0.0157,0.01533,0.01466,0.01389,0.0134,0.01258,0.01175,0.01071,0.01011,0.00954,0.00896,0.00839,0.0077,0.00724,0.00666,0.00607,0.00551,0.00492,0.00452,0.00404,0.00374,0.00334,0.00303,0.00271],"type":"scatter"},{"legendgroup":"Sim_3","name":"Ip_stoch3","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0064,0.0013,0.0015,0.0026,0.0038,0.0035,0.0039,0.005,0.0065,0.0079,0.0082,0.0112,0.0129,0.0147,0.0171,0.0204,0.0204,0.0203,0.0176,0.0177,0.017,0.0168,0.0183,0.0172,0.0158,0.0149,0.0133,0.0111,0.0101,0.0106,0.0097,0.008,0.0054,0.0066,0.0071,0.0063,0.0053,0.0051,0.0053,0.0039,0.0026,0.0035,0.0029,0.0023,0.0029,0.0026,0.0014,0.0018,0.0007],"type":"bar"},{"legendgroup":"Sim_3","line":{"color":"green","dash":"dot"},"name":"R_stoch3","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0,0.0,0.0,0.0,0.0,1e-05,3e-05,8e-05,0.00014,0.00019,0.00025,0.00036,0.00049,0.00064,0.00082,0.00103,0.00118,0.0015,0.00191,0.00232,0.00266,0.0032,0.00377,0.00453,0.00519,0.00605,0.00689,0.00783,0.00869,0.00933,0.01001,0.01042,0.01105,0.01138,0.01164,0.01178,0.01177,0.01201,0.01184,0.01168,0.01132,0.01092,0.01058,0.01,0.0096,0.0091,0.00864,0.00812,0.00765],"type":"scatter"},{"legendgroup":"Sim_4","line":{"color":"yellow","dash":"dot"},"name":"Beta_meas4","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833],"type":"scatter"},{"legendgroup":"Sim_4","line":{"color":"red","dash":"dot"},"name":"I_stoch4","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.00074,0.00095,0.00122,0.00148,0.00204,0.00267,0.00346,0.00439,0.00585,0.00782,0.00979,0.01282,0.01643,0.0204,0.02441,0.02951,0.03457,0.03974,0.04511,0.04991,0.05418,0.0586,0.06235,0.06499,0.0676,0.06935,0.07009,0.07104,0.071,0.06927,0.06747,0.06629,0.06469,0.06253,0.05959,0.05632,0.05355,0.05022,0.04686,0.04376,0.04067,0.03741,0.0341,0.0312,0.02875,0.02664,0.02476,0.02231,0.02051],"type":"scatter"},{"legendgroup":"Sim_4","name":"Ip_stoch4","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0074,0.0022,0.0031,0.0032,0.0063,0.007,0.0096,0.0115,0.0166,0.0238,0.0238,0.0353,0.0448,0.0485,0.0535,0.0658,0.0696,0.0757,0.0772,0.0826,0.0789,0.0866,0.0835,0.0814,0.0834,0.079,0.0743,0.0759,0.0667,0.0614,0.0606,0.0588,0.0539,0.0539,0.0452,0.0401,0.0423,0.0337,0.0281,0.0302,0.0266,0.0246,0.022,0.0205,0.0183,0.0173,0.0132,0.0117,0.0133],"type":"bar"},{"legendgroup":"Sim_4","line":{"color":"green","dash":"dot"},"name":"R_stoch4","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0,0.0,0.0,0.0,0.0,0.0,7e-05,0.00015,0.0002,0.00037,0.00046,0.00063,0.00089,0.00111,0.0015,0.00194,0.00262,0.00354,0.00438,0.00579,0.00726,0.00915,0.01097,0.01325,0.01572,0.01875,0.02199,0.02513,0.02831,0.0318,0.03507,0.03779,0.04091,0.04383,0.04654,0.04863,0.05055,0.05211,0.05326,0.0539,0.05466,0.05545,0.05578,0.055,0.05413,0.05279,0.05101,0.04917,0.04717],"type":"scatter"},{"legendgroup":"Sim_5","line":{"color":"yellow","dash":"dot"},"name":"Beta_meas5","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833,0.05648331272978833],"type":"scatter"},{"legendgroup":"Sim_5","line":{"color":"red","dash":"dot"},"name":"I_stoch5","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0007,0.00091,0.00122,0.00162,0.00212,0.00275,0.00339,0.00433,0.00556,0.00714,0.00901,0.01121,0.01463,0.01833,0.02259,0.02741,0.03212,0.03723,0.04228,0.04733,0.05184,0.05615,0.05933,0.06328,0.0666,0.06887,0.06995,0.07013,0.07057,0.07058,0.06908,0.06725,0.06504,0.06224,0.05965,0.05662,0.05367,0.05092,0.0476,0.04509,0.04232,0.03959,0.03677,0.03394,0.0317,0.0292,0.02708,0.02515,0.02301],"type":"scatter"},{"legendgroup":"Sim_5","name":"Ip_stoch5","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0071,0.0024,0.0037,0.0043,0.0058,0.0072,0.008,0.0116,0.0151,0.02,0.0231,0.0285,0.0407,0.0477,0.0544,0.0621,0.0658,0.072,0.0728,0.0791,0.0813,0.0803,0.0825,0.0835,0.0835,0.0807,0.0742,0.068,0.072,0.0691,0.0617,0.0588,0.0544,0.0472,0.0467,0.0439,0.0415,0.0378,0.0301,0.0313,0.0306,0.0283,0.024,0.0208,0.0203,0.0162,0.0165,0.0163,0.0162],"type":"bar"},{"legendgroup":"Sim_5","line":{"color":"green","dash":"dot"},"name":"R_stoch5","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48],"y":[0.0,0.0,0.0,0.0,0.0,0.0,3e-05,0.00012,0.0002,0.00033,0.00049,0.00069,0.00086,0.00111,0.00148,0.00193,0.00255,0.00332,0.00425,0.00541,0.00684,0.00821,0.01051,0.01227,0.01468,0.01735,0.02001,0.02319,0.02632,0.02959,0.03318,0.03674,0.04006,0.04281,0.04545,0.04771,0.04974,0.05117,0.05225,0.05283,0.05328,0.05327,0.05359,0.05309,0.05219,0.05118,0.05007,0.04842,0.04714],"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"marker":{"line":{"color":"#283442"}},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#f2f5fa"},"error_y":{"color":"#f2f5fa"},"marker":{"line":{"color":"rgb(17,17,17)","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"marker":{"line":{"color":"#283442"}},"type":"scattergl"}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#A2B1C6","gridcolor":"#506784","linecolor":"#506784","minorgridcolor":"#506784","startlinecolor":"#A2B1C6"},"baxis":{"endlinecolor":"#A2B1C6","gridcolor":"#506784","linecolor":"#506784","minorgridcolor":"#506784","startlinecolor":"#A2B1C6"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#506784"},"line":{"color":"rgb(17,17,17)"}},"header":{"fill":{"color":"#2a3f5f"},"line":{"color":"rgb(17,17,17)"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"rgb(17,17,17)","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#f2f5fa"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"rgb(17,17,17)","plot_bgcolor":"rgb(17,17,17)","polar":{"bgcolor":"rgb(17,17,17)","angularaxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""},"radialaxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""}},"ternary":{"bgcolor":"rgb(17,17,17)","aaxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""},"baxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""},"caxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"#283442","linecolor":"#506784","ticks":"","title":{"standoff":15},"zerolinecolor":"#283442","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"#283442","linecolor":"#506784","ticks":"","title":{"standoff":15},"zerolinecolor":"#283442","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"rgb(17,17,17)","gridcolor":"#506784","linecolor":"#506784","showbackground":true,"ticks":"","zerolinecolor":"#C8D4E3","gridwidth":2},"yaxis":{"backgroundcolor":"rgb(17,17,17)","gridcolor":"#506784","linecolor":"#506784","showbackground":true,"ticks":"","zerolinecolor":"#C8D4E3","gridwidth":2},"zaxis":{"backgroundcolor":"rgb(17,17,17)","gridcolor":"#506784","linecolor":"#506784","showbackground":true,"ticks":"","zerolinecolor":"#C8D4E3","gridwidth":2}},"shapedefaults":{"line":{"color":"#f2f5fa"}},"annotationdefaults":{"arrowcolor":"#f2f5fa","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"rgb(17,17,17)","landcolor":"rgb(17,17,17)","subunitcolor":"#506784","showland":true,"showlakes":true,"lakecolor":"rgb(17,17,17)"},"title":{"x":0.05},"updatemenudefaults":{"bgcolor":"#506784","borderwidth":0},"sliderdefaults":{"bgcolor":"#C8D4E3","borderwidth":1,"bordercolor":"rgb(17,17,17)","tickwidth":0},"mapbox":{"style":"dark"}}},"title":{"text":"Stochastic HIV SIR model","x":0.5,"xanchor":"center"},"xaxis":{"title":{"text":"Years"}},"yaxis":{"title":{"text":"Proportion of population"}},"height":600},                        {"responsive": true}                    ).then(function(){
                             
 var gd = document.getElementById('adf24b39-9ae2-402c-ad45-97f493c6618d');
@@ -671,6 +712,8 @@ if (outputEl) {{
 </section>
 
 </main> <!-- /main -->
+<script defer="" data-domain="plausible.jeffreypost.dev" src="https://plausible.jeffreypost.dev/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
+<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -712,6 +755,33 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       } else {
         el.classList.add('notransition');
       }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
     }
   }
   const toggleColorMode = (alternate) => {
@@ -780,13 +850,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return localAlternateSentinel;
     }
   }
-  let localAlternateSentinel = 'alternate';
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
   // Dark / light mode switch
   window.quartoToggleColorScheme = () => {
     // Read the current dark / light value 
     let toAlternate = !hasAlternateSentinel();
     toggleColorMode(toAlternate);
     setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
   };
   // Ensure there is a toggle, if there isn't float one in the top right
   if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -821,18 +893,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -864,11 +925,48 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/jeffreypost\.dev\/scattered-thoughts");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -878,8 +976,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -891,7 +998,129 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -935,6 +1164,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -960,6 +1190,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1020,6 +1276,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
