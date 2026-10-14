@@ -7,7 +7,7 @@ about:
 #    - text: "{{< fa brands linkedin-in >}}"
 #      href: https://www.linkedin.com/in/jeffrey-post-6591ab42
     - text: "{{< fa brands github >}}"
-      href: https:/github.com/jeffufpost
+      href: https://github.com/jeffufpost
     - text: "{{< fa brands gitlab >}}"
       href: https://renkulab.io/gitlab/jeffrey.post
     - text: "{{< fa envelope >}}"

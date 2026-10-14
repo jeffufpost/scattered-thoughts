@@ -1,0 +1,104 @@
+/*-- scss:defaults --*/
+// Notebook theme (light). Colours and fonts are shared with the homepage
+// (jeffufpost.github.io/css/main.scss): change both together.
+
+$jp-bg:      #fcfcfb;
+$jp-ink:     #191c20;
+$jp-muted:   #646b75;
+$jp-line:    #e6e7ea;
+$jp-accent:  #0c7363;
+$jp-code-bg: #f1f3f2;
+$jp-code:    #7a3fa0;
+
+$body-bg: $jp-bg;
+$body-color: $jp-ink;
+$primary: $jp-accent;
+$link-color: $jp-ink;
+$text-muted: $jp-muted;
+$border-color: $jp-line;
+
+$font-family-sans-serif: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+$font-family-monospace: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+$headings-font-weight: 600;
+
+$navbar-bg: $jp-bg;
+$navbar-fg: $jp-ink;
+$navbar-hl: $jp-accent;
+$footer-bg: $jp-bg;
+$footer-fg: $jp-muted;
+
+$code-block-bg: $jp-code-bg;
+$code-color: $jp-code;
+
+/*-- scss:rules --*/
+// The rules below are identical in theme-light.scss and theme-dark.scss.
+
+.navbar {
+  border-bottom: 1px solid $jp-line;
+  font-family: $font-family-monospace;
+  font-size: 0.875rem;
+}
+
+.navbar-title { font-weight: 500; }
+
+#quarto-document-content :is(p, li, td) > a,
+.quarto-post .body > a {
+  text-decoration: underline;
+  text-decoration-color: $jp-accent;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+a:hover { color: $jp-accent; }
+
+h1.title { letter-spacing: -0.01em; }
+
+.quarto-title-meta-heading {
+  font-family: $font-family-monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $jp-muted;
+}
+
+.quarto-title-meta-contents,
+.listing-date,
+.listing-author {
+  font-family: $font-family-monospace;
+  font-size: 0.85rem;
+  color: $jp-muted;
+}
+
+.quarto-category,
+.listing-category {
+  font-family: $font-family-monospace;
+  font-size: 0.75rem;
+  color: $jp-accent;
+  background: transparent;
+  border: 1px solid $jp-line;
+  border-radius: 3px;
+  opacity: 1;
+}
+
+.quarto-post {
+  border-bottom: 1px solid $jp-line;
+
+  .listing-title { font-weight: 600; }
+  .listing-description { color: $jp-muted; }
+}
+
+#TOC, .sidebar nav[role="doc-toc"] {
+  font-family: $font-family-monospace;
+  font-size: 0.8rem;
+
+  .nav-link.active {
+    color: $jp-accent;
+    border-left-color: $jp-accent;
+  }
+}
+
+div.sourceCode {
+  border: 1px solid $jp-line;
+  border-radius: 6px;
+}

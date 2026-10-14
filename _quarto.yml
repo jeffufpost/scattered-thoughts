@@ -5,14 +5,18 @@ website:
   title: "Scattered Thoughts"
   site-url: "https://jeffreypost.dev/scattered-thoughts"
   favicon: favicon.ico
-  google-analytics: UA-166290391-2
+  #google-analytics: UA-166290391-2
+  google-analytics: G-M3QJE9ZPZT
   navbar:
+    left:
+      - text: "jeffreypost.dev"
+        href: https://jeffreypost.dev
     right:
       - about.qmd
 #      - text: "{{< fa brands linkedin-in >}}"
 #        href: https://www.linkedin.com/in/jeffrey-post-6591ab42
       - text: "{{< fa brands github >}}"
-        href: https:/github.com/jeffufpost
+        href: https://github.com/jeffufpost
       - text: "{{< fa brands gitlab >}}"
         href: https://renkulab.io/gitlab/jeffrey.post
       - text: "{{< fa envelope >}}"
@@ -26,6 +30,10 @@ format:
     #execute: true
 #    theme: sandstone
 #    css: styles.css
+    # Notebook theme, shared with jeffreypost.dev. Light is listed first, so it is the default.
     theme:
-#      light: flatly
-      dark: darkly
+      light: [cosmo, theme-light.scss]
+      dark: [darkly, theme-dark.scss]
+    highlight-style: github
+    include-in-header: fonts.html
+    include-after-body: plausible.html
