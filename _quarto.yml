@@ -30,10 +30,10 @@ format:
     #execute: true
 #    theme: sandstone
 #    css: styles.css
-    # Notebook theme, shared with jeffreypost.dev. Light is listed first, so it is the default.
+    # Notebook theme, shared with jeffreypost.dev. Dark is listed first, so it is the default.
     theme:
-      light: [cosmo, theme-light.scss]
       dark: [darkly, theme-dark.scss]
+      light: [cosmo, theme-light.scss]
     highlight-style: github
     include-in-header: fonts.html
     include-after-body: plausible.html
