@@ -2,58 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/about.html</loc>
-    <lastmod>2026-10-15T08:41:16.160Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.104Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-15-web-scraping/2020-04-15-web-scraping.html</loc>
+    <lastmod>2026-10-15T09:15:37.398Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-01-diagnosing-R0-and-peak-infectious/2020-04-01-diagnosing-R0-and-peak-infectious.html</loc>
-    <lastmod>2026-10-15T08:41:16.340Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.312Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html</loc>
-    <lastmod>2026-10-15T08:41:16.466Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.458Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-12-on-testing/2020-04-12-on-testing.html</loc>
-    <lastmod>2026-10-15T08:41:16.414Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.397Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2021-09-23-stochastic-HIV-model-fast/2021-09-23-stochastic-HIV-model-fast.html</loc>
-    <lastmod>2026-10-15T08:41:16.484Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.478Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-31-stochastic_model/2020-03-31-stochastic_model.html</loc>
-    <lastmod>2026-10-15T08:41:16.316Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.284Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-convolution/2020-04-02-convolution.html</loc>
-    <lastmod>2026-10-15T08:41:16.376Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.354Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/index.html</loc>
-    <lastmod>2026-10-15T08:41:16.161Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.104Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-25-proba-distrib/2020-03-25-proba-distrib.html</loc>
-    <lastmod>2026-10-15T08:41:16.294Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.258Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-04-02-control-measures/2020-04-02-control-measures.html</loc>
-    <lastmod>2026-10-15T08:41:16.358Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.332Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-15-compartmentalization/2020-03-15-compartmentalization.html</loc>
-    <lastmod>2026-10-15T08:41:16.164Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.109Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-06-02-real-world/2020-06-02-real-world.html</loc>
-    <lastmod>2026-10-15T08:41:16.449Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.438Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-12-COVID-19-Tracker/2020-03-12-COVID-19-Tracker.html</loc>
-    <lastmod>2026-10-15T08:41:16.163Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.108Z</lastmod>
   </url>
   <url>
     <loc>https://jeffreypost.dev/scattered-thoughts/posts/2020-03-18-deterministic-numerical-solutions/2020-03-18-deterministic-numerical-solutions.html</loc>
-    <lastmod>2026-10-15T08:41:16.258Z</lastmod>
+    <lastmod>2026-10-15T09:15:37.217Z</lastmod>
   </url>
 </urlset>

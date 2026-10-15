@@ -8,9 +8,9 @@
 
 <meta name="author" content="Jeffrey Post">
 <meta name="dcterms.date" content="2021-09-23">
-<meta name="description" content="Building a new stochastic SEIR model to deal with probability distributions.. but faster">
+<meta name="description" content="Rewriting the stochastic HIV model with NumPy arrays instead of pandas lookups so it runs much faster">
 
-<title>HIV modeling – Scattered Thoughts</title>
+<title>Stochastic HIV model, but faster – Scattered Thoughts</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -263,7 +263,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">HIV modeling</h1>
+<h1 class="title">Stochastic HIV model, but faster</h1>
   <div class="quarto-categories">
     <div class="quarto-category">probability distributions</div>
     <div class="quarto-category">modeling</div>
@@ -277,7 +277,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Building a new stochastic SEIR model to deal with probability distributions.. but faster
+    Rewriting the stochastic HIV model with NumPy arrays instead of pandas lookups so it runs much faster
   </div>
 </div>
 
@@ -306,7 +306,8 @@ window.Quarto = {
 </header>
 
 
-<p><img src="../my_icons/HIV_stochastic.png" class="img-fluid"></p>
+<p><img src="../images/covers/hiv-model-fast.svg" class="img-fluid"></p>
+<p>This post revisits <a href="../2021-05-05-stochastic-HIV-model/2021-05-05-stochastic-HIV-model.html">A stochastic HIV model</a>. The model is essentially the same; the code is what changed. The original filters a pandas dataframe at every step, while this version works on plain NumPy arrays. The six simulation runs below take about 2 seconds instead of 17. Compare the <code>seir_model_stoch_fast</code> function below with <code>seir_model_stoch</code> in the original post to see what changed.</p>
 <section id="building-a-stochastic-model" class="level2">
 <h2 class="anchored" data-anchor-id="building-a-stochastic-model">Building a stochastic model</h2>
 <p>This model is going to focus on individual level disease dynamics to model the disease propagation.</p>
@@ -330,7 +331,7 @@ window.Quarto = {
 </ol>
 <p>This is done stochastically.</p>
 <p>Once a person becomes I, their progression is unique to them. This progression is calculated in advance for computational reason, but it allows to use the time ditributions we want.</p>
-<div id="cell-4" class="cell" data-outputid="84dd1725-aa80-4a84-bd0f-9bc0ae2fea38" data-execution_count="1">
+<div id="cell-5" class="cell" data-outputid="84dd1725-aa80-4a84-bd0f-9bc0ae2fea38" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -368,7 +369,7 @@ window.Quarto = {
 <section id="creating-the-initial-population-dataframe" class="level3">
 <h3 class="anchored" data-anchor-id="creating-the-initial-population-dataframe">Creating the initial population dataframe</h3>
 <p>Below is a function to create the initial population dataframe: * <span class="math inline">\(p\)</span> is the population number * <span class="math inline">\(num_I\)</span> is the number of infectious on day 0 * <span class="math inline">\(num_R\)</span> is the number of people recovered on day 0</p>
-<div id="cell-6" class="cell" data-execution_count="2">
+<div id="cell-7" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Need this new function for model below:</span></span>
@@ -385,7 +386,7 @@ window.Quarto = {
 </section>
 <section id="building-the-model" class="level3">
 <h3 class="anchored" data-anchor-id="building-the-model">Building the model</h3>
-<div id="cell-8" class="cell" data-outputid="b5387391-fdc9-472b-f171-aa5eeb1c921a" data-execution_count="3">
+<div id="cell-9" class="cell" data-outputid="b5387391-fdc9-472b-f171-aa5eeb1c921a" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelling the decrease of beta over time</span></span>
@@ -405,7 +406,7 @@ window.Quarto = {
 <pre><code>np.float64(0.19397059336956546)</code></pre>
 </div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="4">
+<div id="cell-10" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> seir_model_stoch_fast(beta, beta2, p, num_I, num_R, years, T_Infectious, ART, control):</span>
@@ -624,7 +625,7 @@ window.Quarto = {
 </section>
 <section id="testing-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="testing-the-model">Testing the model</h2>
-<div id="cell-11" class="cell" data-outputid="ea3d8591-d636-4a16-d089-21f018a731b9" data-execution_count="6">
+<div id="cell-12" class="cell" data-outputid="ea3d8591-d636-4a16-d089-21f018a731b9" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define parameters for stochastic model</span></span>
@@ -654,7 +655,7 @@ window.Quarto = {
 <pre><code>100%|██████████| 6/6 [00:02&lt;00:00,  2.88it/s]</code></pre>
 </div>
 </div>
-<div id="cell-12" class="cell" data-outputid="75aa7a3d-0061-47b4-b60d-ef1863728e24" data-execution_count="7">
+<div id="cell-13" class="cell" data-outputid="75aa7a3d-0061-47b4-b60d-ef1863728e24" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
