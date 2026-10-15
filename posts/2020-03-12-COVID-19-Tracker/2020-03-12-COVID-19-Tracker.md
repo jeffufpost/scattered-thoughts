@@ -5,7 +5,7 @@ categories:
  - COVID-19
  - Dashboards
  - Plotly
-image: sars-cov2-world-tracker.png
+image: ../images/covers/covid-tracker.svg
 title: COVID-19 Tracker Map
 layout: post
 date: "2020-03-12"
